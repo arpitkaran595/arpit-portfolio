@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Lenis from 'lenis';
 
 import { ArchiveProvider } from './context/ArchiveContext';
@@ -32,7 +32,7 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
+    <HashRouter>
       <ArchiveProvider>
         <ScrollToTop />
         <Routes>
@@ -42,7 +42,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </ArchiveProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
