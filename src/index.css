@@ -1,0 +1,225 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== Base Reset & Typography ===== */
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: auto; /* Lenis handles smooth scroll */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
+  body {
+    font-family: 'Sora', system-ui, sans-serif;
+    background-color: #FAF3E8;
+    color: #1A1A1A;
+    overflow-x: hidden;
+    max-width: 100%;
+    position: relative;
+  }
+
+  /* Subtle paper texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: url('/assets/paper-texture.png') center / cover no-repeat;
+    opacity: 0.035;
+    pointer-events: none;
+    z-index: 10000;
+    mix-blend-mode: multiply;
+  }
+
+  /* Very subtle noise grain */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: url('/assets/noise-grain.png') repeat;
+    background-size: 200px 200px;
+    opacity: 0.02;
+    pointer-events: none;
+    z-index: 10001;
+    mix-blend-mode: overlay;
+  }
+
+  ::selection {
+    background-color: rgba(196, 148, 58, 0.2);
+    color: #1A1A1A;
+  }
+}
+
+/* ===== Custom Utilities ===== */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* ===== Lenis Smooth Scroll ===== */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* ===== Marquee ===== */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+/* ===== Hero Marquee Typography ===== */
+.hero-marquee-text {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: clamp(4.8rem, 9.5vw, 9.8rem);
+  line-height: 1;
+  letter-spacing: 0.03em;
+  font-weight: 400;
+  will-change: transform;
+}
+
+.hero-text-solid {
+  color: rgba(26, 26, 26, 0.32);
+  font-weight: 800;
+  transition: color 0.3s ease;
+}
+
+.hero-text-outlined {
+  color: rgba(45, 38, 30, 0.05);
+  -webkit-text-stroke: 1.4px rgba(45, 38, 30, 0.18);
+  transition: all 0.3s ease;
+}
+
+.hero-bullet {
+  display: inline-block;
+  width: clamp(12px, 1.2vw, 20px);
+  height: clamp(12px, 1.2vw, 20px);
+  border-radius: 9999px;
+  background-color: #D2AA68;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+/* ===== Hero CTA Card ===== */
+.hero-cta-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.75rem 1.15rem;
+  background: rgba(255, 253, 250, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: 1.15rem;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 270px;
+  height: 72px;
+  box-shadow: 
+    0 10px 24px -4px rgba(45, 38, 30, 0.10),
+    0 4px 10px -2px rgba(246, 215, 178, 0.35),
+    inset 0 1px 1px #ffffff;
+}
+
+.hero-cta-card:hover {
+  background: #ffffff;
+  border-color: #FAF3E8;
+  transform: translateY(-2px);
+  box-shadow: 
+    0 16px 32px -4px rgba(45, 38, 30, 0.14),
+    0 6px 16px -2px rgba(246, 215, 178, 0.45),
+    inset 0 1px 1px #ffffff;
+}
+
+@media (max-width: 767px) {
+  .hero-cta-card {
+    width: 100%;
+    max-width: 320px;
+    height: 68px;
+  }
+
+  .hero-marquee-text {
+    font-size: clamp(2.8rem, 11vw, 4.8rem);
+  }
+
+  .hero-text-outlined {
+    -webkit-text-stroke: 0.9px rgba(45, 38, 30, 0.15);
+  }
+
+  .hero-bullet {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+/* ===== Hide Scrollbar Indicator (Preserves Smooth Scrolling) ===== */
+html, body {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE & Edge */
+}
+
+::-webkit-scrollbar {
+  display: none;
+  width: 0px;
+  background: transparent;
+}
+
+/* ===== Reduced Motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .marquee-track {
+    animation: none !important;
+  }
+}
+
+/* ===== Media Viewer Overlay ===== */
+.viewer-backdrop {
+  backdrop-filter: blur(20px) saturate(0.8);
+  -webkit-backdrop-filter: blur(20px) saturate(0.8);
+}
+
+/* ===== Section Transitions ===== */
+.section-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.section-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== Experience Path ===== */
+.experience-path {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+}
+

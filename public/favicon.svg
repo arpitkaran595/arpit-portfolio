@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="akGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E5C282"/>
+      <stop offset="100%" stop-color="#C4943A"/>
+    </linearGradient>
+  </defs>
+  <!-- Background Badge in Charcoal Dark -->
+  <rect width="64" height="64" rx="16" fill="#1A1714"/>
+  <rect x="1" y="1" width="62" height="62" rx="15" stroke="url(#akGold)" stroke-width="1.5" stroke-opacity="0.5"/>
+  
+  <!-- Subtle Celestial 4-Point Star Accent -->
+  <path d="M32 14 L33.5 21 L40.5 22.5 L33.5 24 L32 31 L30.5 24 L23.5 22.5 L30.5 21 Z" fill="url(#akGold)" opacity="0.6"/>
+
+  <!-- Clean Monogram Typography in Warm Cream -->
+  <text x="32" y="47" font-family="'Sora', system-ui, -apple-system, sans-serif" font-size="22" font-weight="800" fill="#FAF3E8" text-anchor="middle" letter-spacing="-0.03em">AK</text>
+</svg>
