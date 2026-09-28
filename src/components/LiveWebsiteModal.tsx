@@ -18,8 +18,31 @@ export default function LiveWebsiteModal({
   const [hasError, setHasError] = useState(false);
   const [iframeKey, setIframeKey] = useState(0);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const screenCutoutRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
 
   const hasLivePreview = project?.hasLivePreview ?? false;
+
+  // Compute responsive desktop scale for embedded iframe
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const updateScale = () => {
+      if (screenCutoutRef.current) {
+        const width = screenCutoutRef.current.clientWidth;
+        if (width > 0) {
+          setScale(width / 1280);
+        }
+      }
+    };
+
+    updateScale();
+    const ro = new ResizeObserver(updateScale);
+    if (screenCutoutRef.current) {
+      ro.observe(screenCutoutRef.current);
+    }
+    return () => ro.disconnect();
+  }, [isOpen]);
 
   // Reset states when project changes or modal opens
   useEffect(() => {
@@ -181,6 +204,7 @@ export default function LiveWebsiteModal({
             <div className="relative w-full max-w-[1060px] aspect-[1536/1024] flex items-center justify-center select-none">
               {/* Screen Display Container behind the MacBook Frame Cutout */}
               <div
+                ref={screenCutoutRef}
                 className="absolute overflow-hidden bg-black flex items-center justify-center"
                 style={{
                   left: '13.80%',
@@ -200,18 +224,26 @@ export default function LiveWebsiteModal({
                   </div>
                 )}
 
-                {/* 2. CASE: Live Iframe Embeddable */}
+                {/* 2. CASE: Live Iframe Embeddable with Responsive Desktop Virtual Viewport */}
                 {hasLivePreview && project.url && !hasError ? (
-                  <iframe
-                    key={iframeKey}
-                    ref={iframeRef}
-                    src={project.url}
-                    title={project.title}
-                    onLoad={handleIframeLoad}
-                    onError={handleIframeError}
-                    sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"
-                    className="w-full h-full border-0 bg-white"
-                  />
+                  <div
+                    className="absolute top-0 left-0 w-[1280px] h-[800px] origin-top-left pointer-events-auto"
+                    style={{
+                      transform: `scale(${scale})`,
+                      transformOrigin: '0 0',
+                    }}
+                  >
+                    <iframe
+                      key={iframeKey}
+                      ref={iframeRef}
+                      src={project.url}
+                      title={project.title}
+                      onLoad={handleIframeLoad}
+                      onError={handleIframeError}
+                      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"
+                      className="w-full h-full border-0 bg-white"
+                    />
+                  </div>
                 ) : (
                   /* 3. CASE: High-Res Interactive Scrollable View (Webapp or Restricted Preview) */
                   <div className="w-full h-full overflow-y-auto relative bg-[#12100E] scrollbar-thin scrollbar-thumb-[#D4A94E]/40">

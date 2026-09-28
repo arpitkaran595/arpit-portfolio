@@ -52,6 +52,17 @@
     mix-blend-mode: overlay;
   }
 
+  /* Mobile Performance: Bypass heavy GPU full-screen multi-pass blend-modes */
+  @media (max-width: 768px), (pointer: coarse) {
+    body::before {
+      mix-blend-mode: normal;
+      opacity: 0.025;
+    }
+    body::after {
+      display: none;
+    }
+  }
+
   ::selection {
     background-color: rgba(196, 148, 58, 0.2);
     color: #1A1A1A;

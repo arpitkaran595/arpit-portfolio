@@ -325,7 +325,7 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
     if (offset === 1) {
       // Next Card (Positioned Above Current)
       return {
-        y: '-58%',
+        y: '-53%',
         scale: 0.85,
         opacity: 0.45,
         filter: 'brightness(0.65) blur(0.5px)',
@@ -337,7 +337,7 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
     if (offset === -1) {
       // Previous Card (Positioned Below Current)
       return {
-        y: '58%',
+        y: '53%',
         scale: 0.85,
         opacity: 0.45,
         filter: 'brightness(0.65) blur(0.5px)',
@@ -472,7 +472,7 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
           <div className="relative w-[clamp(280px,86vw,370px)] h-[clamp(158px,48.5vw,208px)] flex items-center justify-center">
             {playlist.map((thumb, idx) => {
               const offset = getWrappedOffset(idx, currentIndex, totalThumbnails);
-              if (Math.abs(offset) > 1.5) return null;
+              if (Math.abs(offset) > 2.2) return null;
 
               const transform = getCardTransform(offset);
               const isCenter = offset === 0;

@@ -176,8 +176,11 @@ const CreativesSection: React.FC = () => {
     let animationFrameId: number;
     let lastTime = performance.now();
     let dotUpdateThrottle = 0;
+    let isVisible = true;
 
     const loop = (time: number) => {
+      if (!isVisible) return;
+
       const dt = Math.min((time - lastTime) / 1000, 0.05); // cap delta time
       lastTime = time;
 
@@ -227,21 +230,45 @@ const CreativesSection: React.FC = () => {
         row2TrackRef.current.style.transform = `translate3d(${mod2}px, 0, 0)`;
       }
 
-      // Periodically update active pagination dot (throttled to 10Hz)
+      // Periodically update active pagination dot (throttled to 10Hz, guarded against redundant re-renders)
       dotUpdateThrottle += dt;
       if (dotUpdateThrottle > 0.1) {
         dotUpdateThrottle = 0;
         const normalizedIndex = Math.floor(
           (((-pos1Ref.current / 280) % 5) + 5) % 5
         );
-        setActiveDot(normalizedIndex);
+        setActiveDot((prev) => (prev !== normalizedIndex ? normalizedIndex : prev));
       }
 
       animationFrameId = requestAnimationFrame(loop);
     };
 
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const wasVisible = isVisible;
+          isVisible = entry.isIntersecting;
+          if (isVisible && !wasVisible) {
+            lastTime = performance.now();
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = requestAnimationFrame(loop);
+          } else if (!isVisible) {
+            cancelAnimationFrame(animationFrameId);
+          }
+        });
+      },
+      { threshold: 0.05 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
     animationFrameId = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(animationFrameId);
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      observer.disconnect();
+    };
   }, [baseSpeed1, baseSpeed2]);
 
   // ───────────────────────────────────────────────────────────────────────────
