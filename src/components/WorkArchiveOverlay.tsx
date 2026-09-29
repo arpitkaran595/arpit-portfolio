@@ -81,19 +81,7 @@ export const WorkArchiveOverlay: React.FC = () => {
       if ((window as any).lenis) {
         (window as any).lenis.stop();
       }
-    } else {
-      document.body.style.overflow = '';
-      if ((window as any).lenis) {
-        (window as any).lenis.start();
-      }
     }
-
-    return () => {
-      document.body.style.overflow = '';
-      if ((window as any).lenis) {
-        (window as any).lenis.start();
-      }
-    };
   }, [isOpen, selectedMedia]);
 
   // Prepare ALL items dynamically by interleaving existing assets
@@ -228,47 +216,48 @@ export const WorkArchiveOverlay: React.FC = () => {
     });
   }, []);
 
+  if (!isOpen) return null;
+
   return (
     <>
       <AnimatePresence>
-        {isOpen && (
-          <div
-            ref={overlayRef}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Work Archive"
-            className="fixed inset-0 z-[80] flex items-center justify-center p-2 sm:p-4 md:p-6 lg:p-8 select-none"
-          >
-            {/* 
-              Subtle Dark Translucent Backdrop
-              IMPORTANT: Clicking backdrop DOES NOT close the overlay.
-              Only the explicit CLOSE button and Escape key close it.
-            */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.35 }}
-              className="fixed inset-0 bg-black/75 backdrop-blur-[8px] -z-10"
-            />
+        <div
+          ref={overlayRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Work Archive"
+          className="fixed inset-0 z-[80] flex items-center justify-center p-2 sm:p-4 md:p-6 lg:p-8 select-none"
+        >
+          {/* 
+            Subtle Dark Translucent Backdrop
+            IMPORTANT: Clicking backdrop DOES NOT close the overlay.
+            Only the explicit CLOSE button and Escape key close it.
+          */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35 }}
+            className="fixed inset-0 bg-black/75 backdrop-blur-[8px] -z-10"
+          />
 
-            {/* Main Archive Panel (92-95vw, 92-94vh, Warm Cream, Paper Texture, Soft Rounded Corners) */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96, y: 15 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.97, y: 10 }}
-              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              className="w-full max-w-[1520px] h-[92vh] sm:h-[94vh] max-h-[1040px] bg-[#FAF3E8] border border-[#E5D7C3]/90 rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[2.25rem] shadow-[0_30px_90px_-20px_rgba(20,15,10,0.45),0_12px_35px_-10px_rgba(0,0,0,0.3)] flex flex-col overflow-hidden relative"
-            >
-              {/* Subtle Paper Texture & Noise Overlay (Hidden on mobile to save GPU composite fill-rate) */}
-              <div
-                className="hidden sm:block absolute inset-0 pointer-events-none opacity-[0.035] mix-blend-multiply z-0"
-                style={{
-                  backgroundImage: `url('/assets/paper-texture.png')`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                }}
-              />
+          {/* Main Archive Panel (92-95vw, 92-94vh, Warm Cream, Paper Texture, Soft Rounded Corners) */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96, y: 15 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.97, y: 10 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            className="w-full max-w-[1520px] h-[92vh] sm:h-[94vh] max-h-[1040px] bg-[#FAF3E8] border border-[#E5D7C3]/90 rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[2.25rem] shadow-[0_30px_90px_-20px_rgba(20,15,10,0.45),0_12px_35px_-10px_rgba(0,0,0,0.3)] flex flex-col overflow-hidden relative"
+          >
+            {/* Subtle Paper Texture & Noise Overlay */}
+            <div
+              className="absolute inset-0 pointer-events-none opacity-[0.035] mix-blend-multiply z-0"
+              style={{
+                backgroundImage: `url('/assets/paper-texture.png')`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+            />
             <div
               className="absolute inset-0 pointer-events-none opacity-[0.02] mix-blend-overlay z-0"
               style={{
@@ -617,8 +606,7 @@ export const WorkArchiveOverlay: React.FC = () => {
             </div>
           </motion.div>
         </div>
-      )}
-    </AnimatePresence>
+      </AnimatePresence>
 
       {/* Lightbox Modal (Reusing existing MediaViewer component) */}
       <MediaViewer

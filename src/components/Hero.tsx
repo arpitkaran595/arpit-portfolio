@@ -78,8 +78,6 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
       // ─────────────────────────────────────────────
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-      const isMobile = window.innerWidth < 768;
-
       // PHASE 01 — NAVBAR (Soft entry from top)
       if (navRef?.current) {
         tl.fromTo(
@@ -91,7 +89,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
       }
 
       // PHASE 02 — BACKGROUND TYPOGRAPHY (Appears softly in background at 0.05s)
-      if (!prefersReduced && !isMobile) {
+      if (!prefersReduced) {
         tl.fromTo(
           marqueeInnerRef.current,
           { opacity: 0, filter: 'blur(8px)', y: 15 },
@@ -107,14 +105,14 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
       } else {
         tl.fromTo(
           marqueeInnerRef.current,
-          { opacity: 0, y: 15 },
-          { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' },
+          { opacity: 0 },
+          { opacity: 1, duration: 0.35 },
           0.05
         );
       }
 
       // PHASE 03 — ATMOSPHERIC MIST (Begins at 0.10s)
-      if (!prefersReduced && !isMobile) {
+      if (!prefersReduced) {
         tl.fromTo(
           mistBackInnerRef.current,
           { opacity: 0, x: -20, scale: 1.02, filter: 'blur(4px)' },
@@ -124,8 +122,8 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
       } else {
         tl.fromTo(
           mistBackInnerRef.current,
-          { opacity: 0, x: -20, scale: 1.02 },
-          { opacity: 0.75, x: 0, scale: 1, duration: 0.8, ease: 'power3.out' },
+          { opacity: 0 },
+          { opacity: 0.75, duration: 0.35 },
           0.10
         );
       }
@@ -139,7 +137,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
         0.12
       );
 
-      if (!prefersReduced && !isMobile) {
+      if (!prefersReduced) {
         // Mid-ground overlapping depth clouds
         tl.fromTo(
           cloudLeftBackInnerRef.current,
@@ -175,39 +173,21 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
         );
       } else {
         tl.fromTo(
-          cloudLeftBackInnerRef.current,
-          { opacity: 0, scale: 0.97, x: -20 },
-          { opacity: 0.7, scale: 1, x: 0, duration: 0.8, ease: 'power3.out' },
-          0.18
-        ).fromTo(
-          cloudRightBackInnerRef.current,
-          { opacity: 0, scale: 0.97, x: 20 },
-          { opacity: 0.7, scale: 1, x: 0, duration: 0.8, ease: 'power3.out' },
-          0.22
-        );
-
-        tl.fromTo(
-          cloudLeftFrontInnerRef.current,
-          { opacity: 0, scale: 0.97, x: -25, y: 15 },
-          { opacity: 1, scale: 1, x: 0, y: 0, duration: 0.85, ease: 'power3.out' },
-          0.20
-        ).fromTo(
-          cloudRightFrontInnerRef.current,
-          { opacity: 0, scale: 0.97, x: 25, y: 15 },
-          { opacity: 1, scale: 1, x: 0, y: 0, duration: 0.85, ease: 'power3.out' },
-          0.25
-        );
-
-        tl.fromTo(
-          centerCloudInnerRef.current,
-          { opacity: 0, scale: 0.97, y: 25 },
-          { opacity: 1, scale: 1, y: 0, duration: 0.85, ease: 'power3.out' },
-          0.28
+          [
+            cloudLeftBackInnerRef.current,
+            cloudRightBackInnerRef.current,
+            cloudLeftFrontInnerRef.current,
+            cloudRightFrontInnerRef.current,
+            centerCloudInnerRef.current,
+          ],
+          { opacity: 0 },
+          { opacity: 1, duration: 0.4, stagger: 0.06 },
+          0.15
         );
       }
 
       // PHASE 06 — CHARACTER EMERGES FROM CLOUDS (0.30s — fast & confident)
-      if (!prefersReduced && !isMobile) {
+      if (!prefersReduced) {
         tl.fromTo(
           characterInnerRef.current,
           { opacity: 0, y: 70, scale: 0.96, filter: 'blur(4px)' },
@@ -222,14 +202,14 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
       } else {
         tl.fromTo(
           characterInnerRef.current,
-          { opacity: 0, y: 70, scale: 0.96 },
-          { opacity: 1, y: 0, scale: 1, duration: 0.95, ease: 'expo.out' },
-          0.30
+          { opacity: 0 },
+          { opacity: 1, duration: 0.45 },
+          0.25
         ).fromTo(
           mistFrontInnerRef.current,
-          { opacity: 0, y: 15 },
-          { opacity: 0.75, y: 0, duration: 0.8, ease: 'power3.out' },
-          0.40
+          { opacity: 0 },
+          { opacity: 0.75, duration: 0.35 },
+          0.30
         );
       }
 
@@ -261,7 +241,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
       tl.fromTo(
         scrollIndicatorInnerRef.current,
         { opacity: 0, y: 8 },
-        { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' },
+        { opacity: 0.9, y: 0, duration: 0.5, ease: 'power3.out' },
         0.78
       );
 
@@ -270,90 +250,80 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
       // Start smoothly once entrance sequence is settled (delay: 1.2s)
       // ─────────────────────────────────────────────
       if (!prefersReduced) {
-        const heroIdleTweens: gsap.core.Tween[] = [];
+        gsap.to(horizonCloudInnerRef.current, {
+          y: -4,
+          scale: 1.01,
+          duration: 9,
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+          delay: 1.2,
+        });
 
-        heroIdleTweens.push(
-          gsap.to(horizonCloudInnerRef.current, {
-            y: -4,
-            scale: 1.01,
-            duration: 9,
-            yoyo: true,
-            repeat: -1,
-            ease: 'sine.inOut',
-            delay: 1.2,
-          }),
-          gsap.to(cloudLeftBackInnerRef.current, {
-            y: -7,
-            x: -4,
-            duration: 8.5,
-            yoyo: true,
-            repeat: -1,
-            ease: 'sine.inOut',
-            delay: 1.2,
-          }),
-          gsap.to(cloudRightBackInnerRef.current, {
-            y: -6,
-            x: 4,
-            duration: 9.2,
-            yoyo: true,
-            repeat: -1,
-            ease: 'sine.inOut',
-            delay: 1.2,
-          }),
-          gsap.to(centerCloudInnerRef.current, {
-            y: -5,
-            scale: 1.012,
-            duration: 8.0,
-            yoyo: true,
-            repeat: -1,
-            ease: 'sine.inOut',
-            delay: 1.2,
-          }),
-          gsap.to(cloudLeftFrontInnerRef.current, {
-            y: -5,
-            x: -3,
-            duration: 6.8,
-            yoyo: true,
-            repeat: -1,
-            ease: 'sine.inOut',
-            delay: 1.2,
-          }),
-          gsap.to(cloudRightFrontInnerRef.current, {
-            y: -5,
-            x: 3,
-            duration: 7.6,
-            yoyo: true,
-            repeat: -1,
-            ease: 'sine.inOut',
-            delay: 1.2,
-          }),
-          gsap.to([mistBackInnerRef.current, mistFrontInnerRef.current], {
-            y: -4,
-            scale: 1.02,
-            duration: 8.5,
-            yoyo: true,
-            repeat: -1,
-            ease: 'sine.inOut',
-            delay: 1.2,
-          }),
-          gsap.to('.hero-scroll-dot', {
-            y: 5,
-            duration: 1.5,
-            repeat: -1,
-            yoyo: true,
-            ease: 'power1.inOut',
-          })
-        );
+        gsap.to(cloudLeftBackInnerRef.current, {
+          y: -7,
+          x: -4,
+          duration: 8.5,
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+          delay: 1.2,
+        });
+        gsap.to(cloudRightBackInnerRef.current, {
+          y: -6,
+          x: 4,
+          duration: 9.2,
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+          delay: 1.2,
+        });
 
-        // Pause idle tweens when Hero is out of viewport to preserve CPU/GPU battery
-        ScrollTrigger.create({
-          trigger: heroRef.current,
-          start: 'top bottom',
-          end: 'bottom top',
-          onLeave: () => heroIdleTweens.forEach((t) => t.pause()),
-          onEnterBack: () => heroIdleTweens.forEach((t) => t.play()),
-          onEnter: () => heroIdleTweens.forEach((t) => t.play()),
-          onLeaveBack: () => heroIdleTweens.forEach((t) => t.pause()),
+        gsap.to(centerCloudInnerRef.current, {
+          y: -5,
+          scale: 1.012,
+          duration: 8.0,
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+          delay: 1.2,
+        });
+
+        gsap.to(cloudLeftFrontInnerRef.current, {
+          y: -5,
+          x: -3,
+          duration: 6.8,
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+          delay: 1.2,
+        });
+        gsap.to(cloudRightFrontInnerRef.current, {
+          y: -5,
+          x: 3,
+          duration: 7.6,
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+          delay: 1.2,
+        });
+
+        gsap.to([mistBackInnerRef.current, mistFrontInnerRef.current], {
+          y: -4,
+          scale: 1.02,
+          duration: 8.5,
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+          delay: 1.2,
+        });
+
+        gsap.to('.hero-scroll-dot', {
+          y: 5,
+          duration: 1.5,
+          repeat: -1,
+          yoyo: true,
+          ease: 'power1.inOut',
         });
       }
 
@@ -362,6 +332,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
       // Controls STRICTLY the OUTER SHELLS — Zero conflict with entrance animation or mouse parallax
       // ─────────────────────────────────────────────
       if (!prefersReduced) {
+        const isMobile = window.innerWidth < 768;
         const isTablet = window.innerWidth < 1024 && !isMobile;
         const factor = isMobile ? 0.52 : isTablet ? 0.72 : 1.0;
 
@@ -369,7 +340,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
           trigger: heroRef.current,
           start: 'top top',
           end: 'bottom top',
-          scrub: isMobile ? 0.4 : 0.8,
+          scrub: 0.8,
         };
 
         // LAYER 1 — Background sky / warm lighting glow (very slow movement)
@@ -385,7 +356,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
         if (mistBackShellRef.current) {
           gsap.to(mistBackShellRef.current, {
             y: -60 * factor,
-            ...(isMobile ? {} : { filter: 'blur(5px)' }),
+            filter: 'blur(5px)',
             opacity: 0.15,
             ease: 'none',
             scrollTrigger: { ...scrollConfig },
@@ -406,7 +377,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
         if (horizonCloudShellRef.current) {
           gsap.to(horizonCloudShellRef.current, {
             y: -70 * factor,
-            ...(isMobile ? {} : { filter: 'blur(5px)' }),
+            filter: 'blur(5px)',
             opacity: 0.25,
             ease: 'none',
             scrollTrigger: { ...scrollConfig },
@@ -418,7 +389,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
           gsap.to(cloudLeftBackShellRef.current, {
             y: -100 * factor,
             x: -15 * factor,
-            ...(isMobile ? {} : { filter: 'blur(5px)' }),
+            filter: 'blur(5px)',
             opacity: 0.35,
             ease: 'none',
             scrollTrigger: { ...scrollConfig },
@@ -428,7 +399,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
           gsap.to(cloudRightBackShellRef.current, {
             y: -100 * factor,
             x: 15 * factor,
-            ...(isMobile ? {} : { filter: 'blur(5px)' }),
+            filter: 'blur(5px)',
             opacity: 0.35,
             ease: 'none',
             scrollTrigger: { ...scrollConfig },
@@ -446,7 +417,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
               trigger: heroRef.current,
               start: '15% top',
               end: 'bottom top',
-              scrub: isMobile ? 0.4 : 0.8,
+              scrub: 0.8,
             },
           });
         }
@@ -457,7 +428,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
             y: -130 * factor,
             x: -20 * factor,
             scale: 1.02,
-            ...(isMobile ? {} : { filter: 'blur(6px)' }),
+            filter: 'blur(6px)',
             opacity: 0.35,
             ease: 'none',
             scrollTrigger: { ...scrollConfig },
@@ -468,7 +439,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
             y: -130 * factor,
             x: 20 * factor,
             scale: 1.02,
-            ...(isMobile ? {} : { filter: 'blur(6px)' }),
+            filter: 'blur(6px)',
             opacity: 0.35,
             ease: 'none',
             scrollTrigger: { ...scrollConfig },
@@ -480,7 +451,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
           gsap.to(centerCloudShellRef.current, {
             y: -140 * factor,
             scale: 1.03,
-            ...(isMobile ? {} : { filter: 'blur(8px)' }),
+            filter: 'blur(8px)',
             opacity: 0.3,
             ease: 'none',
             scrollTrigger: { ...scrollConfig },
@@ -491,7 +462,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
         if (mistFrontShellRef.current) {
           gsap.to(mistFrontShellRef.current, {
             y: -190 * factor,
-            ...(isMobile ? {} : { filter: 'blur(8px)' }),
+            filter: 'blur(8px)',
             opacity: 0,
             ease: 'none',
             scrollTrigger: { ...scrollConfig },

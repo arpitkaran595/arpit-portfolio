@@ -448,6 +448,147 @@ export const featuredVideos: FeaturedVideo[] = [
     ],
     tags: ['Cinematic', 'Vedic', 'Luxury', 'Storytelling'],
   },
+  {
+    id: 'vid-6',
+    index: '06',
+    title: 'Tiger Eye Heritage',
+    titleLine1: 'Inner',
+    highlightWord: 'STRENGTH',
+    titleLine2: 'Timeless Craft.',
+    category: 'Commercial',
+    duration: '00:46',
+    videoUrl:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790581861/Tiger_Eye_-_The_Celeb_Bracelet_1_rbuscn.mp4',
+    poster:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790581861/Tiger_Eye_-_The_Celeb_Bracelet_1_rbuscn.webp',
+    description:
+      'Dynamic composition and sharp rhythm designed for high social media retention.',
+    projectInfo: {
+      software: {
+        name: 'After Effects',
+        icon: 'after-effects',
+      },
+      category: 'Commercial',
+    },
+    softwares: [
+      { name: 'After Effects', icon: 'after-effects' },
+      { name: 'CapCut', icon: 'capcut' },
+    ],
+    tags: ['Commercial', 'Jewelry', 'Retention', 'Social Media'],
+  },
+  {
+    id: 'vid-7',
+    index: '07',
+    title: 'Pukhraj Mastercut',
+    titleLine1: 'Golden',
+    highlightWord: 'BRILLIANCE',
+    titleLine2: 'Prosperity & Light.',
+    category: 'Commercial',
+    duration: '01:09',
+    videoUrl:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790581857/Pukhraj_mqeg20.mp4',
+    poster:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790581857/Pukhraj_mqeg20.webp',
+    description:
+      'Luminous yellow tones, precise frame transitions, and luxury product grading.',
+    projectInfo: {
+      software: {
+        name: 'Premiere Pro',
+        icon: 'premiere-pro',
+      },
+      category: 'Commercial',
+    },
+    softwares: [
+      { name: 'Premiere Pro', icon: 'premiere-pro' },
+      { name: 'After Effects', icon: 'after-effects' },
+    ],
+    tags: ['Commercial', 'Luxury', 'E-commerce', 'Jewelry'],
+  },
+  {
+    id: 'vid-8',
+    index: '08',
+    title: 'Rose Quartz Serenity',
+    titleLine1: 'Pure',
+    highlightWord: 'HEALING',
+    titleLine2: 'Heart Chakra.',
+    category: 'Product Reel',
+    duration: '00:39',
+    videoUrl:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790581857/Rose_Quartz_Bracelet_-_B_vzva24.mp4',
+    poster:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790581857/Rose_Quartz_Bracelet_-_B_vzva24.webp',
+    description:
+      'Gentle natural illumination and graceful camera motion celebrating stone texture.',
+    projectInfo: {
+      software: {
+        name: 'CapCut',
+        icon: 'capcut',
+      },
+      category: 'Product Reel',
+    },
+    softwares: [
+      { name: 'CapCut', icon: 'capcut' },
+      { name: 'Premiere Pro', icon: 'premiere-pro' },
+    ],
+    tags: ['Product Reel', 'Healing', 'Wellness', 'Jewelry'],
+  },
+  {
+    id: 'vid-9',
+    index: '09',
+    title: 'Pukhraj Splendor',
+    titleLine1: 'Royal',
+    highlightWord: 'SPLENDOR',
+    titleLine2: 'Handcrafted Gold.',
+    category: 'Brand Film',
+    duration: '00:34',
+    videoUrl:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790581843/Pukhraj_1_qjhdaj.mp4',
+    poster:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790581843/Pukhraj_1_qjhdaj.webp',
+    description:
+      'Crisp motion framing, rhythmic sound sync, and pristine gem faceting.',
+    projectInfo: {
+      software: {
+        name: 'After Effects',
+        icon: 'after-effects',
+      },
+      category: 'Brand Film',
+    },
+    softwares: [
+      { name: 'After Effects', icon: 'after-effects' },
+      { name: 'Premiere Pro', icon: 'premiere-pro' },
+    ],
+    tags: ['Brand Film', 'Motion', 'Craft', 'Short Form'],
+  },
+  {
+    id: 'vid-10',
+    index: '10',
+    title: 'Amethyst Elegance',
+    titleLine1: 'Spiritual',
+    highlightWord: 'SERENITY',
+    titleLine2: 'Modern Mystic.',
+    category: 'Commercial',
+    duration: '00:41',
+    videoUrl:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790581634/Amethyst_Bracelet_r6d5jh.mp4',
+    poster:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790581634/Amethyst_Bracelet_r6d5jh.webp',
+    description:
+      'Cinematic visual composition with high-energy pacing and emotional resonance.',
+    projectInfo: {
+      software: {
+        name: 'After Effects',
+        icon: 'after-effects',
+      },
+      category: 'Commercial',
+    },
+    softwares: [
+      { name: 'After Effects', icon: 'after-effects' },
+      { name: 'Premiere Pro', icon: 'premiere-pro' },
+      { name: 'CapCut', icon: 'capcut' },
+    ],
+    tags: ['Commercial', 'Jewelry', 'Cinematic', 'Social Media'],
+  },
 ];
 
 export const videoSectionData: VideoSectionData = {

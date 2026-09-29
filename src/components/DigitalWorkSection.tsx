@@ -122,10 +122,8 @@ function MacbookScreen({ project, transitionPhase, onOpenLive }: MacbookScreenPr
   useEffect(() => {
     let animationFrameId: number;
     const speed = 115; // Smooth editorial presentation speed
-    let isVisible = true;
 
     const tick = (now: number) => {
-      if (!isVisible) return;
       const dt = Math.min((now - lastTimeRef.current) / 1000, 0.1);
       lastTimeRef.current = now;
 
@@ -171,32 +169,8 @@ function MacbookScreen({ project, transitionPhase, onOpenLive }: MacbookScreenPr
       animationFrameId = requestAnimationFrame(tick);
     };
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const wasVisible = isVisible;
-          isVisible = entry.isIntersecting;
-          if (isVisible && !wasVisible) {
-            lastTimeRef.current = performance.now();
-            cancelAnimationFrame(animationFrameId);
-            animationFrameId = requestAnimationFrame(tick);
-          } else if (!isVisible) {
-            cancelAnimationFrame(animationFrameId);
-          }
-        });
-      },
-      { threshold: 0.05 }
-    );
-
-    if (cutoutRef.current) {
-      observer.observe(cutoutRef.current);
-    }
-
     animationFrameId = requestAnimationFrame(tick);
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      observer.disconnect();
-    };
+    return () => cancelAnimationFrame(animationFrameId);
   }, []);
 
   // Handle Wheel Scroll inside the MacBook Screen

@@ -33,8 +33,6 @@ const Footer: React.FC = () => {
   // 1. GSAP ScrollTrigger Entrance (Plays ONCE) + Subtle Idle Motion
   // ─────────────────────────────────────────────────────────────────────────────
   useEffect(() => {
-    const idleTweens: gsap.core.Tween[] = [];
-
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -45,65 +43,46 @@ const Footer: React.FC = () => {
         onComplete: () => {
           // Subtle continuous idle motion after entrance completes
           if (mistRef.current) {
-            idleTweens.push(
-              gsap.to(mistRef.current, {
-                x: '+=10',
-                duration: 16,
-                repeat: -1,
-                yoyo: true,
-                ease: 'sine.inOut',
-              })
-            );
+            gsap.to(mistRef.current, {
+              x: '+=10',
+              duration: 16,
+              repeat: -1,
+              yoyo: true,
+              ease: 'sine.inOut',
+            });
           }
 
           if (bgHillRef.current) {
-            idleTweens.push(
-              gsap.to(bgHillRef.current, {
-                y: '+=2.2',
-                duration: 8.5,
-                repeat: -1,
-                yoyo: true,
-                ease: 'sine.inOut',
-              })
-            );
+            gsap.to(bgHillRef.current, {
+              y: '+=2.2',
+              duration: 8.5,
+              repeat: -1,
+              yoyo: true,
+              ease: 'sine.inOut',
+            });
           }
 
           if (fgHillRef.current) {
-            idleTweens.push(
-              gsap.to(fgHillRef.current, {
-                y: '+=1.4',
-                duration: 10.5,
-                repeat: -1,
-                yoyo: true,
-                ease: 'sine.inOut',
-              })
-            );
+            gsap.to(fgHillRef.current, {
+              y: '+=1.4',
+              duration: 10.5,
+              repeat: -1,
+              yoyo: true,
+              ease: 'sine.inOut',
+            });
           }
 
           if (skyRef.current) {
-            idleTweens.push(
-              gsap.to(skyRef.current, {
-                opacity: 0.94,
-                duration: 12,
-                repeat: -1,
-                yoyo: true,
-                ease: 'sine.inOut',
-              })
-            );
+            gsap.to(skyRef.current, {
+              opacity: 0.94,
+              duration: 12,
+              repeat: -1,
+              yoyo: true,
+              ease: 'sine.inOut',
+            });
           }
           // Note: ARPIT AK typography remains strictly STATIC
         },
-      });
-
-      // Pause idle tweens when footer is out of view, resume when in view
-      ScrollTrigger.create({
-        trigger: footerRef.current,
-        start: 'top bottom',
-        end: 'bottom top',
-        onLeave: () => idleTweens.forEach((t) => t.pause()),
-        onEnterBack: () => idleTweens.forEach((t) => t.play()),
-        onEnter: () => idleTweens.forEach((t) => t.play()),
-        onLeaveBack: () => idleTweens.forEach((t) => t.pause()),
       });
 
       // 0.00–0.25s: Upper footer atmosphere begins appearing
@@ -180,10 +159,7 @@ const Footer: React.FC = () => {
       }
     }, footerRef);
 
-    return () => {
-      idleTweens.forEach((t) => t.kill());
-      ctx.revert();
-    };
+    return () => ctx.revert();
   }, []);
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -615,7 +591,7 @@ const Footer: React.FC = () => {
           ref={nameLockupRef}
           className="absolute z-[3] left-1/2 -translate-x-1/2 flex items-center justify-center cursor-default select-none pointer-events-auto"
           style={{
-            bottom: 'clamp(105px, 14vw, 180px)',
+            bottom: 'clamp(85px, 12vw, 180px)',
           }}
         >
           <div
@@ -681,7 +657,7 @@ const Footer: React.FC = () => {
           ref={fgHillRef}
           className="absolute z-[4] bottom-0 left-1/2 -translate-x-1/2 pointer-events-none select-none"
           style={{
-            width: 'clamp(560px, 110vw, 2600px)',
+            width: 'clamp(800px, 125vw, 2600px)',
           }}
         >
           <img

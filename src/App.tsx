@@ -18,16 +18,14 @@ function App() {
 
     (window as any).lenis = lenis;
 
-    let rafId: number;
     function raf(time: number) {
       lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
+      requestAnimationFrame(raf);
     }
 
-    rafId = requestAnimationFrame(raf);
+    requestAnimationFrame(raf);
 
     return () => {
-      cancelAnimationFrame(rafId);
       (window as any).lenis = undefined;
       lenis.destroy();
     };

@@ -1,71 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ExternalLink, RefreshCw, Monitor, Tablet, Smartphone, Sparkles } from 'lucide-react';
+import { X, ExternalLink, RefreshCw, Monitor, Sparkles } from 'lucide-react';
 import { DigitalProject } from '../data/portfolio';
-
-type DeviceMode = 'desktop' | 'tablet' | 'mobile';
-
-interface DeviceConfig {
-  name: string;
-  frameSrc: string;
-  frameAlt: string;
-  aspectClass: string;
-  maxWidthClass: string;
-  cutoutStyle: React.CSSProperties;
-  virtualWidth: number;
-  virtualHeight: number;
-}
-
-const DEVICE_CONFIGS: Record<DeviceMode, DeviceConfig> = {
-  desktop: {
-    name: 'MacBook Pro',
-    frameSrc: '/assets/macbook.png',
-    frameAlt: 'MacBook Frame',
-    aspectClass: 'aspect-[1536/1024]',
-    maxWidthClass: 'max-w-[1060px]',
-    cutoutStyle: {
-      left: '13.80%',
-      top: '4.49%',
-      width: '72.40%',
-      height: '68.94%',
-      borderRadius: '12px 12px 0 0',
-    },
-    virtualWidth: 1280,
-    virtualHeight: 800,
-  },
-  tablet: {
-    name: 'iPad Pro',
-    frameSrc: '/assets/ipad-mockup.png',
-    frameAlt: 'iPad Frame',
-    aspectClass: 'aspect-[1090/900]',
-    maxWidthClass: 'max-w-[780px]',
-    cutoutStyle: {
-      left: '3.94%',
-      top: '5.33%',
-      width: '91.83%',
-      height: '89.56%',
-      borderRadius: '16px',
-    },
-    virtualWidth: 1024,
-    virtualHeight: 825,
-  },
-  mobile: {
-    name: 'iPhone 15',
-    frameSrc: '/assets/iphone-mockup.png',
-    frameAlt: 'iPhone Frame',
-    aspectClass: 'aspect-[427/858]',
-    maxWidthClass: 'max-w-[330px] sm:max-w-[360px]',
-    cutoutStyle: {
-      left: '7.96%',
-      top: '8.97%',
-      width: '83.37%',
-      height: '87.65%',
-      borderRadius: '28px',
-    },
-    virtualWidth: 390,
-    virtualHeight: 825,
-  },
-};
 
 interface LiveWebsiteModalProps {
   project: DigitalProject | null;
@@ -78,49 +14,12 @@ export default function LiveWebsiteModal({
   isOpen,
   onClose,
 }: LiveWebsiteModalProps) {
-  const [deviceMode, setDeviceMode] = useState<DeviceMode>('desktop');
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [iframeKey, setIframeKey] = useState(0);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const screenCutoutRef = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(1);
 
-  const currentConfig = DEVICE_CONFIGS[deviceMode];
   const hasLivePreview = project?.hasLivePreview ?? false;
-
-  // Auto-select mobile frame on physical mobile screen width on open
-  useEffect(() => {
-    if (isOpen) {
-      if (window.innerWidth < 640) {
-        setDeviceMode('mobile');
-      } else {
-        setDeviceMode('desktop');
-      }
-    }
-  }, [isOpen]);
-
-  // Compute responsive scale for embedded iframe whenever cutout or device changes
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const updateScale = () => {
-      if (screenCutoutRef.current) {
-        const width = screenCutoutRef.current.clientWidth;
-        const config = DEVICE_CONFIGS[deviceMode];
-        if (width > 0 && config.virtualWidth > 0) {
-          setScale(width / config.virtualWidth);
-        }
-      }
-    };
-
-    updateScale();
-    const ro = new ResizeObserver(updateScale);
-    if (screenCutoutRef.current) {
-      ro.observe(screenCutoutRef.current);
-    }
-    return () => ro.disconnect();
-  }, [isOpen, deviceMode]);
 
   // Reset states when project changes or modal opens
   useEffect(() => {
@@ -209,7 +108,7 @@ export default function LiveWebsiteModal({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.94, y: 20 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="relative z-10 w-full max-w-[1320px] max-h-[96vh] mx-3 sm:mx-8 flex flex-col items-center bg-[#FAF6F0] rounded-[24px] sm:rounded-[28px] border border-[#D4A94E]/40 shadow-2xl shadow-black/50 overflow-hidden"
+          className="relative z-10 w-full max-w-[1320px] max-h-[96vh] mx-4 sm:mx-8 flex flex-col items-center bg-[#FAF6F0] rounded-[28px] border border-[#D4A94E]/40 shadow-2xl shadow-black/50 overflow-hidden"
           style={{
             backgroundImage: `radial-gradient(ellipse at 50% 0%, rgba(246, 215, 178, 0.25) 0%, rgba(250, 246, 240, 0.95) 70%)`,
           }}
@@ -221,89 +120,38 @@ export default function LiveWebsiteModal({
           />
 
           {/* Top Bar / Header */}
-          <div className="w-full px-4 sm:px-8 py-3 sm:py-4 border-b border-[#D4A94E]/25 flex flex-wrap items-center justify-between gap-3 relative z-10 bg-[#FAF6F0]/90 backdrop-blur-sm">
+          <div className="w-full px-6 sm:px-8 py-4 border-b border-[#D4A94E]/25 flex items-center justify-between relative z-10 bg-[#FAF6F0]/90 backdrop-blur-sm">
             {/* Project Title & Category */}
-            <div className="flex items-center gap-3">
-              <div className="w-8 sm:w-9 h-8 sm:h-9 rounded-full bg-[#7A1C28]/10 border border-[#7A1C28]/25 flex items-center justify-center text-[#7A1C28] shrink-0">
-                {deviceMode === 'desktop' ? (
-                  <Monitor className="w-4 h-4" />
-                ) : deviceMode === 'tablet' ? (
-                  <Tablet className="w-4 h-4" />
-                ) : (
-                  <Smartphone className="w-4 h-4" />
-                )}
+            <div className="flex items-center gap-4">
+              <div className="w-9 h-9 rounded-full bg-[#7A1C28]/10 border border-[#7A1C28]/25 flex items-center justify-center text-[#7A1C28]">
+                <Monitor className="w-4 h-4" />
               </div>
-              <div className="min-w-0">
+              <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="font-playfair font-bold text-[16px] sm:text-[19px] text-charcoal-900 leading-tight truncate">
+                  <h3 className="font-playfair font-bold text-[18px] sm:text-[20px] text-charcoal-900 leading-tight">
                     {project.title}
                   </h3>
-                  <span className="text-[9px] sm:text-[10px] font-sora font-semibold px-2 py-0.5 rounded-full bg-[#D4A94E]/15 text-[#9A7209] border border-[#D4A94E]/30 uppercase tracking-wider shrink-0">
+                  <span className="text-[10px] font-sora font-semibold px-2 py-0.5 rounded-full bg-[#D4A94E]/15 text-[#9A7209] border border-[#D4A94E]/30 uppercase tracking-wider">
                     {project.type.toUpperCase()}
                   </span>
                 </div>
-                <p className="text-[11px] font-sora text-charcoal-500 truncate max-w-[200px] sm:max-w-[320px]">
+                <p className="text-[11px] sm:text-[12px] font-sora text-charcoal-500 truncate max-w-[280px] sm:max-w-[450px]">
                   {project.categoryLabel}
                 </p>
               </div>
             </div>
 
-            {/* Device Switcher Controls (Desktop / Tablet / Mobile) */}
-            <div className="flex items-center p-1 bg-cream-200/90 rounded-full border border-[#D4A94E]/30 shadow-inner order-last sm:order-none mx-auto sm:mx-0">
-              <button
-                type="button"
-                onClick={() => setDeviceMode('desktop')}
-                className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-sora font-semibold transition-all cursor-pointer ${
-                  deviceMode === 'desktop'
-                    ? 'bg-[#7A1C28] text-white shadow-sm'
-                    : 'text-charcoal-700 hover:text-charcoal-900 hover:bg-cream-100/60'
-                }`}
-                title="Desktop View (MacBook)"
-              >
-                <Monitor className="w-3.5 h-3.5" />
-                <span className="hidden xs:inline">Desktop</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setDeviceMode('tablet')}
-                className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-sora font-semibold transition-all cursor-pointer ${
-                  deviceMode === 'tablet'
-                    ? 'bg-[#7A1C28] text-white shadow-sm'
-                    : 'text-charcoal-700 hover:text-charcoal-900 hover:bg-cream-100/60'
-                }`}
-                title="Tablet View (iPad)"
-              >
-                <Tablet className="w-3.5 h-3.5" />
-                <span className="hidden xs:inline">Tablet</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setDeviceMode('mobile')}
-                className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-sora font-semibold transition-all cursor-pointer ${
-                  deviceMode === 'mobile'
-                    ? 'bg-[#7A1C28] text-white shadow-sm'
-                    : 'text-charcoal-700 hover:text-charcoal-900 hover:bg-cream-100/60'
-                }`}
-                title="Mobile View (iPhone)"
-              >
-                <Smartphone className="w-3.5 h-3.5" />
-                <span className="hidden xs:inline">Mobile</span>
-              </button>
-            </div>
-
             {/* Actions: Direct Link, Reload, Close */}
-            <div className="flex items-center gap-2 sm:gap-2.5">
+            <div className="flex items-center gap-2.5 sm:gap-3">
               {project.url && (
                 <a
                   href={project.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 rounded-full bg-[#7A1C28] hover:bg-[#63141F] text-white border border-[#7A1C28]/40 text-[11px] sm:text-[12px] font-sora font-medium transition-all shadow-sm"
+                  className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#7A1C28] hover:bg-[#63141F] text-white border border-[#7A1C28]/40 text-[12px] font-sora font-medium transition-all shadow-sm"
                   title="Open live site in new tab"
                 >
-                  <span>Launch</span>
+                  <span>Launch Live</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               )}
@@ -311,66 +159,59 @@ export default function LiveWebsiteModal({
               {hasLivePreview && project.url && (
                 <button
                   onClick={handleReload}
-                  className="p-1.5 sm:p-2 rounded-full bg-cream-50 hover:bg-cream-200 text-charcoal-700 border border-[#D4A94E]/30 transition-all cursor-pointer"
+                  className="p-2 rounded-full bg-cream-50 hover:bg-cream-200 text-charcoal-700 border border-[#D4A94E]/30 transition-all cursor-pointer"
                   title="Reload Live View"
                 >
-                  <RefreshCw className={`w-3.5 sm:w-4 h-3.5 sm:h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                  <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
                 </button>
               )}
 
               <button
                 onClick={onClose}
-                className="p-1.5 sm:p-2 rounded-full bg-[#7A1C28]/10 hover:bg-[#7A1C28] text-[#7A1C28] hover:text-white border border-[#7A1C28]/30 transition-all cursor-pointer"
+                className="p-2 rounded-full bg-[#7A1C28]/10 hover:bg-[#7A1C28] text-[#7A1C28] hover:text-white border border-[#7A1C28]/30 transition-all ml-1 cursor-pointer"
                 title="Close (ESC)"
               >
-                <X className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
+                <X className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          {/* Main Modal Body: Scaled Mockup Device Frame containing Live Screen */}
-          <div className="w-full flex-1 p-3 sm:p-6 md:p-8 flex items-center justify-center overflow-y-auto relative z-10 min-h-0">
-            <div
-              className={`relative w-full ${currentConfig.maxWidthClass} ${currentConfig.aspectClass} max-h-[62vh] sm:max-h-[68vh] flex items-center justify-center select-none transition-all duration-300`}
-            >
-              {/* Screen Display Container behind the Mockup Frame Cutout */}
+          {/* Main Modal Body: Scaled-up MacBook Frame containing Live Screen */}
+          <div className="w-full flex-1 p-4 sm:p-6 md:p-8 flex items-center justify-center overflow-y-auto relative z-10">
+            <div className="relative w-full max-w-[1060px] aspect-[1536/1024] flex items-center justify-center select-none">
+              {/* Screen Display Container behind the MacBook Frame Cutout */}
               <div
-                ref={screenCutoutRef}
                 className="absolute overflow-hidden bg-black flex items-center justify-center"
-                style={currentConfig.cutoutStyle}
+                style={{
+                  left: '13.80%',
+                  top: '4.49%',
+                  width: '72.40%',
+                  height: '68.94%',
+                  borderRadius: '12px 12px 0 0',
+                }}
               >
                 {/* 1. Loading State (for live iframe) */}
                 {hasLivePreview && isLoading && (
                   <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#0E0E10] text-cream-100 gap-3">
                     <div className="w-9 h-9 rounded-full border-2 border-[#D4A94E]/30 border-t-[#D4A94E] animate-spin" />
-                    <p className="font-sora text-[11px] sm:text-[12px] text-cream-300 tracking-wider">
-                      Connecting live interface ({currentConfig.name})...
+                    <p className="font-sora text-[12px] text-cream-300 tracking-wider">
+                      Connecting live interface...
                     </p>
                   </div>
                 )}
 
-                {/* 2. CASE: Live Iframe Embeddable with Responsive Virtual Viewport */}
+                {/* 2. CASE: Live Iframe Embeddable */}
                 {hasLivePreview && project.url && !hasError ? (
-                  <div
-                    className="absolute top-0 left-0 origin-top-left pointer-events-auto"
-                    style={{
-                      width: `${currentConfig.virtualWidth}px`,
-                      height: `${currentConfig.virtualHeight}px`,
-                      transform: `scale(${scale})`,
-                      transformOrigin: '0 0',
-                    }}
-                  >
-                    <iframe
-                      key={`${iframeKey}-${deviceMode}`}
-                      ref={iframeRef}
-                      src={project.url}
-                      title={`${project.title} - ${currentConfig.name}`}
-                      onLoad={handleIframeLoad}
-                      onError={handleIframeError}
-                      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"
-                      className="w-full h-full border-0 bg-white"
-                    />
-                  </div>
+                  <iframe
+                    key={iframeKey}
+                    ref={iframeRef}
+                    src={project.url}
+                    title={project.title}
+                    onLoad={handleIframeLoad}
+                    onError={handleIframeError}
+                    sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"
+                    className="w-full h-full border-0 bg-white"
+                  />
                 ) : (
                   /* 3. CASE: High-Res Interactive Scrollable View (Webapp or Restricted Preview) */
                   <div className="w-full h-full overflow-y-auto relative bg-[#12100E] scrollbar-thin scrollbar-thumb-[#D4A94E]/40">
@@ -387,10 +228,10 @@ export default function LiveWebsiteModal({
                           href={project.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="pointer-events-auto px-4 py-2 rounded-full bg-[#7A1C28] hover:bg-[#63141F] text-white text-[11px] font-sora font-semibold shadow-2xl flex items-center gap-1.5 transform hover:scale-105 transition-transform border border-white/20"
+                          className="pointer-events-auto px-5 py-2.5 rounded-full bg-[#7A1C28] hover:bg-[#63141F] text-white text-[12px] font-sora font-semibold shadow-2xl flex items-center gap-2 transform hover:scale-105 transition-transform border border-white/20"
                         >
                           <span>Open Active Web App</span>
-                          <ExternalLink className="w-3 h-3" />
+                          <ExternalLink className="w-3.5 h-3.5" />
                         </a>
                       </div>
                     )}
@@ -398,10 +239,10 @@ export default function LiveWebsiteModal({
                 )}
               </div>
 
-              {/* Hardware PNG Overlay Frame */}
+              {/* Hardware MacBook PNG Overlay Frame */}
               <img
-                src={currentConfig.frameSrc}
-                alt={currentConfig.frameAlt}
+                src="/assets/macbook.png"
+                alt="MacBook Frame"
                 className="w-full h-full object-contain pointer-events-none relative z-20 drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
                 draggable={false}
               />
@@ -409,12 +250,10 @@ export default function LiveWebsiteModal({
           </div>
 
           {/* Bottom Bar Details & Context */}
-          <div className="w-full px-5 sm:px-8 py-3 border-t border-[#D4A94E]/25 flex flex-col sm:flex-row items-center justify-between gap-2.5 text-center sm:text-left relative z-10 bg-[#FAF6F0]/90">
-            <div className="flex items-center gap-2 text-[11px] sm:text-[12px] font-sora text-charcoal-600">
-              <Sparkles className="w-3.5 h-3.5 text-[#B8860B] shrink-0" />
-              <span className="truncate max-w-[340px] sm:max-w-none">
-                {project.description} — <span className="text-[#7A1C28] font-semibold">{currentConfig.name}</span> preview
-              </span>
+          <div className="w-full px-6 sm:px-8 py-3.5 border-t border-[#D4A94E]/25 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left relative z-10 bg-[#FAF6F0]/90">
+            <div className="flex items-center gap-2 text-[12px] font-sora text-charcoal-600">
+              <Sparkles className="w-3.5 h-3.5 text-[#B8860B]" />
+              <span>{project.description}</span>
             </div>
 
             {project.tools && project.tools.length > 0 && (
@@ -422,7 +261,7 @@ export default function LiveWebsiteModal({
                 {project.tools.map((tool, idx) => (
                   <span
                     key={idx}
-                    className="text-[9.5px] sm:text-[10px] font-sora px-2.5 py-0.5 rounded-full bg-[#E5C89C]/20 text-charcoal-700 border border-[#D4A94E]/30"
+                    className="text-[10px] font-sora px-2.5 py-0.5 rounded-full bg-[#E5C89C]/20 text-charcoal-700 border border-[#D4A94E]/30"
                   >
                     {tool}
                   </span>
