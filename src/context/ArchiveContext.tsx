@@ -25,22 +25,10 @@ export const ArchiveProvider: React.FC<{ children: React.ReactNode }> = ({ child
       setActiveCategory(category);
     }
     setIsOpen(true);
-
-    // Lock page scroll & pause Lenis
-    document.body.style.overflow = 'hidden';
-    if ((window as any).lenis) {
-      (window as any).lenis.stop();
-    }
   }, []);
 
   const closeArchive = useCallback(() => {
     setIsOpen(false);
-
-    // Restore page scroll & resume Lenis
-    document.body.style.overflow = '';
-    if ((window as any).lenis) {
-      (window as any).lenis.start();
-    }
 
     // Restore focus to trigger element
     if (triggerElementRef.current && typeof triggerElementRef.current.focus === 'function') {

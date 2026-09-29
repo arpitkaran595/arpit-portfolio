@@ -27,7 +27,6 @@ function MacbookScreen({ project, transitionPhase, onOpenLive }: MacbookScreenPr
   const [isIframeLoaded, setIsIframeLoaded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isUserInteracting, setIsUserInteracting] = useState(false);
-  const [scrollOffset, setScrollOffset] = useState(0);
 
   // References for continuous 60fps auto-scroll engine
   const offsetRef = useRef(0);
@@ -97,7 +96,9 @@ function MacbookScreen({ project, transitionPhase, onOpenLive }: MacbookScreenPr
   // Reset scroll & states when project changes
   useEffect(() => {
     offsetRef.current = 0;
-    setScrollOffset(0);
+    if (stageRef.current) {
+      stageRef.current.style.transform = 'translate3d(0, 0px, 0)';
+    }
     phaseRef.current = 'top-pause';
     pauseTimerRef.current = 0;
     lastTimeRef.current = performance.now();
@@ -121,9 +122,12 @@ function MacbookScreen({ project, transitionPhase, onOpenLive }: MacbookScreenPr
   // Smooth 60fps auto-scroll engine (Calibrated ~115px/s for ~13-14s complete review cycle)
   useEffect(() => {
     let animationFrameId: number;
+    let isIntersecting = false;
     const speed = 115; // Smooth editorial presentation speed
 
     const tick = (now: number) => {
+      if (!isIntersecting) return;
+
       const dt = Math.min((now - lastTimeRef.current) / 1000, 0.1);
       lastTimeRef.current = now;
 
@@ -147,7 +151,9 @@ function MacbookScreen({ project, transitionPhase, onOpenLive }: MacbookScreenPr
             pauseTimerRef.current = 0;
           }
           offsetRef.current = currentOffset;
-          setScrollOffset(currentOffset);
+          if (stageRef.current) {
+            stageRef.current.style.transform = `translate3d(0, ${-currentOffset}px, 0)`;
+          }
         } else if (currentPhase === 'bottom-pause') {
           pauseTimerRef.current += dt;
           if (pauseTimerRef.current >= 1.6) {
@@ -162,15 +168,38 @@ function MacbookScreen({ project, transitionPhase, onOpenLive }: MacbookScreenPr
             pauseTimerRef.current = 0;
           }
           offsetRef.current = currentOffset;
-          setScrollOffset(currentOffset);
+          if (stageRef.current) {
+            stageRef.current.style.transform = `translate3d(0, ${-currentOffset}px, 0)`;
+          }
         }
       }
 
       animationFrameId = requestAnimationFrame(tick);
     };
 
-    animationFrameId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(animationFrameId);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        isIntersecting = Boolean(entry && entry.isIntersecting);
+        if (isIntersecting) {
+          lastTimeRef.current = performance.now();
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = requestAnimationFrame(tick);
+        } else {
+          cancelAnimationFrame(animationFrameId);
+        }
+      },
+      { rootMargin: '200px' }
+    );
+
+    if (cutoutRef.current) {
+      observer.observe(cutoutRef.current);
+    }
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      observer.disconnect();
+    };
   }, []);
 
   // Handle Wheel Scroll inside the MacBook Screen
@@ -186,7 +215,9 @@ function MacbookScreen({ project, transitionPhase, onOpenLive }: MacbookScreenPr
     const delta = e.deltaY;
     const newOffset = Math.max(0, Math.min(maxScroll, offsetRef.current + delta));
     offsetRef.current = newOffset;
-    setScrollOffset(newOffset);
+    if (stageRef.current) {
+      stageRef.current.style.transform = `translate3d(0, ${-newOffset}px, 0)`;
+    }
 
     if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
     resumeTimeoutRef.current = setTimeout(() => {
@@ -271,7 +302,7 @@ function MacbookScreen({ project, transitionPhase, onOpenLive }: MacbookScreenPr
             ref={stageRef}
             className="w-full absolute top-0 left-0 will-change-transform bg-[#0A0A0C]"
             style={{
-              transform: `translate3d(0, ${-scrollOffset}px, 0)`,
+              transform: 'translate3d(0, 0px, 0)',
             }}
           >
             {/* Pristine 1440-wide Tall Screenshot (Always visible underneath iframe) */}

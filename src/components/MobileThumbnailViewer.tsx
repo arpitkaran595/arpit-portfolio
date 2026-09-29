@@ -472,7 +472,7 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
           <div className="relative w-[clamp(280px,86vw,370px)] h-[clamp(158px,48.5vw,208px)] flex items-center justify-center">
             {playlist.map((thumb, idx) => {
               const offset = getWrappedOffset(idx, currentIndex, totalThumbnails);
-              if (Math.abs(offset) > 1.5) return null;
+              if (Math.abs(offset) > 2.2) return null;
 
               const transform = getCardTransform(offset);
               const isCenter = offset === 0;

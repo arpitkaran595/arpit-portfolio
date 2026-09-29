@@ -144,7 +144,7 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
   }, [item, playlist]);
 
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
   const [isScrubbing, setIsScrubbing] = useState(false);
@@ -154,6 +154,9 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
   const [likes, setLikes] = useState<Record<string, { count: number; isLiked: boolean }>>({});
   const [aspectRatioMap, setAspectRatioMap] = useState<Record<string, 'portrait' | 'landscape'>>({});
   const [doubleTapHeart, setDoubleTapHeart] = useState<{ id: string } | null>(null);
+
+  // User audio preference: null = unselected (attempt unmuted), false = explicitly unmuted, true = explicitly muted
+  const userAudioPrefRef = useRef<boolean | null>(null);
 
   // Dedicated Fullscreen State (Portrait & Landscape)
   const [fullscreenVideo, setFullscreenVideo] = useState<{
@@ -182,6 +185,10 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
       setIsScrubbing(false);
       setShowSwipeHint(true);
       setFullscreenVideo(null);
+      // Attempt unmuted playback when opened if user hasn't explicitly set preference to muted
+      if (userAudioPrefRef.current === null) {
+        setIsMuted(false);
+      }
     }
   }, [isOpen, initialIndex]);
 
@@ -298,12 +305,19 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
       if (idx === currentIndex) {
         vid.muted = isMuted;
         if (isPlaying) {
-          vid.play().catch(() => {
-            // Autoplay with sound restricted -> fallback to muted
-            vid.muted = true;
-            setIsMuted(true);
-            vid.play().catch(() => {});
-          });
+          const playPromise = vid.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {
+              // Autoplay with sound restricted by browser policy -> graceful fallback to muted
+              if (!vid.muted) {
+                vid.muted = true;
+                if (userAudioPrefRef.current !== false) {
+                  setIsMuted(true);
+                }
+                vid.play().catch(() => {});
+              }
+            });
+          }
         } else {
           vid.pause();
         }
@@ -372,10 +386,14 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
   const handleToggleMute = (e: React.MouseEvent) => {
     e.stopPropagation();
     const nextMuted = !isMuted;
+    userAudioPrefRef.current = nextMuted;
     setIsMuted(nextMuted);
     const currentVid = videoRefs.current[currentIndex];
     if (currentVid) {
       currentVid.muted = nextMuted;
+      if (!nextMuted && currentVid.paused && isPlaying) {
+        currentVid.play().catch(() => {});
+      }
     }
   };
 
@@ -639,15 +657,18 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
                   {/* ───────────────────────────────────────────────────────────── */}
                   {isLandscape ? (
                     <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
-                      {/* Ambient Dynamic Blurred Video Layer */}
+                      {/* Ambient Blurred Backdrop Layer (Poster Image — single decoder architecture) */}
                       <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
-                        <video
-                          src={video.videoUrl}
-                          playsInline
-                          loop
-                          muted
-                          className="w-full h-full object-cover filter blur-3xl scale-135 opacity-45 brightness-75"
-                        />
+                        {video.poster ? (
+                          <img
+                            src={video.poster}
+                            alt=""
+                            aria-hidden="true"
+                            className="w-full h-full object-cover filter blur-3xl scale-135 opacity-45 brightness-75 select-none"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-black/60" />
+                        )}
                         <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/25 to-black/75" />
                       </div>
 

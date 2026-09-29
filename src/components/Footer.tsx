@@ -34,6 +34,18 @@ const Footer: React.FC = () => {
   // ─────────────────────────────────────────────────────────────────────────────
   useEffect(() => {
     const ctx = gsap.context(() => {
+      const idleTweens: gsap.core.Tween[] = [];
+
+      const footerTrigger = ScrollTrigger.create({
+        trigger: footerRef.current,
+        start: 'top bottom',
+        end: 'bottom top',
+        onEnter: () => idleTweens.forEach((t) => t.play()),
+        onLeave: () => idleTweens.forEach((t) => t.pause()),
+        onEnterBack: () => idleTweens.forEach((t) => t.play()),
+        onLeaveBack: () => idleTweens.forEach((t) => t.pause()),
+      });
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: footerRef.current,
@@ -43,43 +55,56 @@ const Footer: React.FC = () => {
         onComplete: () => {
           // Subtle continuous idle motion after entrance completes
           if (mistRef.current) {
-            gsap.to(mistRef.current, {
-              x: '+=10',
-              duration: 16,
-              repeat: -1,
-              yoyo: true,
-              ease: 'sine.inOut',
-            });
+            idleTweens.push(
+              gsap.to(mistRef.current, {
+                x: '+=10',
+                duration: 16,
+                repeat: -1,
+                yoyo: true,
+                ease: 'sine.inOut',
+              })
+            );
           }
 
           if (bgHillRef.current) {
-            gsap.to(bgHillRef.current, {
-              y: '+=2.2',
-              duration: 8.5,
-              repeat: -1,
-              yoyo: true,
-              ease: 'sine.inOut',
-            });
+            idleTweens.push(
+              gsap.to(bgHillRef.current, {
+                y: '+=2.2',
+                duration: 8.5,
+                repeat: -1,
+                yoyo: true,
+                ease: 'sine.inOut',
+              })
+            );
           }
 
           if (fgHillRef.current) {
-            gsap.to(fgHillRef.current, {
-              y: '+=1.4',
-              duration: 10.5,
-              repeat: -1,
-              yoyo: true,
-              ease: 'sine.inOut',
-            });
+            idleTweens.push(
+              gsap.to(fgHillRef.current, {
+                y: '+=1.4',
+                duration: 10.5,
+                repeat: -1,
+                yoyo: true,
+                ease: 'sine.inOut',
+              })
+            );
           }
 
           if (skyRef.current) {
-            gsap.to(skyRef.current, {
-              opacity: 0.94,
-              duration: 12,
-              repeat: -1,
-              yoyo: true,
-              ease: 'sine.inOut',
-            });
+            idleTweens.push(
+              gsap.to(skyRef.current, {
+                opacity: 0.94,
+                duration: 12,
+                repeat: -1,
+                yoyo: true,
+                ease: 'sine.inOut',
+              })
+            );
+          }
+
+          // If footer has moved out of view before entrance completes, pause immediately
+          if (footerTrigger && !footerTrigger.isActive) {
+            idleTweens.forEach((t) => t.pause());
           }
           // Note: ARPIT AK typography remains strictly STATIC
         },
@@ -591,7 +616,7 @@ const Footer: React.FC = () => {
           ref={nameLockupRef}
           className="absolute z-[3] left-1/2 -translate-x-1/2 flex items-center justify-center cursor-default select-none pointer-events-auto"
           style={{
-            bottom: 'clamp(85px, 12vw, 180px)',
+            bottom: 'clamp(110px, 15vw, 180px)',
           }}
         >
           <div
@@ -657,7 +682,7 @@ const Footer: React.FC = () => {
           ref={fgHillRef}
           className="absolute z-[4] bottom-0 left-1/2 -translate-x-1/2 pointer-events-none select-none"
           style={{
-            width: 'clamp(800px, 125vw, 2600px)',
+            width: 'clamp(540px, 110vw, 2600px)',
           }}
         >
           <img

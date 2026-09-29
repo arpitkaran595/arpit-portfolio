@@ -74,11 +74,32 @@ export const WorkArchiveOverlay: React.FC = () => {
     }
   }, [activeCategory]);
 
-  // Keep body locked while archive overlay is active
+  // Keep body locked while archive overlay is active, with safe restoration on close or unmount
+  const previousOverflowRef = useRef<string>('');
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    previousOverflowRef.current = document.body.style.overflow || '';
+    document.body.style.overflow = 'hidden';
+
+    if ((window as any).lenis?.stop) {
+      (window as any).lenis.stop();
+    }
+
+    return () => {
+      document.body.style.overflow = previousOverflowRef.current === 'hidden' ? '' : (previousOverflowRef.current || '');
+      if ((window as any).lenis?.start) {
+        (window as any).lenis.start();
+      }
+    };
+  }, [isOpen]);
+
+  // Re-ensure scroll lock when nested MediaViewer closes while archive remains open
   useEffect(() => {
     if (isOpen && !selectedMedia) {
       document.body.style.overflow = 'hidden';
-      if ((window as any).lenis) {
+      if ((window as any).lenis?.stop) {
         (window as any).lenis.stop();
       }
     }
@@ -216,18 +237,22 @@ export const WorkArchiveOverlay: React.FC = () => {
     });
   }, []);
 
-  if (!isOpen) return null;
-
   return (
     <>
       <AnimatePresence>
-        <div
-          ref={overlayRef}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Work Archive"
-          className="fixed inset-0 z-[80] flex items-center justify-center p-2 sm:p-4 md:p-6 lg:p-8 select-none"
-        >
+        {isOpen && (
+          <motion.div
+            key="work-archive-overlay"
+            ref={overlayRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Work Archive"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[80] flex items-center justify-center p-2 sm:p-4 md:p-6 lg:p-8 select-none"
+          >
           {/* 
             Subtle Dark Translucent Backdrop
             IMPORTANT: Clicking backdrop DOES NOT close the overlay.
@@ -605,8 +630,9 @@ export const WorkArchiveOverlay: React.FC = () => {
               </AnimatePresence>
             </div>
           </motion.div>
-        </div>
-      </AnimatePresence>
+        </motion.div>
+      )}
+    </AnimatePresence>
 
       {/* Lightbox Modal (Reusing existing MediaViewer component) */}
       <MediaViewer

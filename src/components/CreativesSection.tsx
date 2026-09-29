@@ -174,10 +174,13 @@ const CreativesSection: React.FC = () => {
   // ───────────────────────────────────────────────────────────────────────────
   useEffect(() => {
     let animationFrameId: number;
+    let isIntersecting = false;
     let lastTime = performance.now();
     let dotUpdateThrottle = 0;
 
     const loop = (time: number) => {
+      if (!isIntersecting) return;
+
       const dt = Math.min((time - lastTime) / 1000, 0.05); // cap delta time
       lastTime = time;
 
@@ -234,14 +237,35 @@ const CreativesSection: React.FC = () => {
         const normalizedIndex = Math.floor(
           (((-pos1Ref.current / 280) % 5) + 5) % 5
         );
-        setActiveDot(normalizedIndex);
+        setActiveDot((prev) => (prev !== normalizedIndex ? normalizedIndex : prev));
       }
 
       animationFrameId = requestAnimationFrame(loop);
     };
 
-    animationFrameId = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(animationFrameId);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        isIntersecting = Boolean(entry && entry.isIntersecting);
+        if (isIntersecting) {
+          lastTime = performance.now();
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = requestAnimationFrame(loop);
+        } else {
+          cancelAnimationFrame(animationFrameId);
+        }
+      },
+      { rootMargin: '300px' }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      observer.disconnect();
+    };
   }, [baseSpeed1, baseSpeed2]);
 
   // ───────────────────────────────────────────────────────────────────────────
