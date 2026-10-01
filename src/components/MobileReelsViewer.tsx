@@ -154,6 +154,7 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
   const [likes, setLikes] = useState<Record<string, { count: number; isLiked: boolean }>>({});
   const [aspectRatioMap, setAspectRatioMap] = useState<Record<string, 'portrait' | 'landscape'>>({});
   const [doubleTapHeart, setDoubleTapHeart] = useState<{ id: string } | null>(null);
+  const [videoReadyMap, setVideoReadyMap] = useState<Record<string, boolean>>({});
 
   // User audio preference: null = unselected (attempt unmuted), false = explicitly unmuted, true = explicitly muted
   const userAudioPrefRef = useRef<boolean | null>(null);
@@ -676,17 +677,30 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
                       {/* Foreground Centered 16:9 Video Card */}
                       <div className="relative z-10 w-full px-3 flex flex-col items-center justify-center">
                         <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.85),0_0_0_1px_rgba(255,255,255,0.15)] group bg-black">
+                          {video.poster && (
+                            <img
+                              src={video.poster}
+                              alt=""
+                              aria-hidden="true"
+                              loading="eager"
+                              decoding="async"
+                              className={`absolute inset-0 w-full h-full object-cover select-none pointer-events-none transition-opacity duration-300 z-0 ${
+                                isCurrent && isPlaying && videoReadyMap[video.id] ? 'opacity-0' : 'opacity-100'
+                              }`}
+                            />
+                          )}
                           <video
                             ref={(el) => (videoRefs.current[idx] = el)}
-                            src={isCurrent ? video.videoUrl : undefined}
+                            src={isNearby ? video.videoUrl : undefined}
                             poster={video.poster}
                             playsInline
                             loop
                             muted={isMuted}
-                            preload={isCurrent ? 'auto' : 'none'}
+                            preload={isCurrent ? 'auto' : 'metadata'}
                             onTimeUpdate={isCurrent ? handleTimeUpdate : undefined}
                             onLoadedMetadata={(e) => handleVideoMetadata(video.id, e.currentTarget)}
-                            className="w-full h-full object-contain"
+                            onPlaying={() => setVideoReadyMap((prev) => ({ ...prev, [video.id]: true }))}
+                            className="w-full h-full object-contain relative z-10"
                           />
                         </div>
                       </div>
@@ -701,23 +715,24 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
                           src={video.poster}
                           alt=""
                           aria-hidden="true"
-                          loading="lazy"
+                          loading="eager"
                           decoding="async"
-                          className={`absolute inset-0 w-full h-full object-cover select-none pointer-events-none transition-opacity duration-300 ${
-                            isCurrent && isPlaying ? 'opacity-0' : 'opacity-100'
+                          className={`absolute inset-0 w-full h-full object-cover select-none pointer-events-none transition-opacity duration-300 z-0 ${
+                            isCurrent && isPlaying && videoReadyMap[video.id] ? 'opacity-0' : 'opacity-100'
                           }`}
                         />
                       )}
                       <video
                         ref={(el) => (videoRefs.current[idx] = el)}
-                        src={isCurrent ? video.videoUrl : undefined}
+                        src={isNearby ? video.videoUrl : undefined}
                         poster={video.poster}
                         playsInline
                         loop
                         muted={isMuted}
-                        preload={isCurrent ? 'auto' : 'none'}
+                        preload={isCurrent ? 'auto' : 'metadata'}
                         onTimeUpdate={isCurrent ? handleTimeUpdate : undefined}
                         onLoadedMetadata={(e) => handleVideoMetadata(video.id, e.currentTarget)}
+                        onPlaying={() => setVideoReadyMap((prev) => ({ ...prev, [video.id]: true }))}
                         className="w-full h-full object-cover select-none relative z-10"
                       />
                     </div>

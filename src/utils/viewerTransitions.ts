@@ -14,21 +14,26 @@ export const VIEWER_TRANSITION_EASE = [0.22, 1, 0.36, 1] as const;
 export const viewerSlideVariants = {
   enter: (direction: number) => ({
     x: direction > 0 ? '100%' : direction < 0 ? '-100%' : '0%',
+    scale: 0.92,
     opacity: 0,
   }),
   center: {
     x: '0%',
+    scale: 1,
     opacity: 1,
     transition: {
       x: { duration: VIEWER_TRANSITION_DURATION, ease: VIEWER_TRANSITION_EASE },
+      scale: { duration: VIEWER_TRANSITION_DURATION, ease: VIEWER_TRANSITION_EASE },
       opacity: { duration: 0.26, ease: 'easeOut' },
     },
   },
   exit: (direction: number) => ({
     x: direction > 0 ? '-100%' : direction < 0 ? '100%' : '0%',
+    scale: 0.92,
     opacity: 0,
     transition: {
       x: { duration: VIEWER_TRANSITION_DURATION, ease: VIEWER_TRANSITION_EASE },
+      scale: { duration: VIEWER_TRANSITION_DURATION, ease: VIEWER_TRANSITION_EASE },
       opacity: { duration: 0.22, ease: 'easeIn' },
     },
   }),

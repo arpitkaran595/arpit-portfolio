@@ -13,12 +13,35 @@ export default function ScrollToTop() {
   const prevPathRef = useRef<string>(pathname);
 
   useEffect(() => {
-    const isNavigatingToCaseStudy = pathname.startsWith('/work/');
-    const isNavigatingBackToHome = prevPathRef.current.startsWith('/work/') && pathname === '/';
+    const isReturningToHome =
+      pathname === '/' &&
+      (prevPathRef.current.startsWith('/work/') ||
+        sessionStorage.getItem('came_from_case_study') === 'true');
 
-    // If leaving home to view a case study, save current scroll position
-    if (prevPathRef.current === '/' && isNavigatingToCaseStudy) {
-      sessionStorage.setItem('home_scroll_pos', window.scrollY.toString());
+    if (isReturningToHome) {
+      sessionStorage.removeItem('came_from_case_study');
+      const savedScroll = sessionStorage.getItem('home_scroll_pos');
+      if (savedScroll) {
+        const top = parseInt(savedScroll, 10);
+        const restore = () => {
+          if ((window as any).lenis) {
+            (window as any).lenis.scrollTo(top, { immediate: true });
+          }
+          window.scrollTo({ top, left: 0, behavior: 'instant' });
+        };
+
+        restore();
+        const t1 = setTimeout(restore, 40);
+        const t2 = setTimeout(restore, 120);
+        const t3 = setTimeout(restore, 300);
+
+        prevPathRef.current = pathname;
+        return () => {
+          clearTimeout(t1);
+          clearTimeout(t2);
+          clearTimeout(t3);
+        };
+      }
     }
 
     if (hash) {
@@ -35,22 +58,6 @@ export default function ScrollToTop() {
       }, 100);
       prevPathRef.current = pathname;
       return () => clearTimeout(timer);
-    }
-
-    if (isNavigatingBackToHome) {
-      const savedScroll = sessionStorage.getItem('home_scroll_pos');
-      if (savedScroll) {
-        const top = parseInt(savedScroll, 10);
-        const timer = setTimeout(() => {
-          if ((window as any).lenis) {
-            (window as any).lenis.scrollTo(top, { immediate: true });
-          } else {
-            window.scrollTo({ top, left: 0, behavior: 'instant' });
-          }
-        }, 60);
-        prevPathRef.current = pathname;
-        return () => clearTimeout(timer);
-      }
     }
 
     // Default for fresh route entries

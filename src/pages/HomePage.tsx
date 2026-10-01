@@ -24,6 +24,30 @@ export default function HomePage() {
     document.title = 'ARPIT AK — Creative Designer, Video Editor & Frontend Developer';
   }, []);
 
+  // Continuously persist homepage scroll position so returning from Case Studies restores exact view
+  useEffect(() => {
+    let ticking = false;
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (window.scrollY > 0) {
+            sessionStorage.setItem('home_scroll_pos', window.scrollY.toString());
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      if (window.scrollY > 0) {
+        sessionStorage.setItem('home_scroll_pos', window.scrollY.toString());
+      }
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, []);
+
   const handleLoadingComplete = useCallback(() => {
     setIsLoaded(true);
     sessionStorage.setItem('portfolio_intro_shown', 'true');

@@ -51,6 +51,16 @@ export default function CaseStudyPage() {
     }
   };
 
+  // Navigate back to work with homepage scroll restoration
+  const handleBackToWork = () => {
+    sessionStorage.setItem('came_from_case_study', 'true');
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate('/');
+    }
+  };
+
   // 404 NOT FOUND STATE
   if (!project) {
     return (
@@ -67,13 +77,14 @@ export default function CaseStudyPage() {
 
         {/* Top Minimal Bar */}
         <header className="relative z-20 w-full px-6 py-6 border-b border-[#D4A94E]/25 flex items-center justify-between">
-          <Link
-            to="/#digital-work"
-            className="inline-flex items-center gap-2 font-sora text-[11.5px] font-bold tracking-[0.16em] uppercase text-charcoal-700 hover:text-[#7A1C28] transition-colors"
+          <button
+            type="button"
+            onClick={handleBackToWork}
+            className="inline-flex items-center gap-2 font-sora text-[11.5px] font-bold tracking-[0.16em] uppercase text-charcoal-700 hover:text-[#7A1C28] transition-colors cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>BACK TO WORK</span>
-          </Link>
+          </button>
           <Link to="/" className="flex items-center">
             <span className="font-sora font-semibold tracking-[0.2em] text-charcoal-800 text-base">ARPIT</span>
             <span className="font-sora font-semibold tracking-[0.2em] text-[#9A7209] text-base ml-1.5">AK</span>
@@ -94,12 +105,13 @@ export default function CaseStudyPage() {
           <p className="font-sora text-[14.5px] text-charcoal-600 leading-relaxed mb-8 max-w-[480px]">
             The requested design documentary “{slug}” could not be located in the archive. Explore our active projects below.
           </p>
-          <Link
-            to="/#digital-work"
-            className="px-8 py-3.5 rounded-full bg-[#7A1C28] hover:bg-[#63141F] text-white text-[12.5px] font-sora font-semibold tracking-[0.14em] uppercase transition-all shadow-md hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
+          <button
+            type="button"
+            onClick={handleBackToWork}
+            className="px-8 py-3.5 rounded-full bg-[#7A1C28] hover:bg-[#63141F] text-white text-[12.5px] font-sora font-semibold tracking-[0.14em] uppercase transition-all shadow-md hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
           >
             ← RETURN TO ALL WORK
-          </Link>
+          </button>
         </main>
 
         <Footer />
@@ -153,13 +165,7 @@ export default function CaseStudyPage() {
           <div className="w-full flex items-center justify-between mb-8">
             <button
               type="button"
-              onClick={() => {
-                if (window.history.length > 1) {
-                  navigate(-1);
-                } else {
-                  navigate('/#digital-work');
-                }
-              }}
+              onClick={handleBackToWork}
               className="inline-flex items-center gap-2 font-sora text-[11px] sm:text-[12px] font-bold tracking-[0.16em] uppercase text-charcoal-700 hover:text-[#7A1C28] transition-colors group cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />

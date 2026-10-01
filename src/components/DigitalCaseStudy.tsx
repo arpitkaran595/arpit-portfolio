@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   ExternalLink,
@@ -33,7 +33,17 @@ export default function DigitalCaseStudy({
   onOpenLiveModal,
 }: DigitalCaseStudyProps) {
   const caseStudy = project.caseStudy;
+  const navigate = useNavigate();
   const [copiedHex, setCopiedHex] = useState<string | null>(null);
+
+  const handleBackToWork = () => {
+    sessionStorage.setItem('came_from_case_study', 'true');
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate('/');
+    }
+  };
 
   if (!caseStudy) return null;
 
@@ -544,12 +554,13 @@ export default function DigitalCaseStudy({
           <span className="text-[11px] font-sora font-bold tracking-[0.2em] text-[#9A7209] uppercase">
             CONTINUE DOCUMENTARY ARCHIVE
           </span>
-          <Link
-            to="/#digital-work"
-            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white/80 hover:bg-white border border-[#D4A94E]/40 text-[#7A1C28] font-sora text-[11px] font-semibold tracking-wider uppercase transition-all shadow-2xs hover:shadow-xs"
+          <button
+            type="button"
+            onClick={handleBackToWork}
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white/80 hover:bg-white border border-[#D4A94E]/40 text-[#7A1C28] font-sora text-[11px] font-semibold tracking-wider uppercase transition-all shadow-2xs hover:shadow-xs cursor-pointer"
           >
             ← BACK TO ALL WORK
-          </Link>
+          </button>
           <span className="text-[11px] font-sora font-medium text-charcoal-400">
             PROJECT {project.index} OF 04
           </span>

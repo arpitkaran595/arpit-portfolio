@@ -18,9 +18,9 @@ interface DeviceConfig {
 
 const DEVICE_CONFIGS: Record<DeviceMode, DeviceConfig> = {
   desktop: {
-    name: 'MacBook / Desktop Device',
+    name: 'MacBook / Desktop',
     frameSrc: '/assets/macbook.webp',
-    frameAlt: 'MacBook Frame',
+    frameAlt: 'MacBook Pro Frame',
     aspectClass: 'aspect-[1536/1024]',
     maxWidthClass: 'max-w-[1060px]',
     cutoutStyle: {
@@ -35,15 +35,17 @@ const DEVICE_CONFIGS: Record<DeviceMode, DeviceConfig> = {
   },
   tablet: {
     name: 'Tablet Device',
-    frameSrc: '/assets/ipad-mockup.png',
+    frameSrc: '',
     frameAlt: 'iPad Frame',
     aspectClass: 'aspect-[1090/900]',
     maxWidthClass: 'max-w-[780px]',
     cutoutStyle: {
-      left: '3.94%',
-      top: '5.33%',
-      width: '91.83%',
-      height: '89.56%',
+      left: '14px',
+      top: '14px',
+      right: '14px',
+      bottom: '14px',
+      width: 'calc(100% - 28px)',
+      height: 'calc(100% - 28px)',
       borderRadius: '16px',
     },
     virtualWidth: 1024,
@@ -51,16 +53,18 @@ const DEVICE_CONFIGS: Record<DeviceMode, DeviceConfig> = {
   },
   mobile: {
     name: 'Mobile Device',
-    frameSrc: '/assets/iphone-mockup.png',
+    frameSrc: '',
     frameAlt: 'iPhone Frame',
     aspectClass: 'aspect-[427/858]',
-    maxWidthClass: 'max-w-[330px] sm:max-w-[360px]',
+    maxWidthClass: 'max-w-[320px]',
     cutoutStyle: {
-      left: '7.96%',
-      top: '8.97%',
-      width: '83.37%',
-      height: '87.65%',
-      borderRadius: '28px',
+      left: '12px',
+      top: '12px',
+      right: '12px',
+      bottom: '12px',
+      width: 'calc(100% - 24px)',
+      height: 'calc(100% - 24px)',
+      borderRadius: '32px',
     },
     virtualWidth: 390,
     virtualHeight: 844,
@@ -165,6 +169,14 @@ export default function LiveWebsiteModal({
 
     updateScale();
 
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined' && screenCutoutRef.current) {
+      resizeObserver = new ResizeObserver(() => {
+        updateScale();
+      });
+      resizeObserver.observe(screenCutoutRef.current);
+    }
+
     // Settle calculation after Framer Motion modal scale entrance (450ms)
     const animTimer = setTimeout(updateScale, 450);
 
@@ -180,6 +192,7 @@ export default function LiveWebsiteModal({
       clearTimeout(animTimer);
       clearTimeout(resizeTimer);
       window.removeEventListener('resize', handleResize);
+      if (resizeObserver) resizeObserver.disconnect();
     };
   }, [isOpen, updateScale]);
 
@@ -278,6 +291,9 @@ export default function LiveWebsiteModal({
 
         {/* Modal Window Container */}
         <motion.div
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${project.title} Interactive Preview`}
           initial={{ opacity: 0, scale: 0.94, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.94, y: 20 }}
@@ -325,10 +341,11 @@ export default function LiveWebsiteModal({
                     ? 'bg-[#7A1C28] text-white shadow-sm'
                     : 'text-charcoal-700 hover:text-charcoal-900 hover:bg-cream-100/60'
                 }`}
-                title="Desktop View (MacBook / Desktop 1280x800)"
+                title="Desktop / MacBook View (1280x800)"
               >
                 <Monitor className="w-3.5 h-3.5" />
-                <span className="hidden md:inline">Desktop</span>
+                <span className="hidden lg:inline">Desktop / MacBook</span>
+                <span className="hidden md:inline lg:hidden">Desktop</span>
               </button>
 
               <button
@@ -401,18 +418,20 @@ export default function LiveWebsiteModal({
             <div
               className={`relative ${
                 deviceMode === 'mobile'
-                  ? 'h-full max-h-[min(64vh,620px)] w-auto aspect-[427/858] max-w-[min(90vw,330px)]'
+                  ? 'w-[min(82vw,320px,33.5vh)] aspect-[427/858]'
                   : deviceMode === 'tablet'
-                  ? 'w-full max-w-[780px] aspect-[1090/900] max-h-[66vh]'
+                  ? 'w-full max-w-[740px] aspect-[1090/900] max-h-[66vh]'
                   : 'w-full max-w-[1060px] aspect-[1536/1024] max-h-[66vh]'
-              } flex items-center justify-center select-none transition-all duration-300 mx-auto`}
+              } flex items-center justify-center select-none transition-all duration-300 mx-auto shrink-0`}
             >
               {/* Screen Display Container behind the Mockup Frame Cutout */}
               <div
                 ref={screenCutoutRef}
                 className="absolute overflow-hidden bg-black flex items-center justify-center"
                 style={{
-                  ...(frameImageErrors[deviceMode] ? FALLBACK_CUTOUT_STYLES[deviceMode] : currentConfig.cutoutStyle),
+                  ...(currentConfig.frameSrc && !frameImageErrors[deviceMode]
+                    ? currentConfig.cutoutStyle
+                    : FALLBACK_CUTOUT_STYLES[deviceMode]),
                   overflow: 'hidden',
                 }}
               >
@@ -480,8 +499,8 @@ export default function LiveWebsiteModal({
                 )}
               </div>
 
-              {/* Hardware Frame: PNG Overlay with graceful CSS Fallback if asset is missing */}
-              {!frameImageErrors[deviceMode] && (
+              {/* Hardware Frame: PNG Overlay if provided (MacBook Pro) */}
+              {currentConfig.frameSrc && !frameImageErrors[deviceMode] && (
                 <img
                   src={currentConfig.frameSrc}
                   alt={currentConfig.frameAlt}
@@ -491,21 +510,24 @@ export default function LiveWebsiteModal({
                 />
               )}
 
-              {/* Fallback CSS Frame if external mockup PNG is absent */}
-              {frameImageErrors[deviceMode] && (
+              {/* High-Fidelity Hardware CSS Frame if frameSrc is empty or asset failed */}
+              {(!currentConfig.frameSrc || frameImageErrors[deviceMode]) && (
                 <div
-                  className="absolute inset-0 pointer-events-none z-20 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)]"
+                  className="absolute inset-0 pointer-events-none z-20 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.65)]"
                   style={{
-                    borderRadius: deviceMode === 'mobile' ? '44px' : deviceMode === 'tablet' ? '28px' : '16px',
+                    borderRadius: deviceMode === 'mobile' ? '44px' : deviceMode === 'tablet' ? '24px' : '16px',
                     border: deviceMode === 'mobile' ? '12px solid #1C1C1E' : deviceMode === 'tablet' ? '14px solid #1C1C1E' : '10px solid #1C1C1E',
-                    boxShadow: 'inset 0 0 0 2px rgba(255,255,255,0.1), 0 20px 40px rgba(0,0,0,0.4)',
+                    boxShadow: 'inset 0 0 0 2px rgba(255,255,255,0.12), 0 20px 40px rgba(0,0,0,0.4)',
                   }}
                 >
-                  {/* Dynamic Island for mobile */}
+                  {/* Dynamic Island and Home Indicator for mobile */}
                   {deviceMode === 'mobile' && (
-                    <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-20 h-5 bg-black rounded-full z-30 flex items-center justify-end pr-2 gap-1 border border-white/10">
-                      <div className="w-2.5 h-2.5 rounded-full bg-[#111] border border-[#222]" />
-                    </div>
+                    <>
+                      <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-20 h-5 bg-black rounded-full z-30 flex items-center justify-end pr-2 gap-1 border border-white/10 shadow-sm">
+                        <div className="w-2.5 h-2.5 rounded-full bg-[#111] border border-[#222]" />
+                      </div>
+                      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-24 h-1 bg-white/40 rounded-full z-30 pointer-events-none" />
+                    </>
                   )}
                   {/* Front camera for tablet */}
                   {deviceMode === 'tablet' && (

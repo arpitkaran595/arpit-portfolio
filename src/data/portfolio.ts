@@ -304,9 +304,10 @@ export const SOFTWARE_ICON_MAP: Record<SoftwareIconType, { name: string; src: st
 // ===== Portfolio Content — Videos & Reels (Section 3) =====
 // Uses actual portrait video files from Content / Assets directory
 
-export const featuredVideos: FeaturedVideo[] = [
+// Legacy bracelet videos preserved for backward reference
+export const legacyBraceletVideos: FeaturedVideo[] = [
   {
-    id: 'vid-1',
+    id: 'legacy-vid-1',
     index: '01',
     title: 'Tiger Eye — The Celeb Bracelet',
     titleLine1: 'Confidence',
@@ -336,7 +337,7 @@ export const featuredVideos: FeaturedVideo[] = [
     tags: ['Product', 'Jewelry', 'Lifestyle', 'Short Form'],
   },
   {
-    id: 'vid-2',
+    id: 'legacy-vid-2',
     index: '02',
     title: 'Rose Quartz Bracelet',
     titleLine1: 'Gentle',
@@ -364,7 +365,7 @@ export const featuredVideos: FeaturedVideo[] = [
     tags: ['Brand Film', 'Wellness', 'Jewelry', 'Cinematic'],
   },
   {
-    id: 'vid-3',
+    id: 'legacy-vid-3',
     index: '03',
     title: 'Pukhraj Edition',
     titleLine1: 'Radiant',
@@ -393,7 +394,7 @@ export const featuredVideos: FeaturedVideo[] = [
     tags: ['Commercial', 'Jewelry', 'E-commerce', 'Social Media'],
   },
   {
-    id: 'vid-4',
+    id: 'legacy-vid-4',
     index: '04',
     title: 'Amethyst Classic',
     titleLine1: 'Pure',
@@ -421,7 +422,7 @@ export const featuredVideos: FeaturedVideo[] = [
     tags: ['Product Reel', 'Jewelry', 'Short Form', 'Motion'],
   },
   {
-    id: 'vid-5',
+    id: 'legacy-vid-5',
     index: '05',
     title: 'Pukhraj Prestige',
     titleLine1: 'Aura',
@@ -447,6 +448,403 @@ export const featuredVideos: FeaturedVideo[] = [
       { name: 'Premiere Pro', icon: 'premiere-pro' },
     ],
     tags: ['Cinematic', 'Vedic', 'Luxury', 'Storytelling'],
+  },
+];
+
+// ===== Portfolio Content — ATA Store Reels (14 Unique Reels) =====
+// Standard portrait 9:16 format with high-performance WebP posters
+export const featuredVideos: FeaturedVideo[] = [
+  {
+    id: 'vid-1',
+    index: '01',
+    title: 'ATA Store — May Drop',
+    titleLine1: 'Streetwear',
+    highlightWord: 'REVOLUTION',
+    titleLine2: 'Summer Drop.',
+    category: 'Product Showcase',
+    duration: '00:30',
+    videoUrl:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790583154/ATA_Store_May_6_kr3pyc.mp4',
+    poster:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790583154/ATA_Store_May_6_kr3pyc.webp',
+    description:
+      'High-energy launch reel highlighting dynamic streetwear silhouettes and crisp urban aesthetic.',
+    projectInfo: {
+      software: {
+        name: 'Premiere Pro',
+        icon: 'premiere-pro',
+      },
+      category: 'Product Showcase',
+    },
+    softwares: [
+      { name: 'Premiere Pro', icon: 'premiere-pro' },
+      { name: 'After Effects', icon: 'after-effects' },
+    ],
+    tags: ['Streetwear', 'E-commerce', 'Launch Reel', 'Dynamic Pacing'],
+  },
+  {
+    id: 'vid-2',
+    index: '02',
+    title: 'ATA Store — June Edition (Indian)',
+    titleLine1: 'Desi',
+    highlightWord: 'STREET VIBE',
+    titleLine2: 'Regional Drop.',
+    category: 'Indian Campaign',
+    duration: '00:35',
+    videoUrl:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790583201/ATA_Store_June_14_Indian_zclsqy.mp4',
+    poster:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790583201/ATA_Store_June_14_Indian_zclsqy.webp',
+    description:
+      'Vibrant cultural crossover reel blending high-fashion streetwear with modern Indian youth aesthetics.',
+    projectInfo: {
+      software: {
+        name: 'Premiere Pro',
+        icon: 'premiere-pro',
+      },
+      category: 'Indian Campaign',
+    },
+    softwares: [
+      { name: 'Premiere Pro', icon: 'premiere-pro' },
+      { name: 'CapCut', icon: 'capcut' },
+    ],
+    tags: ['Indian Edition', 'Youth Culture', 'Commercial', 'Fast Cut'],
+  },
+  {
+    id: 'vid-3',
+    index: '03',
+    title: 'ATA Store — May 9 (Indian)',
+    titleLine1: 'Signature',
+    highlightWord: 'URBAN BEAT',
+    titleLine2: 'Exclusive Cut.',
+    category: 'Commercial',
+    duration: '00:20',
+    videoUrl:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790583102/ATA_Store_May_9_Indian_hszwex.mp4',
+    poster:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790583102/ATA_Store_May_9_Indian_hszwex.webp',
+    description:
+      'Snappy rhythmic cut synced to driving basslines showcasing exclusive apparel details.',
+    projectInfo: {
+      software: {
+        name: 'After Effects',
+        icon: 'after-effects',
+      },
+      category: 'Commercial',
+    },
+    softwares: [
+      { name: 'After Effects', icon: 'after-effects' },
+      { name: 'Premiere Pro', icon: 'premiere-pro' },
+    ],
+    tags: ['Commercial', 'Rhythm Sync', 'Apparel', 'Short Form'],
+  },
+  {
+    id: 'vid-4',
+    index: '04',
+    title: 'ATA Store — May 27 (Indian)',
+    titleLine1: 'Bold',
+    highlightWord: 'ATTITUDE',
+    titleLine2: 'Peak Drip.',
+    category: 'Product Reel',
+    duration: '00:20',
+    videoUrl:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790583097/ATA_Store_May_27_Indian_f9ypvj.mp4',
+    poster:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790583097/ATA_Store_May_27_Indian_f9ypvj.webp',
+    description:
+      'Punchy motion design and bold typographical accents emphasizing apparel durability and fit.',
+    projectInfo: {
+      software: {
+        name: 'Premiere Pro',
+        icon: 'premiere-pro',
+      },
+      category: 'Product Reel',
+    },
+    softwares: [
+      { name: 'Premiere Pro', icon: 'premiere-pro' },
+      { name: 'After Effects', icon: 'after-effects' },
+    ],
+    tags: ['Product Reel', 'Streetwear', 'Motion Graphics', 'Typography'],
+  },
+  {
+    id: 'vid-5',
+    index: '05',
+    title: 'ATA Store — June 10 (Indian)',
+    titleLine1: 'Modern',
+    highlightWord: 'IDENTITY',
+    titleLine2: 'Urban Classic.',
+    category: 'Brand Film',
+    duration: '00:23',
+    videoUrl:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790583088/ATA_Store_June_10_Indian_ckxhrx.mp4',
+    poster:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790583088/ATA_Store_June_10_Indian_ckxhrx.webp',
+    description:
+      'Polished lifestyle showcase with smooth transitions celebrating street fashion expression.',
+    projectInfo: {
+      software: {
+        name: 'Premiere Pro',
+        icon: 'premiere-pro',
+      },
+      category: 'Brand Film',
+    },
+    softwares: [
+      { name: 'Premiere Pro', icon: 'premiere-pro' },
+      { name: 'CapCut', icon: 'capcut' },
+    ],
+    tags: ['Brand Film', 'Lifestyle', 'Fashion', 'Visual Flow'],
+  },
+  {
+    id: 'vid-6',
+    index: '06',
+    title: 'ATA Store — June 03 (Global)',
+    titleLine1: 'Global',
+    highlightWord: 'SYNDICATE',
+    titleLine2: 'Worldwide Fit.',
+    category: 'Global Campaign',
+    duration: '00:22',
+    videoUrl:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790583053/ATA_Store_June_03_Global_symtr0.mp4',
+    poster:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790583053/ATA_Store_June_03_Global_symtr0.webp',
+    description:
+      'Sleek international commercial cut designed for global social reach and conversion.',
+    projectInfo: {
+      software: {
+        name: 'After Effects',
+        icon: 'after-effects',
+      },
+      category: 'Global Campaign',
+    },
+    softwares: [
+      { name: 'After Effects', icon: 'after-effects' },
+      { name: 'Premiere Pro', icon: 'premiere-pro' },
+    ],
+    tags: ['Global Campaign', 'Commercial', 'International', 'E-commerce'],
+  },
+  {
+    id: 'vid-7',
+    index: '07',
+    title: 'ATA Store — May 27 (Global)',
+    titleLine1: 'Dynamic',
+    highlightWord: 'FLUX',
+    titleLine2: 'Global Standard.',
+    category: 'Promo Reel',
+    duration: '00:15',
+    videoUrl:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790583037/ATA_Store_May_27_Global_gepgat.mp4',
+    poster:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790583037/ATA_Store_May_27_Global_gepgat.webp',
+    description:
+      'Ultra-fast 15-second teaser crafted for maximum retention and immediate click-through.',
+    projectInfo: {
+      software: {
+        name: 'Premiere Pro',
+        icon: 'premiere-pro',
+      },
+      category: 'Promo Reel',
+    },
+    softwares: [
+      { name: 'Premiere Pro', icon: 'premiere-pro' },
+      { name: 'CapCut', icon: 'capcut' },
+    ],
+    tags: ['Promo Reel', 'Short Form', 'High Retention', 'Teaser'],
+  },
+  {
+    id: 'vid-8',
+    index: '08',
+    title: 'ATA Store — May 16 (Indian)',
+    titleLine1: 'Raw',
+    highlightWord: 'ENERGY',
+    titleLine2: 'Expressive Style.',
+    category: 'Indian Campaign',
+    duration: '00:17',
+    videoUrl:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790583002/ATA_Store_May_16_Indian_bwgi0p.mp4',
+    poster:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790583002/ATA_Store_May_16_Indian_bwgi0p.webp',
+    description:
+      'High-contrast framing with snappy percussion sync highlighting youth fashion staples.',
+    projectInfo: {
+      software: {
+        name: 'Premiere Pro',
+        icon: 'premiere-pro',
+      },
+      category: 'Indian Campaign',
+    },
+    softwares: [
+      { name: 'Premiere Pro', icon: 'premiere-pro' },
+      { name: 'After Effects', icon: 'after-effects' },
+    ],
+    tags: ['Indian Campaign', 'Fashion', 'Percussion Sync', 'High Energy'],
+  },
+  {
+    id: 'vid-9',
+    index: '09',
+    title: 'ATA Store — May 7',
+    titleLine1: 'Clean',
+    highlightWord: 'AESTHETIC',
+    titleLine2: 'Essential Drop.',
+    category: 'Product Showcase',
+    duration: '00:16',
+    videoUrl:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790582958/ATA_Store_May_7_wttgle.mp4',
+    poster:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790582958/ATA_Store_May_7_wttgle.webp',
+    description:
+      'Crisp minimal edit focusing on fabric texture, stitching details, and silhouette fit.',
+    projectInfo: {
+      software: {
+        name: 'After Effects',
+        icon: 'after-effects',
+      },
+      category: 'Product Showcase',
+    },
+    softwares: [
+      { name: 'After Effects', icon: 'after-effects' },
+      { name: 'Premiere Pro', icon: 'premiere-pro' },
+    ],
+    tags: ['Product Showcase', 'Minimal', 'Details', 'Apparel'],
+  },
+  {
+    id: 'vid-10',
+    index: '10',
+    title: 'ATA Store — May 9 (Global)',
+    titleLine1: 'Infinite',
+    highlightWord: 'MOTION',
+    titleLine2: 'World Collection.',
+    category: 'Global Campaign',
+    duration: '00:15',
+    videoUrl:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790582955/ATA_Store_May_9_Global_kspabr.mp4',
+    poster:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790582955/ATA_Store_May_9_Global_kspabr.webp',
+    description:
+      'Rapid velocity transitions engineered for algorithm favorability and viral engagement.',
+    projectInfo: {
+      software: {
+        name: 'CapCut',
+        icon: 'capcut',
+      },
+      category: 'Global Campaign',
+    },
+    softwares: [
+      { name: 'CapCut', icon: 'capcut' },
+      { name: 'Premiere Pro', icon: 'premiere-pro' },
+    ],
+    tags: ['Global Campaign', 'Velocity Edit', 'Viral Format', 'Retention'],
+  },
+  {
+    id: 'vid-11',
+    index: '11',
+    title: 'ATA Store — May 6 (Drop II)',
+    titleLine1: 'Next',
+    highlightWord: 'EVOLUTION',
+    titleLine2: 'Drop Two.',
+    category: 'Commercial',
+    duration: '00:16',
+    videoUrl:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790582914/ATA_Store_May_6_-2nd_reel_quootx.mp4',
+    poster:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790582914/ATA_Store_May_6_-2nd_reel_quootx.webp',
+    description:
+      'Secondary teaser cut with alternate angles and quick-cut pacing for launch momentum.',
+    projectInfo: {
+      software: {
+        name: 'Premiere Pro',
+        icon: 'premiere-pro',
+      },
+      category: 'Commercial',
+    },
+    softwares: [
+      { name: 'Premiere Pro', icon: 'premiere-pro' },
+      { name: 'After Effects', icon: 'after-effects' },
+    ],
+    tags: ['Commercial', 'Teaser', 'Streetwear', 'Drop Series'],
+  },
+  {
+    id: 'vid-12',
+    index: '12',
+    title: 'ATA Store — June 07 (Indian)',
+    titleLine1: 'Prime',
+    highlightWord: 'SELECT',
+    titleLine2: 'Summer Edition.',
+    category: 'Indian Campaign',
+    duration: '00:20',
+    videoUrl:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790582875/ATA_Store_June_07_Indian_tvssr1.mp4',
+    poster:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790582875/ATA_Store_June_07_Indian_tvssr1.webp',
+    description:
+      'Sun-drenched grading paired with modern streetwear styling tailored for Indian markets.',
+    projectInfo: {
+      software: {
+        name: 'Premiere Pro',
+        icon: 'premiere-pro',
+      },
+      category: 'Indian Campaign',
+    },
+    softwares: [
+      { name: 'Premiere Pro', icon: 'premiere-pro' },
+      { name: 'CapCut', icon: 'capcut' },
+    ],
+    tags: ['Indian Campaign', 'Color Grade', 'Streetwear', 'Summer'],
+  },
+  {
+    id: 'vid-13',
+    index: '13',
+    title: 'ATA Store — June 04 (Global)',
+    titleLine1: 'Global',
+    highlightWord: 'ESSENCE',
+    titleLine2: 'Pure Street.',
+    category: 'Global Campaign',
+    duration: '00:16',
+    videoUrl:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790582868/ATA_Store_June_04_Global_sf9zdj.mp4',
+    poster:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790582868/ATA_Store_June_04_Global_sf9zdj.webp',
+    description:
+      'Stripped-back editorial pacing highlighting minimalist aesthetics and premium tailoring.',
+    projectInfo: {
+      software: {
+        name: 'After Effects',
+        icon: 'after-effects',
+      },
+      category: 'Global Campaign',
+    },
+    softwares: [
+      { name: 'After Effects', icon: 'after-effects' },
+      { name: 'Premiere Pro', icon: 'premiere-pro' },
+    ],
+    tags: ['Global Campaign', 'Minimalist', 'Editorial', 'Short Form'],
+  },
+  {
+    id: 'vid-14',
+    index: '14',
+    title: 'ATA Store — June 05 (Global)',
+    titleLine1: 'Final',
+    highlightWord: 'IMPACT',
+    titleLine2: 'Core Release.',
+    category: 'Promo Reel',
+    duration: '00:14',
+    videoUrl:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790582861/ATA_Store_June_05_Global_xlbc8i.mp4',
+    poster:
+      'https://res.cloudinary.com/dtxdirayo/video/upload/v1790582861/ATA_Store_June_05_Global_xlbc8i.webp',
+    description:
+      'High-speed conversion closer with decisive CTA framing and rhythmic motion accents.',
+    projectInfo: {
+      software: {
+        name: 'Premiere Pro',
+        icon: 'premiere-pro',
+      },
+      category: 'Promo Reel',
+    },
+    softwares: [
+      { name: 'Premiere Pro', icon: 'premiere-pro' },
+      { name: 'CapCut', icon: 'capcut' },
+    ],
+    tags: ['Promo Reel', 'Fast Cut', 'High Conversion', 'Street Style'],
   },
 ];
 

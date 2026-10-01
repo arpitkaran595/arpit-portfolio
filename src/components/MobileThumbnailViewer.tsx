@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronUp, ChevronDown, Maximize2, Minimize2 } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Maximize2, Minimize2 } from 'lucide-react';
 import { youtubeThumbnails, YoutubeThumbnail } from '../data/portfolio';
 import { viewerSlideVariants } from '../utils/viewerTransitions';
 
@@ -285,10 +285,10 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
         } else {
           onClose();
         }
-      } else if (e.key === 'ArrowUp') {
+      } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
         e.preventDefault();
         handleNext();
-      } else if (e.key === 'ArrowDown') {
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
         e.preventDefault();
         handlePrevious();
       }
@@ -310,51 +310,32 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
     };
   }, [isOpen, isFullscreen, onClose, handleNext, handlePrevious, exitFullscreen]);
 
-  // Touch swipe support (Swipe UP / LEFT = Next, Swipe DOWN / RIGHT = Previous)
+  // Touch swipe support: Swipe LEFT = Next, Swipe RIGHT = Previous (horizontal model)
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [touchDeltaX, setTouchDeltaX] = useState<number>(0);
-  const [touchStartY, setTouchStartY] = useState<number | null>(null);
-  const [touchDeltaY, setTouchDeltaY] = useState<number>(0);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStartX(e.touches[0].clientX);
     setTouchDeltaX(0);
-    setTouchStartY(e.touches[0].clientY);
-    setTouchDeltaY(0);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (touchStartX !== null) {
       setTouchDeltaX(e.touches[0].clientX - touchStartX);
     }
-    if (touchStartY !== null) {
-      setTouchDeltaY(e.touches[0].clientY - touchStartY);
-    }
   };
 
   const handleTouchEnd = () => {
-    const isHorizontalSwipe = Math.abs(touchDeltaX) > Math.abs(touchDeltaY);
-    if (isHorizontalSwipe) {
-      if (touchDeltaX < -40) {
-        // Swiped LEFT -> Move to NEXT
-        handleNext();
-      } else if (touchDeltaX > 40) {
-        // Swiped RIGHT -> Move to PREVIOUS
-        handlePrevious();
-      }
-    } else {
-      if (touchDeltaY < -40) {
-        // Swiped UP -> Move to NEXT
-        handleNext();
-      } else if (touchDeltaY > 40) {
-        // Swiped DOWN -> Move to PREVIOUS
-        handlePrevious();
-      }
+    if (touchStartX === null) return;
+    if (touchDeltaX < -40) {
+      // Swiped LEFT -> Move to NEXT
+      handleNext();
+    } else if (touchDeltaX > 40) {
+      // Swiped RIGHT -> Move to PREVIOUS
+      handlePrevious();
     }
     setTouchStartX(null);
     setTouchDeltaX(0);
-    setTouchStartY(null);
-    setTouchDeltaY(0);
   };
 
   // Card transform logic for vertical 3-card stack
@@ -497,27 +478,14 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
         </header>
 
         {/* ═══════════════════════════════════════════════════════════════════ */}
-        {/* 3. VERTICAL THUMBNAIL STACK ZONE                                    */}
+        {/* 3. HORIZONTAL THUMBNAIL STAGE ZONE                                  */}
         {/* ═══════════════════════════════════════════════════════════════════ */}
         <main
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          className="relative z-30 w-full flex-1 min-h-[260px] flex flex-col items-center justify-center my-auto overflow-visible touch-none"
+          className="relative z-30 w-full flex-1 min-h-[260px] flex flex-col items-center justify-center my-auto overflow-visible touch-none px-4"
         >
-          {/* NEXT Navigation Pill (Top) */}
-          <button
-            onClick={handleNext}
-            type="button"
-            aria-label="Next Thumbnail"
-            className="flex flex-col items-center gap-0.5 group cursor-pointer pointer-events-auto mb-1 z-40 active:scale-95 transition-transform"
-          >
-            <div className="px-3.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 group-hover:border-white/40 text-[9.5px] font-sora font-semibold tracking-wider text-white/70 group-hover:text-white uppercase transition-all shadow-md">
-              NEXT
-            </div>
-            <ChevronUp className="w-3.5 h-3.5 text-white/60 group-hover:text-white transition-colors -mt-0.5" />
-          </button>
-
           {/* 16:9 Landscape Card Slide Stage */}
           <div className="relative w-[clamp(280px,86vw,370px)] h-[clamp(158px,48.5vw,208px)] flex items-center justify-center overflow-hidden rounded-[16px] sm:rounded-[18px]">
             <AnimatePresence initial={false} custom={direction}>
@@ -570,18 +538,34 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
             </AnimatePresence>
           </div>
 
-          {/* PREVIOUS Navigation Pill (Bottom) */}
-          <button
-            onClick={handlePrevious}
-            type="button"
-            aria-label="Previous Thumbnail"
-            className="flex flex-col items-center gap-0.5 group cursor-pointer pointer-events-auto mt-1 z-40 active:scale-95 transition-transform"
-          >
-            <ChevronDown className="w-3.5 h-3.5 text-white/60 group-hover:text-white transition-colors -mb-0.5" />
-            <div className="px-3.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 group-hover:border-white/40 text-[9.5px] font-sora font-semibold tracking-wider text-white/70 group-hover:text-white uppercase transition-all shadow-md">
-              PREVIOUS
-            </div>
-          </button>
+          {/* Left & Right Circular Navigation Chevron Buttons (Horizontal Model) */}
+          <div className="absolute inset-x-2 sm:inset-x-4 inset-y-0 flex items-center justify-between pointer-events-none z-50">
+            {/* Previous Button (Left) */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePrevious();
+              }}
+              type="button"
+              aria-label="Previous Thumbnail"
+              className="w-10 h-10 rounded-full bg-black/65 backdrop-blur-md border border-white/25 flex items-center justify-center text-white/90 hover:text-white active:scale-85 transition-all shadow-[0_6px_20px_rgba(0,0,0,0.7)] cursor-pointer pointer-events-auto"
+            >
+              <ChevronLeft className="w-5 h-5 -ml-0.5" />
+            </button>
+
+            {/* Next Button (Right) */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleNext();
+              }}
+              type="button"
+              aria-label="Next Thumbnail"
+              className="w-10 h-10 rounded-full bg-black/65 backdrop-blur-md border border-white/25 flex items-center justify-center text-white/90 hover:text-white active:scale-85 transition-all shadow-[0_6px_20px_rgba(0,0,0,0.7)] cursor-pointer pointer-events-auto"
+            >
+              <ChevronRight className="w-5 h-5 -mr-0.5" />
+            </button>
+          </div>
         </main>
 
         {/* ═══════════════════════════════════════════════════════════════════ */}
