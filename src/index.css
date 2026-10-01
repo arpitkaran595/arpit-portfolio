@@ -173,11 +173,21 @@ html.lenis, html.lenis body {
 
 /* ===== Hero Mobile Character Position ===== */
 .hero-character-shell {
-  bottom: calc(-15% - 75px);
+  bottom: calc(-15% - 105px);
 }
 @media (min-width: 768px) {
   .hero-character-shell {
     bottom: -15%;
+  }
+}
+
+/* ===== Hero CTA Position ===== */
+.hero-ui-shell {
+  bottom: clamp(165px, 22vh, 205px);
+}
+@media (min-width: 768px) {
+  .hero-ui-shell {
+    bottom: clamp(255px, 35.5vh, 320px);
   }
 }
 
@@ -190,11 +200,11 @@ html.lenis, html.lenis body {
 
 /* ===== Footer Name Mobile Position ===== */
 .footer-name-lockup {
-  bottom: 42px;
+  bottom: clamp(76px, 18vw, 105px);
 }
 @media (min-width: 640px) {
   .footer-name-lockup {
-    bottom: 60px;
+    bottom: clamp(90px, 14vw, 130px);
   }
 }
 @media (min-width: 768px) {

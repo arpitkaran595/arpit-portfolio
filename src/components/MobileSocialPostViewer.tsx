@@ -186,13 +186,27 @@ export const MobileSocialPostViewer: React.FC<MobileSocialPostViewerProps> = ({
   const activePost = playlist[currentIndex] || playlist[0];
   const activeTheme = useMemo(() => getPostTheme(activePost), [activePost]);
 
-  // Navigation handlers
+  // Transition & Swipe Guards
+  const isTransitioningRef = useRef(false);
+  const wasSwipingRef = useRef(false);
+
+  // Navigation handlers with debounce lock
   const handlePrevious = useCallback(() => {
+    if (isTransitioningRef.current) return;
+    isTransitioningRef.current = true;
     setCurrentIndex((prev) => (prev - 1 + totalPosts) % totalPosts);
+    setTimeout(() => {
+      isTransitioningRef.current = false;
+    }, 280);
   }, [totalPosts]);
 
   const handleNext = useCallback(() => {
+    if (isTransitioningRef.current) return;
+    isTransitioningRef.current = true;
     setCurrentIndex((prev) => (prev + 1) % totalPosts);
+    setTimeout(() => {
+      isTransitioningRef.current = false;
+    }, 280);
   }, [totalPosts]);
 
   // Keyboard navigation & body scroll locking
@@ -227,30 +241,53 @@ export const MobileSocialPostViewer: React.FC<MobileSocialPostViewerProps> = ({
     };
   }, [isOpen, onClose, handlePrevious, handleNext]);
 
-  // Touch swipe support
-  const [touchStartX, setTouchStartX] = useState<number | null>(null);
-  const [touchDeltaX, setTouchDeltaX] = useState<number>(0);
+  // Touch swipe support (both horizontal and vertical swipe gestures)
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+  const touchDeltaX = useRef<number>(0);
+  const touchDeltaY = useRef<number>(0);
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStartX(e.touches[0].clientX);
-    setTouchDeltaX(0);
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+    touchDeltaX.current = 0;
+    touchDeltaY.current = 0;
+    wasSwipingRef.current = false;
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (touchStartX === null) return;
+    if (touchStartX.current === null || touchStartY.current === null) return;
     const currentX = e.touches[0].clientX;
-    setTouchDeltaX(currentX - touchStartX);
+    const currentY = e.touches[0].clientY;
+    touchDeltaX.current = currentX - touchStartX.current;
+    touchDeltaY.current = currentY - touchStartY.current;
+
+    if (Math.abs(touchDeltaX.current) > 10 || Math.abs(touchDeltaY.current) > 10) {
+      wasSwipingRef.current = true;
+    }
   };
 
   const handleTouchEnd = () => {
-    if (touchStartX === null) return;
-    if (touchDeltaX < -45) {
+    if (touchStartX.current === null) return;
+    const dx = touchDeltaX.current;
+    const dy = touchDeltaY.current;
+
+    // Both horizontal swipe and vertical flick navigate
+    if (dx < -40 || dy < -45) {
       handleNext();
-    } else if (touchDeltaX > 45) {
+    } else if (dx > 40 || dy > 45) {
       handlePrevious();
     }
-    setTouchStartX(null);
-    setTouchDeltaX(0);
+
+    touchStartX.current = null;
+    touchStartY.current = null;
+    touchDeltaX.current = 0;
+    touchDeltaY.current = 0;
+
+    // Keep wasSwipingRef true for 200ms to block synthetic click events on shifted cards
+    setTimeout(() => {
+      wasSwipingRef.current = false;
+    }, 200);
   };
 
   // Filmstrip auto-scroll centering
@@ -458,6 +495,7 @@ export const MobileSocialPostViewer: React.FC<MobileSocialPostViewerProps> = ({
                 <motion.div
                   key={post.id}
                   onClick={() => {
+                    if (wasSwipingRef.current) return;
                     if (offset === -1) handlePrevious();
                     if (offset === 1) handleNext();
                   }}

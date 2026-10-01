@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface NavbarProps {
   isLoaded: boolean;
@@ -9,6 +10,8 @@ export default function Navbar({ isLoaded, navRef }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,6 +39,12 @@ export default function Navbar({ isLoaded, navRef }: NavbarProps) {
 
   const scrollToSection = (sectionId: string) => {
     setIsMobileMenuOpen(false);
+
+    if (location.pathname !== '/') {
+      navigate(`/#${sectionId}`);
+      return;
+    }
+
     const target = document.getElementById(sectionId);
     if (target) {
       if ((window as any).lenis) {

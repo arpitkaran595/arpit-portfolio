@@ -18,7 +18,7 @@ interface DeviceConfig {
 
 const DEVICE_CONFIGS: Record<DeviceMode, DeviceConfig> = {
   desktop: {
-    name: 'MacBook Pro',
+    name: 'MacBook / Desktop Device',
     frameSrc: '/assets/macbook.webp',
     frameAlt: 'MacBook Frame',
     aspectClass: 'aspect-[1536/1024]',
@@ -34,7 +34,7 @@ const DEVICE_CONFIGS: Record<DeviceMode, DeviceConfig> = {
     virtualHeight: 800,
   },
   tablet: {
-    name: 'iPad Pro',
+    name: 'Tablet Device',
     frameSrc: '/assets/ipad-mockup.png',
     frameAlt: 'iPad Frame',
     aspectClass: 'aspect-[1090/900]',
@@ -50,7 +50,7 @@ const DEVICE_CONFIGS: Record<DeviceMode, DeviceConfig> = {
     virtualHeight: 768,
   },
   mobile: {
-    name: 'iPhone 15',
+    name: 'Mobile Device',
     frameSrc: '/assets/iphone-mockup.png',
     frameAlt: 'iPhone Frame',
     aspectClass: 'aspect-[427/858]',
@@ -64,6 +64,36 @@ const DEVICE_CONFIGS: Record<DeviceMode, DeviceConfig> = {
     },
     virtualWidth: 390,
     virtualHeight: 844,
+  },
+};
+
+const FALLBACK_CUTOUT_STYLES: Record<DeviceMode, React.CSSProperties> = {
+  desktop: {
+    left: '10px',
+    top: '10px',
+    right: '10px',
+    bottom: '10px',
+    width: 'calc(100% - 20px)',
+    height: 'calc(100% - 20px)',
+    borderRadius: '10px 10px 0 0',
+  },
+  tablet: {
+    left: '14px',
+    top: '14px',
+    right: '14px',
+    bottom: '14px',
+    width: 'calc(100% - 28px)',
+    height: 'calc(100% - 28px)',
+    borderRadius: '16px',
+  },
+  mobile: {
+    left: '12px',
+    top: '12px',
+    right: '12px',
+    bottom: '12px',
+    width: 'calc(100% - 24px)',
+    height: 'calc(100% - 24px)',
+    borderRadius: '32px',
   },
 };
 
@@ -295,10 +325,10 @@ export default function LiveWebsiteModal({
                     ? 'bg-[#7A1C28] text-white shadow-sm'
                     : 'text-charcoal-700 hover:text-charcoal-900 hover:bg-cream-100/60'
                 }`}
-                title="Desktop View (MacBook 1280x800)"
+                title="Desktop View (MacBook / Desktop 1280x800)"
               >
                 <Monitor className="w-3.5 h-3.5" />
-                <span className="hidden md:inline">Mac</span>
+                <span className="hidden md:inline">Desktop</span>
               </button>
 
               <button
@@ -309,10 +339,10 @@ export default function LiveWebsiteModal({
                     ? 'bg-[#7A1C28] text-white shadow-sm'
                     : 'text-charcoal-700 hover:text-charcoal-900 hover:bg-cream-100/60'
                 }`}
-                title="Tablet View (iPad 1024x768)"
+                title="Tablet View (1024x768)"
               >
                 <Tablet className="w-3.5 h-3.5" />
-                <span className="hidden md:inline">iPad</span>
+                <span className="hidden md:inline">Tablet</span>
               </button>
 
               <button
@@ -323,10 +353,10 @@ export default function LiveWebsiteModal({
                     ? 'bg-[#7A1C28] text-white shadow-sm'
                     : 'text-charcoal-700 hover:text-charcoal-900 hover:bg-cream-100/60'
                 }`}
-                title="Mobile View (iPhone 390x844)"
+                title="Mobile View (390x844)"
               >
                 <Smartphone className="w-3.5 h-3.5" />
-                <span className="hidden md:inline">iPhone</span>
+                <span className="hidden md:inline">Mobile</span>
               </button>
             </div>
 
@@ -369,13 +399,22 @@ export default function LiveWebsiteModal({
           {/* Main Modal Body: Scaled Mockup Device Frame containing Live Screen */}
           <div className="w-full flex-1 p-3 sm:p-6 md:p-8 flex items-center justify-center overflow-y-auto relative z-10 min-h-0">
             <div
-              className={`relative w-full ${currentConfig.maxWidthClass} ${currentConfig.aspectClass} max-h-[62vh] sm:max-h-[68vh] flex items-center justify-center select-none transition-all duration-300`}
+              className={`relative ${
+                deviceMode === 'mobile'
+                  ? 'h-full max-h-[min(64vh,620px)] w-auto aspect-[427/858] max-w-[min(90vw,330px)]'
+                  : deviceMode === 'tablet'
+                  ? 'w-full max-w-[780px] aspect-[1090/900] max-h-[66vh]'
+                  : 'w-full max-w-[1060px] aspect-[1536/1024] max-h-[66vh]'
+              } flex items-center justify-center select-none transition-all duration-300 mx-auto`}
             >
               {/* Screen Display Container behind the Mockup Frame Cutout */}
               <div
                 ref={screenCutoutRef}
                 className="absolute overflow-hidden bg-black flex items-center justify-center"
-                style={currentConfig.cutoutStyle}
+                style={{
+                  ...(frameImageErrors[deviceMode] ? FALLBACK_CUTOUT_STYLES[deviceMode] : currentConfig.cutoutStyle),
+                  overflow: 'hidden',
+                }}
               >
                 {/* 1. Loading State (for live iframe) */}
                 {hasLivePreview && isLoading && (
@@ -391,7 +430,7 @@ export default function LiveWebsiteModal({
                 {hasLivePreview && project.url && !hasError ? (
                   <div
                     ref={viewportRef}
-                    className="absolute origin-top-left pointer-events-auto"
+                    className="absolute origin-top-left pointer-events-auto rounded-[inherit] overflow-hidden"
                     style={{
                       width: `${currentConfig.virtualWidth}px`,
                       height: `${currentConfig.virtualHeight}px`,
@@ -399,6 +438,8 @@ export default function LiveWebsiteModal({
                       transformOrigin: '0 0',
                       left: `${offsets.x}px`,
                       top: `${offsets.y}px`,
+                      borderRadius: 'inherit',
+                      overflow: 'hidden',
                     }}
                   >
                     <iframe
@@ -409,12 +450,12 @@ export default function LiveWebsiteModal({
                       onLoad={handleIframeLoad}
                       onError={handleIframeError}
                       sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"
-                      className="w-full h-full border-0 bg-white"
+                      className="w-full h-full border-0 bg-white rounded-[inherit] overflow-hidden"
                     />
                   </div>
                 ) : (
                   /* 3. CASE: High-Res Interactive Scrollable View (Webapp or Restricted Preview) */
-                  <div className="w-full h-full overflow-y-auto relative bg-[#12100E] scrollbar-thin scrollbar-thumb-[#D4A94E]/40">
+                  <div className="w-full h-full overflow-y-auto relative bg-[#12100E] scrollbar-thin scrollbar-thumb-[#D4A94E]/40 rounded-[inherit]">
                     <img
                       src={project.tallPreviewImage || project.previewImage}
                       alt={project.title}

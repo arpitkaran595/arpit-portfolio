@@ -936,8 +936,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
       ═══════════════════════════════════════════ */}
       <div
         ref={uiShellRef}
-        className="absolute inset-x-0 z-[26] pointer-events-none flex justify-center"
-        style={{ bottom: 'clamp(255px, 35.5vh, 320px)' }}
+        className="hero-ui-shell absolute inset-x-0 z-[26] pointer-events-none flex justify-center"
       >
         <div ref={uiDepthRef} className="w-full max-w-[1040px] px-6 md:px-8 will-change-transform">
           <div className="w-full flex flex-col md:flex-row justify-between items-center gap-3 md:gap-0">

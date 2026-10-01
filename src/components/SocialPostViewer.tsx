@@ -73,11 +73,27 @@ const SocialPostViewer: React.FC<SocialPostViewerProps> = ({ isOpen, onClose, it
       }
     };
 
+    const lastWheelTime = { current: 0 };
+    const handleWheel = (e: WheelEvent) => {
+      const now = Date.now();
+      if (now - lastWheelTime.current < 350) return;
+      if (Math.abs(e.deltaY) > 25 || Math.abs(e.deltaX) > 25) {
+        if (e.deltaY > 25 || e.deltaX > 25) {
+          handleNext();
+          lastWheelTime.current = now;
+        } else if (e.deltaY < -25 || e.deltaX < -25) {
+          handlePrevious();
+          lastWheelTime.current = now;
+        }
+      }
+    };
+
     document.body.style.overflow = 'hidden';
     if ((window as any).lenis) {
       (window as any).lenis.stop();
     }
     window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('wheel', handleWheel, { passive: true });
 
     return () => {
       document.body.style.overflow = '';
@@ -85,6 +101,7 @@ const SocialPostViewer: React.FC<SocialPostViewerProps> = ({ isOpen, onClose, it
         (window as any).lenis.start();
       }
       window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('wheel', handleWheel);
     };
   }, [isOpen, onClose, handlePrevious, handleNext]);
 

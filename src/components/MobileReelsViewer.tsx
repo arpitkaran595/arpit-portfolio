@@ -605,11 +605,12 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
         ref={containerRef}
         onScroll={handleScroll}
         onWheel={handleWheel}
-        className="w-full h-full overflow-y-scroll overflow-x-hidden no-scrollbar"
+        className="w-full h-full overflow-y-scroll overflow-x-hidden no-scrollbar touch-pan-y"
         style={{
           scrollSnapType: 'y mandatory',
           WebkitOverflowScrolling: 'touch',
           overscrollBehaviorY: 'contain',
+          touchAction: 'pan-y',
           width: '100vw',
           height: '100dvh',
         }}

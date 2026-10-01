@@ -246,12 +246,19 @@ export default function About() {
         }
 
         // ── 2. CHARACTER ENTERS EARLY & FLUIDLY (0.15s) ──
-        const charTargets = [characterInnerRef.current, characterMobileInnerRef.current].filter(Boolean);
-        if (charTargets.length > 0) {
+        if (characterInnerRef.current) {
           tl.fromTo(
-            charTargets,
+            characterInnerRef.current,
             { opacity: 0, y: 40 },
             { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out' },
+            0.15
+          );
+        }
+        if (characterMobileInnerRef.current) {
+          tl.fromTo(
+            characterMobileInnerRef.current,
+            { opacity: 0, y: 30 },
+            { opacity: 1, y: -8, duration: 0.85, ease: 'power3.out' },
             0.15
           );
         }
@@ -919,24 +926,24 @@ export default function About() {
             </p>
 
             {/* 4. MOBILE-ONLY PORTRAIT, BADGE & SIGNATURE SHOWCASE (Item 4 & 5 on mobile) */}
-            <div className="md:hidden w-full relative flex flex-col items-center my-2 sm:my-3">
+            <div className="md:hidden w-full relative flex flex-col items-center -mt-3 mb-2 sm:my-3">
               {/* Full-Bleed Cloudscape & Character Container: touches both viewport edges (0px to 100vw) */}
               <div
                 className="relative w-[calc(100%+2.5rem)] -mx-5 sm:w-[calc(100%+4rem)] sm:-mx-8 h-[390px] xs:h-[430px] sm:h-[470px] overflow-hidden flex items-end justify-center"
                 style={{
                   maskImage:
-                    'linear-gradient(to bottom, black 0%, black 82%, rgba(0,0,0,0.85) 88%, rgba(0,0,0,0.4) 94%, transparent 100%)',
+                    'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 3%, black 12%, black 82%, rgba(0,0,0,0.85) 88%, rgba(0,0,0,0.4) 94%, transparent 100%)',
                   WebkitMaskImage:
-                    'linear-gradient(to bottom, black 0%, black 82%, rgba(0,0,0,0.85) 88%, rgba(0,0,0,0.4) 94%, transparent 100%)',
+                    'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 3%, black 12%, black 82%, rgba(0,0,0,0.85) 88%, rgba(0,0,0,0.4) 94%, transparent 100%)',
                 }}
               >
                 
                 {/* 1. Ambient Warm Radial Sky Glow */}
                 <div
-                  className="absolute inset-0 pointer-events-none opacity-85"
+                  className="absolute inset-0 pointer-events-none opacity-80"
                   style={{
                     background:
-                      'radial-gradient(circle at 50% 38%, rgba(246, 215, 178, 0.85) 0%, rgba(240, 225, 208, 0.5) 45%, rgba(250, 243, 232, 0.1) 72%, transparent 100%)',
+                      'radial-gradient(circle at 50% 45%, rgba(246, 215, 178, 0.75) 0%, rgba(240, 225, 208, 0.35) 45%, rgba(250, 243, 232, 0.05) 70%, transparent 85%)',
                     filter: 'blur(35px)',
                   }}
                 />
@@ -998,7 +1005,7 @@ export default function About() {
                     decoding="async"
                     className="h-[780px] xs:h-[840px] sm:h-[900px] w-auto max-w-none object-contain object-top drop-shadow-[0_20px_38px_rgba(45,30,20,0.18)] opacity-0 select-none"
                     style={{
-                      transform: 'translateY(36px)',
+                      transform: 'translateY(-8px)',
                       maskImage:
                         'linear-gradient(to bottom, black 0%, black 36%, rgba(0,0,0,0.85) 44%, rgba(0,0,0,0.15) 50%, transparent 56%)',
                       WebkitMaskImage:

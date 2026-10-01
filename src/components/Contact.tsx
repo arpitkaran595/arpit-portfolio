@@ -143,8 +143,11 @@ const Contact: React.FC = () => {
             delay: 0.15,
             ease: 'power3.out',
             scrollTrigger: {
-              trigger: sectionRef.current,
-              start: 'top 75%',
+              trigger: rightColRef.current,
+              start: 'top 85%',
+            },
+            onComplete: () => {
+              gsap.set(rightColRef.current, { clearProps: 'transform,scale' });
             },
           }
         );
@@ -316,7 +319,7 @@ const Contact: React.FC = () => {
     <section
       id="contact"
       ref={sectionRef}
-      className="relative w-full overflow-hidden bg-[#FAF4EC] pt-20 sm:pt-24 lg:pt-20 pb-10 sm:pb-14 lg:pb-12 scroll-mt-16 flex flex-col justify-between"
+      className="relative w-full overflow-hidden bg-[#FAF4EC] pt-24 sm:pt-28 lg:pt-28 pb-10 sm:pb-14 lg:pb-12 scroll-mt-24 flex flex-col justify-between"
       style={{
         background:
           'linear-gradient(180deg, #FAF4EB 0%, #FAF3EA 35%, #F8EFE3 70%, #F5E9D8 100%)',

@@ -15,6 +15,7 @@ import {
 import { getDigitalProjectBySlug, digitalProjects, DigitalProject } from '../data/portfolio';
 import DigitalCaseStudy from '../components/DigitalCaseStudy';
 import LiveWebsiteModal from '../components/LiveWebsiteModal';
+import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 export default function CaseStudyPage() {
@@ -139,64 +140,37 @@ export default function CaseStudyPage() {
       </div>
 
       {/* ─────────────────────────────────────────────────────────────────── */}
-      {/* 1. STICKY EDITORIAL TOP NAVIGATION BAR                              */}
+      {/* 1. GLOBAL UNIFIED NAVBAR                                            */}
       {/* ─────────────────────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-50 w-full bg-[#FAF7F0]/92 backdrop-blur-md border-b border-[#D4A94E]/25 py-3.5 px-4 sm:px-8 shadow-2xs">
-        <div className="w-full max-w-[1340px] mx-auto flex items-center justify-between gap-4">
-          {/* Back Action: Return to homepage #digital-work section */}
-          <Link
-            to="/#digital-work"
-            className="inline-flex items-center gap-2 font-sora text-[11px] sm:text-[12px] font-bold tracking-[0.16em] uppercase text-charcoal-700 hover:text-[#7A1C28] transition-colors group cursor-pointer"
-          >
-            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            <span>BACK TO WORK</span>
-          </Link>
-
-          {/* Center Brand Identity */}
-          <Link to="/" className="flex items-center group">
-            <span className="font-sora font-semibold tracking-[0.2em] text-charcoal-800 text-sm sm:text-base group-hover:text-[#7A1C28] transition-colors">
-              ARPIT
-            </span>
-            <span className="font-sora font-semibold tracking-[0.2em] text-[#9A7209] text-sm sm:text-base ml-1.5">
-              AK
-            </span>
-          </Link>
-
-          {/* Right Header Navigation & Actions */}
-          <div className="flex items-center gap-2.5 sm:gap-4">
-            <span className="hidden sm:inline-block px-3 py-1 rounded-full bg-white/70 border border-[#D4A94E]/35 text-[10px] sm:text-[10.5px] font-sora font-semibold tracking-wider text-[#9A7209] uppercase">
-              ARCHIVE NO. {project.index}
-            </span>
-
-            {project.url && (
-              <a
-                href={project.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/60 hover:bg-white text-charcoal-700 hover:text-[#7A1C28] border border-[#D4A94E]/40 text-[10.5px] font-sora font-medium tracking-wider uppercase transition-all shadow-2xs"
-                title="Open live website"
-              >
-                <span>VISIT SITE</span>
-                <ExternalLink className="w-3 h-3 text-[#9A7209]" />
-              </a>
-            )}
-
-            <Link
-              to="/#contact"
-              className="border border-charcoal-800 rounded-full px-4 sm:px-5 py-1.5 sm:py-2 text-[10.5px] sm:text-[11.5px] tracking-[0.1em] font-sora font-medium text-charcoal-800 hover:bg-charcoal-800 hover:text-white transition-colors flex items-center gap-1.5"
-            >
-              LET'S TALK
-              <span className="text-[12px] leading-none">↗</span>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <Navbar isLoaded={true} />
 
       {/* ─────────────────────────────────────────────────────────────────── */}
       {/* 2. PROJECT HERO SHOWCASE                                            */}
       {/* ─────────────────────────────────────────────────────────────────── */}
-      <section className="relative z-10 w-full pt-12 sm:pt-16 lg:pt-20 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 border-b border-[#D4A94E]/25">
+      <section className="relative z-10 w-full pt-24 sm:pt-28 lg:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 border-b border-[#D4A94E]/25">
         <div className="w-full max-w-[1240px] mx-auto flex flex-col items-center text-center">
+          {/* Back Action: Return to homepage #digital-work section with preserved scroll */}
+          <div className="w-full flex items-center justify-between mb-8">
+            <button
+              type="button"
+              onClick={() => {
+                if (window.history.length > 1) {
+                  navigate(-1);
+                } else {
+                  navigate('/#digital-work');
+                }
+              }}
+              className="inline-flex items-center gap-2 font-sora text-[11px] sm:text-[12px] font-bold tracking-[0.16em] uppercase text-charcoal-700 hover:text-[#7A1C28] transition-colors group cursor-pointer"
+            >
+              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+              <span>BACK TO WORK</span>
+            </button>
+
+            <span className="hidden sm:inline-block px-3 py-1 rounded-full bg-white/70 border border-[#D4A94E]/35 text-[10px] sm:text-[10.5px] font-sora font-semibold tracking-wider text-[#9A7209] uppercase">
+              ARCHIVE NO. {project.index}
+            </span>
+          </div>
+
           {/* Eyebrow badge */}
           <div className="flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/80 border border-[#D4A94E]/40 shadow-xs mb-5">
             <span className="w-2 h-2 rounded-full bg-[#7A1C28] animate-pulse" />
@@ -262,7 +236,7 @@ export default function CaseStudyPage() {
                 className="px-7 sm:px-9 py-3.5 rounded-full bg-[#7A1C28] hover:bg-[#63141F] text-white text-[12px] sm:text-[13px] font-sora font-semibold tracking-[0.12em] uppercase transition-all duration-300 shadow-md shadow-[#7A1C28]/25 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2.5 cursor-pointer"
               >
                 <Play className="w-3.5 h-3.5 text-[#E5C89C] fill-[#E5C89C]" />
-                <span>EXPLORE LIVE PREVIEW</span>
+                <span>LAUNCH INTERACTIVE ENVIRONMENT</span>
               </button>
             ) : project.url ? (
               <a
@@ -340,7 +314,7 @@ export default function CaseStudyPage() {
                   className="absolute bottom-4 right-4 z-20 px-4 py-2 rounded-xl bg-black/80 hover:bg-black/95 text-white border border-[#D4A94E]/50 text-[11.5px] font-sora font-semibold tracking-wider uppercase flex items-center gap-2 cursor-pointer shadow-xl backdrop-blur-md transition-all hover:scale-105"
                 >
                   <Play className="w-3.5 h-3.5 text-[#E5C89C] fill-[#E5C89C]" />
-                  <span>LAUNCH INTERACTIVE MACBOOK ENVIRONMENT</span>
+                  <span>LAUNCH INTERACTIVE ENVIRONMENT</span>
                 </div>
               )}
             </div>
