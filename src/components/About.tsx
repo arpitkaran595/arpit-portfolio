@@ -128,6 +128,7 @@ export default function About() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const isMobile = window.innerWidth < 768;
 
       // ─────────────────────────────────────────────
       // 1. VERY SLOW, ELEGANT ROTATION FOR EXPERIENCE BADGE TEXT
@@ -145,17 +146,6 @@ export default function About() {
         }
       }
 
-      // ─────────────────────────────────────────────
-      // 2. MASTER ENTRANCE TIMELINE (CHARACTER SLIDES UP LAST)
-      // 1. Background atmosphere (0.00s)
-      // 2. Distant clouds (0.18s)
-      // 3. Mid-distance clouds (0.35s)
-      // 4. Foreground clouds & bottom haze (0.65s)
-      // 5. Editorial content (1.10s - 1.95s)
-      // 6. Services (2.05s)
-      // 7. Glass Software panel (2.25s)
-      // 8. Social Links Glass Card (2.42s)
-      // 9. Experience badge (2.58s)
       // ─────────────────────────────────────────────
       // 2. MASTER ENTRANCE TIMELINE (STREAMLINED CINEMATIC MOMENTUM)
       // All elements enter with overlapping fluid timing (< 1.2s total)
@@ -274,12 +264,21 @@ export default function About() {
           0.12
         );
 
-        tl.fromTo(
-          headlineInnerRef.current,
-          { opacity: 0, y: 16, clipPath: 'inset(0 100% 0 0)' },
-          { opacity: 1, y: 0, clipPath: 'inset(0 0% 0 0)', duration: 0.65, ease: 'power2.out' },
-          0.18
-        );
+        if (isMobile) {
+          tl.fromTo(
+            headlineInnerRef.current,
+            { opacity: 0, y: 14 },
+            { opacity: 1, y: 0, duration: 0.55, ease: 'power2.out' },
+            0.18
+          );
+        } else {
+          tl.fromTo(
+            headlineInnerRef.current,
+            { opacity: 0, y: 16, clipPath: 'inset(0 100% 0 0)' },
+            { opacity: 1, y: 0, clipPath: 'inset(0 0% 0 0)', duration: 0.65, ease: 'power2.out' },
+            0.18
+          );
+        }
 
         tl.fromTo(
           bioInnerRef.current,
@@ -420,8 +419,8 @@ export default function About() {
           });
         }
 
-        // Content (Minimal drift)
-        if (contentShellRef.current) {
+        // Content (Minimal drift on desktop, excluded on mobile to ensure rock-solid touch scrolling)
+        if (contentShellRef.current && !isMobile) {
           gsap.to(contentShellRef.current, {
             y: -10 * factor,
             ease: 'none',
@@ -550,7 +549,7 @@ export default function About() {
       {/* ═══════════════════════════════════════════
           Z-0: BACKGROUND / WARM ATMOSPHERIC SKY & AMBIENT GLOWS
       ═══════════════════════════════════════════ */}
-      <div ref={bgAtmosphereShellRef} className="absolute inset-0 pointer-events-none z-[0]">
+      <div ref={bgAtmosphereShellRef} className="hidden md:block absolute inset-0 pointer-events-none z-[0]">
         <div ref={bgDepthRef} className="w-full h-full will-change-transform">
           {/* Warm golden-peach glow behind left editorial content */}
           <div
@@ -575,7 +574,7 @@ export default function About() {
 
       {/* Subtle Paper Texture & Noise */}
       <div
-        className="absolute inset-0 pointer-events-none z-[0] opacity-20 mix-blend-multiply"
+        className="hidden md:block absolute inset-0 pointer-events-none z-[0] opacity-20 mix-blend-multiply"
         style={{
           backgroundImage: 'url(/assets/paper-texture.webp)',
           backgroundRepeat: 'repeat',
@@ -583,7 +582,7 @@ export default function About() {
         }}
       />
       <div
-        className="absolute inset-0 pointer-events-none z-[0] opacity-2 mix-blend-overlay"
+        className="hidden md:block absolute inset-0 pointer-events-none z-[0] opacity-2 mix-blend-overlay"
         style={{
           backgroundImage: 'url(/assets/noise-grain.png)',
           backgroundRepeat: 'repeat',
@@ -634,7 +633,7 @@ export default function About() {
       ═══════════════════════════════════════════ */}
       <div
         ref={cloudHorizonShellRef}
-        className="absolute left-1/2 -translate-x-1/2 pointer-events-none z-[1] flex justify-center items-end will-change-transform overflow-visible"
+        className="hidden md:flex absolute left-1/2 -translate-x-1/2 pointer-events-none z-[1] justify-center items-end will-change-transform overflow-visible"
         style={{
           bottom: '-3%',
           width: 'clamp(1800px, 165vw, 3200px)',
@@ -667,7 +666,7 @@ export default function About() {
       ═══════════════════════════════════════════ */}
       <div
         ref={wholeCloudShellRef}
-        className="absolute left-1/2 -translate-x-1/2 pointer-events-none z-[2] flex justify-center items-end will-change-transform overflow-visible"
+        className="hidden md:flex absolute left-1/2 -translate-x-1/2 pointer-events-none z-[2] justify-center items-end will-change-transform overflow-visible"
         style={{
           bottom: '-4%',
           width: 'clamp(1600px, 150vw, 2800px)',
@@ -790,7 +789,7 @@ export default function About() {
       {/* 2. Wide Foreground Cloud Floor (Overlaps lower character body) */}
       <div
         ref={foregroundCloudShellRef}
-        className="absolute left-1/2 -translate-x-1/2 pointer-events-none z-[4] flex justify-center items-end will-change-transform overflow-visible"
+        className="hidden md:flex absolute left-1/2 -translate-x-1/2 pointer-events-none z-[4] justify-center items-end will-change-transform overflow-visible"
         style={{
           bottom: '-4%',
           width: 'clamp(1500px, 135vw, 2500px)',
@@ -825,7 +824,7 @@ export default function About() {
       ═══════════════════════════════════════════ */}
       <div
         ref={bottomTransitionShellRef}
-        className="absolute bottom-0 inset-x-0 pointer-events-none z-[12] flex flex-col justify-end items-center overflow-visible"
+        className="hidden md:flex absolute bottom-0 inset-x-0 pointer-events-none z-[12] flex-col justify-end items-center overflow-visible"
         style={{
           height: 'clamp(180px, 30vh, 340px)',
         }}
@@ -995,7 +994,7 @@ export default function About() {
                     ref={characterMobileInnerRef}
                     src="/assets/Assets 01 - Main Character.webp"
                     alt="Arpit AK"
-                    loading="lazy"
+                    loading="eager"
                     decoding="async"
                     className="h-[780px] xs:h-[840px] sm:h-[900px] w-auto max-w-none object-contain object-top drop-shadow-[0_20px_38px_rgba(45,30,20,0.18)] opacity-0 select-none"
                     style={{
@@ -1013,7 +1012,7 @@ export default function About() {
                 <img
                   src="/assets/about-clouds.webp"
                   alt=""
-                  loading="lazy"
+                  loading="eager"
                   decoding="async"
                   className="absolute inset-x-0 -bottom-1 z-[4] w-full h-[62%] sm:h-[65%] object-cover object-bottom opacity-95 pointer-events-none select-none"
                   style={{

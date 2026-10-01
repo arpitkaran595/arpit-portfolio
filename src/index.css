@@ -171,6 +171,38 @@ html.lenis, html.lenis body {
   }
 }
 
+/* ===== Hero Mobile Character Position ===== */
+.hero-character-shell {
+  bottom: calc(-15% - 75px);
+}
+@media (min-width: 768px) {
+  .hero-character-shell {
+    bottom: -15%;
+  }
+}
+
+/* ===== Hero Bottom Cloud Stability on Mobile ===== */
+@media (max-width: 767px) {
+  .hero-bottom-cloud-img {
+    filter: none !important;
+  }
+}
+
+/* ===== Footer Name Mobile Position ===== */
+.footer-name-lockup {
+  bottom: 42px;
+}
+@media (min-width: 640px) {
+  .footer-name-lockup {
+    bottom: 60px;
+  }
+}
+@media (min-width: 768px) {
+  .footer-name-lockup {
+    bottom: clamp(110px, 15vw, 180px);
+  }
+}
+
 /* ===== Hide Scrollbar Indicator (Preserves Smooth Scrolling) ===== */
 html, body {
   scrollbar-width: none; /* Firefox */

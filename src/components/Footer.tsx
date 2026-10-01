@@ -618,10 +618,7 @@ const Footer: React.FC = () => {
         {/* LAYER 4: HUGE ARPIT AK TYPOGRAPHY + INTERACTIVE HINDI MORPH (z-[3]) */}
         <div
           ref={nameLockupRef}
-          className="absolute z-[3] left-1/2 -translate-x-1/2 flex items-center justify-center cursor-default select-none pointer-events-auto"
-          style={{
-            bottom: 'clamp(110px, 15vw, 180px)',
-          }}
+          className="footer-name-lockup absolute z-[3] left-1/2 -translate-x-1/2 flex items-center justify-center cursor-default select-none pointer-events-auto"
         >
           <div
             ref={textStageRef}
