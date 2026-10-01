@@ -352,6 +352,7 @@ export default function DigitalCaseStudy({
                   alt={screen.title}
                   className="w-full h-full object-cover object-top filter brightness-[0.99] group-hover:brightness-100 transition-all duration-500"
                   loading="lazy"
+                  decoding="async"
                 />
               </div>
 
@@ -448,6 +449,7 @@ export default function DigitalCaseStudy({
               alt={`${project.title} Full Page Capture`}
               className="w-full h-auto object-top select-none"
               loading="lazy"
+              decoding="async"
             />
           </div>
           <div className="mt-3 px-2 flex items-center justify-between text-[11px] font-sora text-charcoal-500">

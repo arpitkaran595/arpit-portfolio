@@ -61,7 +61,7 @@ export default function CaseStudyPage() {
         />
         <div
           className="absolute inset-0 opacity-[0.04] pointer-events-none mix-blend-overlay"
-          style={{ backgroundImage: 'url(/assets/paper-texture.png)' }}
+          style={{ backgroundImage: 'url(/assets/paper-texture.webp)' }}
         />
 
         {/* Top Minimal Bar */}
@@ -123,14 +123,16 @@ export default function CaseStudyPage() {
       />
       <div
         className="fixed inset-0 opacity-[0.04] pointer-events-none mix-blend-overlay z-0"
-        style={{ backgroundImage: 'url(/assets/paper-texture.png)' }}
+        style={{ backgroundImage: 'url(/assets/paper-texture.webp)' }}
       />
 
       {/* Top subtle golden atmospheric mist */}
       <div className="absolute top-0 inset-x-0 h-44 pointer-events-none overflow-hidden flex justify-center opacity-30 z-0">
         <img
-          src="/assets/atmospheric-mist.png"
+          src="/assets/atmospheric-mist.webp"
           alt=""
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover object-top"
           draggable={false}
         />

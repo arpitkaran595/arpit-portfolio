@@ -32,7 +32,7 @@
     content: '';
     position: fixed;
     inset: 0;
-    background: url('/assets/paper-texture.png') center / cover no-repeat;
+    background: url('/assets/paper-texture.webp') center / cover no-repeat;
     opacity: 0.035;
     pointer-events: none;
     z-index: 10000;
@@ -96,7 +96,6 @@ html.lenis, html.lenis body {
   line-height: 1;
   letter-spacing: 0.03em;
   font-weight: 400;
-  will-change: transform;
 }
 
 .hero-text-solid {

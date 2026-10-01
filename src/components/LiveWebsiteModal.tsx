@@ -19,7 +19,7 @@ interface DeviceConfig {
 const DEVICE_CONFIGS: Record<DeviceMode, DeviceConfig> = {
   desktop: {
     name: 'MacBook Pro',
-    frameSrc: '/assets/macbook.png',
+    frameSrc: '/assets/macbook.webp',
     frameAlt: 'MacBook Frame',
     aspectClass: 'aspect-[1536/1024]',
     maxWidthClass: 'max-w-[1060px]',

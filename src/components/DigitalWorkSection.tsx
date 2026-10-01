@@ -292,6 +292,8 @@ function MacbookScreen({ project, transitionPhase, onOpenLive }: MacbookScreenPr
             <img
               src={project.previewImage}
               alt={project.title}
+              loading="lazy"
+              decoding="async"
               className="max-w-full max-h-full object-contain rounded-md shadow-2xl"
               draggable={false}
             />
@@ -310,6 +312,8 @@ function MacbookScreen({ project, transitionPhase, onOpenLive }: MacbookScreenPr
               ref={imgRef}
               src={project.tallPreviewImage || project.previewImage}
               alt={project.title}
+              loading="lazy"
+              decoding="async"
               onLoad={handleImageLoad}
               className="w-full h-auto block select-none"
               draggable={false}
@@ -513,14 +517,16 @@ export default function DigitalWorkSection() {
       />
       <div
         className="absolute inset-0 opacity-[0.04] pointer-events-none mix-blend-overlay"
-        style={{ backgroundImage: 'url(/assets/paper-texture.png)' }}
+        style={{ backgroundImage: 'url(/assets/paper-texture.webp)' }}
       />
 
       {/* Top subtle golden atmospheric mist */}
       <div className="absolute top-0 inset-x-0 h-36 pointer-events-none overflow-hidden flex justify-center opacity-30">
         <img
-          src="/assets/atmospheric-mist.png"
+          src="/assets/atmospheric-mist.webp"
           alt=""
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover object-top"
           draggable={false}
         />
@@ -650,6 +656,8 @@ export default function DigitalWorkSection() {
                       <img
                         src={prevProject.previewImage}
                         alt={prevProject.title}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover object-top filter brightness-[0.98] group-hover:brightness-100 transition-all duration-300 select-none"
                         draggable={false}
                       />
@@ -710,8 +718,10 @@ export default function DigitalWorkSection() {
 
             {/* Physical MacBook Frame Image (Stationary Asset) */}
             <img
-              src="/assets/macbook.png"
+              src="/assets/macbook.webp"
               alt="MacBook Pro"
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-contain pointer-events-none relative z-30 drop-shadow-[0_20px_40px_rgba(0,0,0,0.16)]"
               draggable={false}
             />
@@ -752,6 +762,8 @@ export default function DigitalWorkSection() {
                       <img
                         src={nextProject.previewImage}
                         alt={nextProject.title}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover object-top filter brightness-[0.98] group-hover:brightness-100 transition-all duration-300 select-none"
                         draggable={false}
                       />
@@ -818,6 +830,8 @@ export default function DigitalWorkSection() {
                     <img
                       src={p.previewImage}
                       alt=""
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover object-top select-none"
                       draggable={false}
                     />

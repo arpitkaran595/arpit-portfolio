@@ -677,12 +677,12 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
                         <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.85),0_0_0_1px_rgba(255,255,255,0.15)] group bg-black">
                           <video
                             ref={(el) => (videoRefs.current[idx] = el)}
-                            src={video.videoUrl}
+                            src={isCurrent ? video.videoUrl : undefined}
                             poster={video.poster}
                             playsInline
                             loop
                             muted={isMuted}
-                            preload={isCurrent ? 'auto' : 'metadata'}
+                            preload={isCurrent ? 'auto' : 'none'}
                             onTimeUpdate={isCurrent ? handleTimeUpdate : undefined}
                             onLoadedMetadata={(e) => handleVideoMetadata(video.id, e.currentTarget)}
                             className="w-full h-full object-contain"
@@ -694,18 +694,32 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
                     /* ───────────────────────────────────────────────────────────── */
                     /* B. PORTRAIT HANDLING: 100% FULL-BLEED NATIVE REEL (NO CORNERS)*/
                     /* ───────────────────────────────────────────────────────────── */
-                    <video
-                      ref={(el) => (videoRefs.current[idx] = el)}
-                      src={video.videoUrl}
-                      poster={video.poster}
-                      playsInline
-                      loop
-                      muted={isMuted}
-                      preload={isCurrent ? 'auto' : 'metadata'}
-                      onTimeUpdate={isCurrent ? handleTimeUpdate : undefined}
-                      onLoadedMetadata={(e) => handleVideoMetadata(video.id, e.currentTarget)}
-                      className="w-full h-full object-cover select-none"
-                    />
+                    <div className="relative w-full h-full flex items-center justify-center overflow-hidden bg-black">
+                      {video.poster && (
+                        <img
+                          src={video.poster}
+                          alt=""
+                          aria-hidden="true"
+                          loading="lazy"
+                          decoding="async"
+                          className={`absolute inset-0 w-full h-full object-cover select-none pointer-events-none transition-opacity duration-300 ${
+                            isCurrent && isPlaying ? 'opacity-0' : 'opacity-100'
+                          }`}
+                        />
+                      )}
+                      <video
+                        ref={(el) => (videoRefs.current[idx] = el)}
+                        src={isCurrent ? video.videoUrl : undefined}
+                        poster={video.poster}
+                        playsInline
+                        loop
+                        muted={isMuted}
+                        preload={isCurrent ? 'auto' : 'none'}
+                        onTimeUpdate={isCurrent ? handleTimeUpdate : undefined}
+                        onLoadedMetadata={(e) => handleVideoMetadata(video.id, e.currentTarget)}
+                        className="w-full h-full object-cover select-none relative z-10"
+                      />
+                    </div>
                   )}
                 </>
               ) : (

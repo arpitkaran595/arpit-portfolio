@@ -55,8 +55,10 @@ export default function SectionTransition({
           {/* 3. Soft atmospheric mist */}
           <div className="absolute -top-32 h-64 inset-x-0 w-full overflow-hidden flex justify-center pointer-events-none">
             <img
-              src="/assets/atmospheric-mist.png"
+              src="/assets/atmospheric-mist.webp"
               alt=""
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover object-center opacity-30 min-w-full"
               style={{
                 filter: 'contrast(1.01) saturate(1.01)',
@@ -92,8 +94,10 @@ export default function SectionTransition({
           {/* 2. Soft atmospheric mist drifting across the boundary */}
           <div className="absolute -top-36 sm:-top-40 md:-top-48 lg:-top-52 h-72 sm:h-80 md:h-96 lg:h-[420px] inset-x-0 w-full overflow-hidden flex justify-center pointer-events-none">
             <img
-              src="/assets/atmospheric-mist.png"
+              src="/assets/atmospheric-mist.webp"
               alt=""
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover object-center opacity-20 min-w-full"
               style={{
                 filter: 'contrast(1.01) saturate(1.02)',
@@ -129,8 +133,10 @@ export default function SectionTransition({
           {/* 2. Soft atmospheric mist drifting across the boundary */}
           <div className="absolute -top-36 sm:-top-40 md:-top-48 lg:-top-52 h-72 sm:h-80 md:h-96 lg:h-[420px] inset-x-0 w-full overflow-hidden flex justify-center pointer-events-none">
             <img
-              src="/assets/atmospheric-mist.png"
+              src="/assets/atmospheric-mist.webp"
               alt=""
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover object-center opacity-25 min-w-full"
               style={{
                 filter: 'contrast(1.01) saturate(1.02)',
@@ -166,8 +172,10 @@ export default function SectionTransition({
           {/* 2. Soft atmospheric mist */}
           <div className="absolute -top-48 sm:-top-56 md:-top-64 h-[420px] sm:h-[500px] md:h-[600px] inset-x-0 w-full overflow-hidden flex justify-center pointer-events-none">
             <img
-              src="/assets/atmospheric-mist.png"
+              src="/assets/atmospheric-mist.webp"
               alt=""
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover object-center opacity-25 min-w-full"
               style={{
                 filter: 'contrast(1.01) saturate(1.02)',
@@ -204,8 +212,10 @@ export default function SectionTransition({
           {/* 2. Soft atmospheric mist */}
           <div className="absolute -top-48 sm:-top-56 md:-top-64 h-[420px] sm:h-[500px] md:h-[600px] inset-x-0 w-full overflow-hidden flex justify-center pointer-events-none">
             <img
-              src="/assets/atmospheric-mist.png"
+              src="/assets/atmospheric-mist.webp"
               alt=""
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover object-center opacity-25 min-w-full"
               style={{
                 filter: 'contrast(1.01) saturate(1.02)',
@@ -241,8 +251,10 @@ export default function SectionTransition({
           {/* 2. Soft atmospheric mist */}
           <div className="absolute -top-44 sm:-top-52 md:-top-60 h-[380px] sm:h-[460px] md:h-[540px] inset-x-0 w-full overflow-hidden flex justify-center pointer-events-none">
             <img
-              src="/assets/atmospheric-mist.png"
+              src="/assets/atmospheric-mist.webp"
               alt=""
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover object-center opacity-25 min-w-full"
               style={{
                 filter: 'contrast(1.01) saturate(1.02)',
@@ -278,8 +290,10 @@ export default function SectionTransition({
           {/* 2. Soft atmospheric mist */}
           <div className="absolute -top-44 sm:-top-52 md:-top-60 h-[380px] sm:h-[460px] md:h-[540px] inset-x-0 w-full overflow-hidden flex justify-center pointer-events-none">
             <img
-              src="/assets/atmospheric-mist.png"
+              src="/assets/atmospheric-mist.webp"
               alt=""
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover object-center opacity-25 min-w-full"
               style={{
                 filter: 'contrast(1.01) saturate(1.02)',

@@ -577,7 +577,7 @@ export default function About() {
       <div
         className="absolute inset-0 pointer-events-none z-[0] opacity-20 mix-blend-multiply"
         style={{
-          backgroundImage: 'url(/assets/paper-texture.png)',
+          backgroundImage: 'url(/assets/paper-texture.webp)',
           backgroundRepeat: 'repeat',
           backgroundSize: '400px 400px',
         }}
@@ -644,8 +644,10 @@ export default function About() {
         <div ref={cloudHorizonDepthRef} className="w-full h-full will-change-transform flex justify-center items-end">
           <img
             ref={cloudHorizonInnerRef}
-            src="/assets/cloud-horizon.png"
+            src="/assets/cloud-horizon.webp"
             alt=""
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover object-bottom opacity-0"
             style={{
               filter: 'contrast(1.02) saturate(1.03)',
@@ -675,8 +677,10 @@ export default function About() {
         <div ref={wholeCloudDepthRef} className="w-full h-full will-change-transform flex justify-center items-end">
           <img
             ref={wholeCloudInnerRef}
-            src="/assets/Whole cloud.png"
+            src="/assets/Whole cloud.webp"
             alt=""
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover object-bottom opacity-0"
             style={{
               filter: 'contrast(1.02) saturate(1.04)',
@@ -707,8 +711,10 @@ export default function About() {
         <div ref={characterDepthRef} className="w-full h-full will-change-transform flex justify-end items-end">
           <img
             ref={characterInnerRef}
-            src="/assets/Assets 01 - Main Character.png"
+            src="/assets/Assets 01 - Main Character.webp"
             alt="Arpit AK"
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-contain object-bottom opacity-0"
             style={{
               maskImage:
@@ -733,8 +739,10 @@ export default function About() {
         <div ref={mistDepthRef} className="w-full h-full will-change-transform">
           <img
             ref={mistInnerRef}
-            src="/assets/atmospheric-mist.png"
+            src="/assets/atmospheric-mist.webp"
             alt=""
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover object-bottom opacity-0"
             style={{
               filter: 'contrast(1.02) saturate(1.02)',
@@ -760,8 +768,10 @@ export default function About() {
         <div ref={cloudRightDepthRef} className="will-change-transform">
           <img
             ref={cloudRightInnerRef}
-            src="/assets/cloud-right.png"
+            src="/assets/cloud-right.webp"
             alt=""
+            loading="lazy"
+            decoding="async"
             className="opacity-0"
             style={{
               width: 'clamp(720px, 75vw, 1350px)',
@@ -790,8 +800,10 @@ export default function About() {
         <div ref={foregroundCloudDepthRef} className="w-full h-full will-change-transform flex justify-center items-end">
           <img
             ref={foregroundCloudInnerRef}
-            src="/assets/about-clouds.png"
+            src="/assets/about-clouds.webp"
             alt=""
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover object-bottom opacity-0"
             style={{
               filter: 'contrast(1.03) brightness(1.0) saturate(1.05)',
@@ -834,8 +846,10 @@ export default function About() {
         {/* 2. Soft atmospheric mist drifting across the lower character & boundary */}
         <div className="absolute inset-x-0 bottom-0 h-[240px] pointer-events-none flex justify-center overflow-visible opacity-35">
           <img
-            src="/assets/atmospheric-mist.png"
+            src="/assets/atmospheric-mist.webp"
             alt=""
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover object-bottom"
             style={{
               filter: 'contrast(1.01) saturate(1.02)',
@@ -852,8 +866,10 @@ export default function About() {
         <div className="absolute inset-x-0 bottom-0 h-[200px] pointer-events-none flex justify-center overflow-visible">
           <img
             ref={bottomTransitionInnerRef}
-            src="/assets/About Cloud top.png"
+            src="/assets/About Cloud top.webp"
             alt=""
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover object-top opacity-0"
             style={{
               filter: 'contrast(1.01) saturate(1.02)',
@@ -928,8 +944,10 @@ export default function About() {
 
                 {/* 2. Full-bleed Background Cloud Bank (Rising high behind shoulders & torso) */}
                 <img
-                  src="/assets/Whole cloud.png"
+                  src="/assets/Whole cloud.webp"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                   className="absolute inset-x-0 bottom-4 sm:bottom-6 w-full h-[90%] sm:h-[94%] object-cover object-bottom opacity-85 pointer-events-none select-none"
                   style={{
                     filter: 'contrast(1.02) saturate(1.04)',
@@ -943,24 +961,30 @@ export default function About() {
 
                 {/* 2b. Left Billowing Cloud Plume (Flanking left side of character) */}
                 <img
-                  src="/assets/cloud-left.png"
+                  src="/assets/cloud-left.webp"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                   className="absolute -left-6 sm:-left-8 bottom-1 w-[62%] h-[82%] object-contain object-bottom opacity-85 pointer-events-none select-none z-[2]"
                   draggable={false}
                 />
 
                 {/* 2c. Right Billowing Cloud Plume (Flanking right side of character) */}
                 <img
-                  src="/assets/cloud-right.png"
+                  src="/assets/cloud-right.webp"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                   className="absolute -right-6 sm:-right-8 bottom-1 w-[60%] h-[78%] object-contain object-bottom opacity-80 pointer-events-none select-none z-[2]"
                   draggable={false}
                 />
 
                 {/* 3. Soft Atmospheric Mist (Depth between background clouds and character) */}
                 <img
-                  src="/assets/atmospheric-mist.png"
+                  src="/assets/atmospheric-mist.webp"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                   className="absolute inset-x-0 bottom-2 w-full h-[65%] object-cover object-bottom opacity-45 pointer-events-none select-none z-[2]"
                   draggable={false}
                 />
@@ -969,8 +993,10 @@ export default function About() {
                 <div className="absolute inset-0 z-[3] flex justify-center pointer-events-none overflow-hidden">
                   <img
                     ref={characterMobileInnerRef}
-                    src="/assets/Assets 01 - Main Character.png"
+                    src="/assets/Assets 01 - Main Character.webp"
                     alt="Arpit AK"
+                    loading="lazy"
+                    decoding="async"
                     className="h-[780px] xs:h-[840px] sm:h-[900px] w-auto max-w-none object-contain object-top drop-shadow-[0_20px_38px_rgba(45,30,20,0.18)] opacity-0 select-none"
                     style={{
                       transform: 'translateY(36px)',
@@ -985,8 +1011,10 @@ export default function About() {
 
                 {/* 5. Full-bleed Foreground Cloud Foam (Submerges waist and lower body) */}
                 <img
-                  src="/assets/about-clouds.png"
+                  src="/assets/about-clouds.webp"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                   className="absolute inset-x-0 -bottom-1 z-[4] w-full h-[62%] sm:h-[65%] object-cover object-bottom opacity-95 pointer-events-none select-none"
                   style={{
                     filter: 'contrast(1.03) saturate(1.04)',

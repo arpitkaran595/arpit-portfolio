@@ -744,8 +744,10 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
         <div ref={horizonCloudDepthRef} className="w-full will-change-transform">
           <img
             ref={horizonCloudInnerRef}
-            src="/assets/cloud-horizon.png"
+            src="/assets/cloud-horizon.webp"
             alt=""
+            loading="eager"
+            decoding="async"
             className="w-full opacity-0 object-cover object-bottom"
             style={{
               height: '52vh',
@@ -765,8 +767,10 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
         <div ref={mistBackDepthRef} className="w-full will-change-transform">
           <img
             ref={mistBackInnerRef}
-            src="/assets/atmospheric-mist.png"
+            src="/assets/atmospheric-mist.webp"
             alt=""
+            loading="eager"
+            decoding="async"
             className="w-full opacity-0 object-cover object-bottom"
             style={{
               height: '75vh',
@@ -786,8 +790,10 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
         <div ref={cloudLeftBackDepthRef} className="will-change-transform">
           <img
             ref={cloudLeftBackInnerRef}
-            src="/assets/cloud-left.png"
+            src="/assets/cloud-left.webp"
             alt=""
+            loading="eager"
+            decoding="async"
             className="opacity-0"
             style={{
               width: 'clamp(520px, 68vw, 1100px)',
@@ -804,8 +810,10 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
         <div ref={cloudRightBackDepthRef} className="will-change-transform">
           <img
             ref={cloudRightBackInnerRef}
-            src="/assets/cloud-right.png"
+            src="/assets/cloud-right.webp"
             alt=""
+            loading="eager"
+            decoding="async"
             className="opacity-0"
             style={{
               width: 'clamp(520px, 68vw, 1100px)',
@@ -827,8 +835,10 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
         <div ref={cloudLeftFrontDepthRef} className="will-change-transform">
           <img
             ref={cloudLeftFrontInnerRef}
-            src="/assets/cloud-left.png"
+            src="/assets/cloud-left.webp"
             alt=""
+            loading="eager"
+            decoding="async"
             className="opacity-0"
             style={{
               width: 'clamp(540px, 68vw, 1120px)',
@@ -845,8 +855,10 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
         <div ref={cloudRightFrontDepthRef} className="will-change-transform">
           <img
             ref={cloudRightFrontInnerRef}
-            src="/assets/cloud-right.png"
+            src="/assets/cloud-right.webp"
             alt=""
+            loading="eager"
+            decoding="async"
             className="opacity-0"
             style={{
               width: 'clamp(540px, 68vw, 1120px)',
@@ -879,8 +891,10 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
         <div ref={characterDepthRef} className="w-full h-full will-change-transform flex justify-center">
           <img
             ref={characterInnerRef}
-            src="/assets/character-cutout.png"
+            src="/assets/character-cutout.webp"
             alt="Arpit AK"
+            loading="eager"
+            decoding="async"
             className="w-full h-full object-contain object-bottom opacity-0"
             style={{
               maskImage: 'linear-gradient(to bottom, black 0%, black 36%, rgba(0,0,0,0.85) 46%, rgba(0,0,0,0.45) 58%, rgba(0,0,0,0.12) 68%, transparent 78%)',
@@ -903,8 +917,10 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
         <div ref={mistFrontDepthRef} className="w-full h-full will-change-transform">
           <img
             ref={mistFrontInnerRef}
-            src="/assets/atmospheric-mist.png"
+            src="/assets/atmospheric-mist.webp"
             alt=""
+            loading="eager"
+            decoding="async"
             className="w-full h-full object-cover object-bottom opacity-0"
             style={{
               filter: 'contrast(1.03) saturate(1.04)',
@@ -1046,8 +1062,10 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
         <div ref={centerCloudDepthRef} className="w-full will-change-transform flex justify-center">
           <img
             ref={centerCloudInnerRef}
-            src="/assets/Whole cloud.png"
+            src="/assets/Whole cloud.webp"
             alt=""
+            loading="eager"
+            decoding="async"
             className="w-full h-auto object-contain object-bottom opacity-0"
             style={{
               filter: 'contrast(1.09) brightness(0.98) saturate(1.06)',

@@ -13,6 +13,7 @@ import {
 } from '../data/portfolio';
 import { useArchive, ArchiveCategory } from '../context/ArchiveContext';
 import MediaViewer from './MediaViewer';
+import { getOptimizedImageUrl } from '../utils/imageOptimization';
 
 // Unified media item interface for MediaViewer
 interface ActiveMediaItem {
@@ -278,7 +279,7 @@ export const WorkArchiveOverlay: React.FC = () => {
             <div
               className="absolute inset-0 pointer-events-none opacity-[0.035] mix-blend-multiply z-0"
               style={{
-                backgroundImage: `url('/assets/paper-texture.png')`,
+                backgroundImage: `url('/assets/paper-texture.webp')`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
               }}
@@ -403,6 +404,7 @@ export const WorkArchiveOverlay: React.FC = () => {
                             src={video.poster || video.videoUrl.replace(/\.mp4$/, '.webp')}
                             alt={video.title}
                             loading="lazy"
+                            decoding="async"
                             className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                           />
 
@@ -452,9 +454,10 @@ export const WorkArchiveOverlay: React.FC = () => {
                         className="group relative aspect-[16/9] rounded-xl sm:rounded-2xl overflow-hidden bg-[#111] border border-[#E5D7C3]/50 hover:border-[#C4943A] shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer flex flex-col justify-end"
                       >
                         <img
-                          src={thumb.image}
+                          src={getOptimizedImageUrl(thumb.image, 600)}
                           alt={thumb.title}
                           loading="lazy"
+                          decoding="async"
                           className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent pointer-events-none" />
@@ -502,9 +505,10 @@ export const WorkArchiveOverlay: React.FC = () => {
                           } rounded-xl sm:rounded-2xl overflow-hidden bg-[#111] border border-[#E5D7C3]/50 hover:border-[#C4943A] shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer flex flex-col justify-end`}
                         >
                           <img
-                            src={post.image}
+                            src={getOptimizedImageUrl(post.image, 600)}
                             alt={post.title || 'Creative Post'}
                             loading="lazy"
+                            decoding="async"
                             className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -542,9 +546,10 @@ export const WorkArchiveOverlay: React.FC = () => {
                         className="group relative aspect-[9/16] rounded-xl sm:rounded-2xl overflow-hidden bg-[#111] border border-[#E5D7C3]/50 hover:border-[#C4943A] shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer flex flex-col justify-end"
                       >
                         <img
-                          src={story.image}
+                          src={getOptimizedImageUrl(story.image, 600)}
                           alt={story.title}
                           loading="lazy"
+                          decoding="async"
                           className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent pointer-events-none" />
@@ -586,9 +591,10 @@ export const WorkArchiveOverlay: React.FC = () => {
                         className={`group relative ${item.aspectRatioClass} break-inside-avoid rounded-xl sm:rounded-2xl overflow-hidden bg-[#111] border border-[#E5D7C3]/50 hover:border-[#C4943A] shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer flex flex-col justify-end`}
                       >
                         <img
-                          src={item.image}
+                          src={getOptimizedImageUrl(item.image, 600)}
                           alt={item.title}
                           loading="lazy"
+                          decoding="async"
                           className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent pointer-events-none" />

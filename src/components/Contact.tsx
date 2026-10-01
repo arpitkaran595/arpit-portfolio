@@ -328,7 +328,7 @@ const Contact: React.FC = () => {
       <div
         className="absolute inset-0 pointer-events-none z-[1] opacity-20 mix-blend-multiply"
         style={{
-          backgroundImage: 'url(/assets/paper-texture.png)',
+          backgroundImage: 'url(/assets/paper-texture.webp)',
           backgroundRepeat: 'repeat',
           backgroundSize: '400px 400px',
         }}
@@ -369,8 +369,10 @@ const Contact: React.FC = () => {
         className="absolute bottom-0 inset-x-0 w-full pointer-events-none z-[2] select-none flex justify-center overflow-hidden"
       >
         <img
-          src="/assets/cloud-horizon.png"
+          src="/assets/cloud-horizon.webp"
           alt=""
+          loading="lazy"
+          decoding="async"
           className="w-full min-w-[1300px] max-w-[2400px] h-auto object-cover object-bottom opacity-90"
           draggable={false}
         />
@@ -379,8 +381,10 @@ const Contact: React.FC = () => {
       {/* 2.2 Soft Atmospheric Mist */}
       <div className="absolute bottom-0 inset-x-0 h-[460px] pointer-events-none z-[3] overflow-hidden select-none">
         <img
-          src="/assets/atmospheric-mist.png"
+          src="/assets/atmospheric-mist.webp"
           alt=""
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover object-bottom opacity-20 mix-blend-screen"
           draggable={false}
         />
@@ -425,8 +429,10 @@ const Contact: React.FC = () => {
         className="absolute -bottom-6 sm:-bottom-10 lg:-bottom-12 -left-8 sm:-left-10 lg:-left-14 w-[42vw] min-w-[320px] max-w-[580px] pointer-events-none z-[4] select-none"
       >
         <img
-          src="/assets/cloud-left.png"
+          src="/assets/cloud-left.webp"
           alt=""
+          loading="lazy"
+          decoding="async"
           className="w-full h-auto object-contain opacity-95 filter drop-shadow-[0_15px_35px_rgba(230,195,150,0.25)]"
           draggable={false}
         />
@@ -438,8 +444,10 @@ const Contact: React.FC = () => {
         className="absolute -bottom-6 sm:-bottom-10 lg:-bottom-12 -right-8 sm:-right-10 lg:-right-14 w-[44vw] min-w-[340px] max-w-[620px] pointer-events-none z-[4] select-none"
       >
         <img
-          src="/assets/cloud-right.png"
+          src="/assets/cloud-right.webp"
           alt=""
+          loading="lazy"
+          decoding="async"
           className="w-full h-auto object-contain opacity-95 filter drop-shadow-[0_15px_35px_rgba(230,195,150,0.25)]"
           draggable={false}
         />
@@ -502,6 +510,8 @@ const Contact: React.FC = () => {
                 <img
                   src="/assets/arrow-scribble-1.png"
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                   className="w-24 sm:w-28 h-auto object-contain"
                   style={{
                     transform: 'scaleX(-1) rotate(-30deg)',
@@ -869,6 +879,8 @@ const Contact: React.FC = () => {
               <img
                 src="/assets/arpit-ak-sign.webp"
                 alt="Arpit AK"
+                loading="lazy"
+                decoding="async"
                 className="h-9 sm:h-10 lg:h-11 w-auto object-contain select-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.06)]"
                 draggable={false}
               />

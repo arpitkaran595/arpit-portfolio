@@ -9,6 +9,7 @@ import {
   CreativePost,
 } from '../data/portfolio';
 import { useArchive } from '../context/ArchiveContext';
+import { getOptimizedImageUrl } from '../utils/imageOptimization';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -53,7 +54,7 @@ const CreativeCard: React.FC<CreativeCardProps> = ({ post, onCardClick }) => {
     >
       {/* Pure High-Fidelity Artwork */}
       <img
-        src={post.image}
+        src={getOptimizedImageUrl(post.image, 600)}
         alt={post.title || 'Creative Design'}
         loading="lazy"
         decoding="async"
@@ -483,7 +484,7 @@ const CreativesSection: React.FC = () => {
         }}
       >
         <img
-          src="/assets/atmospheric-mist.png"
+          src="/assets/atmospheric-mist.webp"
           alt=""
           className="w-full h-full object-cover"
           draggable={false}
@@ -501,7 +502,7 @@ const CreativesSection: React.FC = () => {
         }}
       >
         <img
-          src="/assets/cloud-left.png"
+          src="/assets/cloud-left.webp"
           alt=""
           className="w-full h-auto object-contain mix-blend-multiply"
           draggable={false}
@@ -519,7 +520,7 @@ const CreativesSection: React.FC = () => {
         }}
       >
         <img
-          src="/assets/cloud-right.png"
+          src="/assets/cloud-right.webp"
           alt=""
           className="w-full h-auto object-contain mix-blend-multiply"
           draggable={false}
@@ -639,13 +640,6 @@ const CreativesSection: React.FC = () => {
                       <CreativeCard key={`r1-s2-${post.id}`} post={post} onCardClick={handleCardClick1} />
                     ))}
                   </div>
-
-                  {/* Set 3 (Buffer clone for wide monitors) */}
-                  <div className="flex items-center gap-3.5 sm:gap-4 lg:gap-4 xl:gap-5 h-full shrink-0">
-                    {row1Posts.map((post) => (
-                      <CreativeCard key={`r1-s3-${post.id}`} post={post} onCardClick={handleCardClick1} />
-                    ))}
-                  </div>
                 </div>
               </div>
 
@@ -689,13 +683,6 @@ const CreativesSection: React.FC = () => {
                   <div className="flex items-center gap-3.5 sm:gap-4 lg:gap-4 xl:gap-5 h-full shrink-0">
                     {row2Posts.map((post) => (
                       <CreativeCard key={`r2-s2-${post.id}`} post={post} onCardClick={handleCardClick2} />
-                    ))}
-                  </div>
-
-                  {/* Set 3 (Buffer clone for wide monitors) */}
-                  <div className="flex items-center gap-3.5 sm:gap-4 lg:gap-4 xl:gap-5 h-full shrink-0">
-                    {row2Posts.map((post) => (
-                      <CreativeCard key={`r2-s3-${post.id}`} post={post} onCardClick={handleCardClick2} />
                     ))}
                   </div>
                 </div>

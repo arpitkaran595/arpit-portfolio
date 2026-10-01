@@ -24,6 +24,7 @@ import {
   YoutubeThumbnail,
 } from '../data/portfolio';
 import { useArchive } from '../context/ArchiveContext';
+import { getOptimizedImageUrl } from '../utils/imageOptimization';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -246,10 +247,11 @@ const ThumbnailCard: React.FC<ThumbnailCardProps> = ({
     >
       <div className="relative w-full h-full group">
         <img
-          src={item.image}
+          src={getOptimizedImageUrl(item.image, 800)}
           alt={item.title}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           loading="lazy"
+          decoding="async"
           draggable={false}
         />
 
@@ -495,7 +497,7 @@ const ThumbnailsSection: React.FC = () => {
         }}
       >
         <img
-          src="/assets/atmospheric-mist.png"
+          src="/assets/atmospheric-mist.webp"
           alt=""
           className="w-full h-full object-cover"
           draggable={false}
@@ -513,7 +515,7 @@ const ThumbnailsSection: React.FC = () => {
         }}
       >
         <img
-          src="/assets/cloud-left.png"
+          src="/assets/cloud-left.webp"
           alt=""
           className="w-full h-auto object-contain mix-blend-multiply"
           draggable={false}
@@ -530,7 +532,7 @@ const ThumbnailsSection: React.FC = () => {
         }}
       >
         <img
-          src="/assets/cloud-right.png"
+          src="/assets/cloud-right.webp"
           alt=""
           className="w-full h-auto object-contain mix-blend-multiply"
           draggable={false}

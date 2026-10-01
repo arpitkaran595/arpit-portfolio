@@ -324,7 +324,7 @@ const Footer: React.FC = () => {
           }}
         />
         <img
-          src="/assets/cloud-horizon.png"
+          src="/assets/cloud-horizon.webp"
           alt=""
           className="w-full h-full object-cover object-center max-w-[2400px] mx-auto opacity-[0.14] filter blur-[6px]"
           draggable={false}
@@ -585,8 +585,10 @@ const Footer: React.FC = () => {
           }}
         >
           <img
-            src="/assets/cloud-horizon.png"
+            src="/assets/cloud-horizon.webp"
             alt=""
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover object-center max-w-[2400px] scale-105"
             draggable={false}
           />
@@ -604,8 +606,10 @@ const Footer: React.FC = () => {
           }}
         >
           <img
-            src="/assets/footer-bg-hill.png"
+            src="/assets/footer-bg-hill.webp"
             alt=""
+            loading="lazy"
+            decoding="async"
             className="w-full h-auto object-cover object-bottom"
             draggable={false}
           />
@@ -686,8 +690,10 @@ const Footer: React.FC = () => {
           }}
         >
           <img
-            src="/assets/footer-fg-hill.png"
+            src="/assets/footer-fg-hill.webp"
             alt=""
+            loading="lazy"
+            decoding="async"
             className="w-full h-auto object-cover object-bottom"
             draggable={false}
           />

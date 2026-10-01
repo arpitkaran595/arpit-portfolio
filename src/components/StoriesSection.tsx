@@ -11,6 +11,7 @@ import {
 import { ChevronLeft, ChevronRight, Layers, Users, Eye, Heart } from 'lucide-react';
 import { storyPosters, storySectionData, StoryPoster } from '../data/portfolio';
 import { useArchive } from '../context/ArchiveContext';
+import { getOptimizedImageUrl } from '../utils/imageOptimization';
 import MediaViewer from './MediaViewer';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -241,7 +242,7 @@ const StoryCard: React.FC<StoryCardProps> = ({
       {/* Strict 9:16 Artwork Asset Container */}
       <div className="relative w-full h-full overflow-hidden rounded-[20px] sm:rounded-[24px]">
         <img
-          src={story.image}
+          src={getOptimizedImageUrl(story.image, 600)}
           alt={story.title}
           loading="lazy"
           decoding="async"
@@ -521,7 +522,7 @@ const StoriesSection: React.FC = () => {
         }}
       >
         <img
-          src="/assets/atmospheric-mist.png"
+          src="/assets/atmospheric-mist.webp"
           alt=""
           className="w-full h-full object-cover"
           draggable={false}
@@ -537,7 +538,7 @@ const StoriesSection: React.FC = () => {
         }}
       >
         <img
-          src="/assets/cloud-left.png"
+          src="/assets/cloud-left.webp"
           alt=""
           className="w-full h-auto object-contain mix-blend-multiply"
           draggable={false}
@@ -553,7 +554,7 @@ const StoriesSection: React.FC = () => {
         }}
       >
         <img
-          src="/assets/cloud-right.png"
+          src="/assets/cloud-right.webp"
           alt=""
           className="w-full h-auto object-contain mix-blend-multiply"
           draggable={false}

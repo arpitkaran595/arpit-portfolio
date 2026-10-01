@@ -231,6 +231,7 @@ interface PermanentOrbitCardProps {
   onCardClick: (index: number) => void;
   videoRefs: React.MutableRefObject<(HTMLVideoElement | null)[]>;
   isSectionInView: boolean;
+  isModalOpen?: boolean;
   windowWidth?: number;
 }
 
@@ -249,6 +250,7 @@ const PermanentOrbitCard: React.FC<PermanentOrbitCardProps> = ({
   onCardClick,
   videoRefs,
   isSectionInView,
+  isModalOpen,
   windowWidth,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -316,9 +318,8 @@ const PermanentOrbitCard: React.FC<PermanentOrbitCardProps> = ({
 
   const wrappedOffset = getWrappedOffset(index, activeIndex, totalVideos);
   const isNearActive = Math.abs(wrappedOffset) <= 2;
-  const shouldLoad = isSectionInView && isNearActive;
-  const videoSrc = shouldLoad ? video.videoUrl : undefined;
-  const videoPreload = shouldLoad ? (isCenter ? 'auto' : 'metadata') : 'none';
+  const shouldLoadVideo = isSectionInView && isCenter && !isModalOpen;
+  const videoSrc = shouldLoadVideo ? video.videoUrl : undefined;
 
   return (
     <motion.div
@@ -378,18 +379,44 @@ const PermanentOrbitCard: React.FC<PermanentOrbitCardProps> = ({
             <div className="absolute inset-0 bg-black/40" />
           </div>
 
-          {/* FOREGROUND VIDEO (Smoothly morphs contain/cover across 700ms without reloading) */}
-          <video
-            ref={(el) => (videoRefs.current[index] = el)}
-            src={videoSrc}
-            playsInline
-            loop
-            muted={isMuted}
-            preload={videoPreload}
-            className={`relative z-10 w-full h-full transition-[max-width,max-height,filter] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-              orientation === 'portrait' ? 'object-cover' : 'object-contain max-w-[90%] max-h-[96%] drop-shadow-2xl'
-            }`}
-          />
+          {/* INSTANT CRISP POSTER PREVIEW (Guarantees zero black flashes / blank frames) */}
+          {video.poster && (
+            <img
+              src={video.poster}
+              alt={video.title}
+              loading="lazy"
+              decoding="async"
+              className={`absolute inset-0 w-full h-full pointer-events-none select-none z-10 transition-opacity duration-300 ${
+                orientation === 'portrait' ? 'object-cover' : 'object-contain max-w-[90%] max-h-[96%]'
+              } ${isCenter && isPlaying && shouldLoadVideo ? 'opacity-0' : 'opacity-100'}`}
+            />
+          )}
+
+          {/* FOREGROUND VIDEO (Mounted only on active center card to maintain single hardware decoder) */}
+          {shouldLoadVideo ? (
+            <video
+              ref={(el) => (videoRefs.current[index] = el)}
+              src={videoSrc}
+              poster={video.poster}
+              playsInline
+              loop
+              muted={isMuted}
+              preload="auto"
+              className={`relative z-10 w-full h-full transition-[max-width,max-height,filter] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                orientation === 'portrait' ? 'object-cover' : 'object-contain max-w-[90%] max-h-[96%] drop-shadow-2xl'
+              }`}
+            />
+          ) : (
+            <div
+              ref={() => {
+                if (videoRefs.current[index]) {
+                  videoRefs.current[index]?.pause();
+                  videoRefs.current[index] = null;
+                }
+              }}
+              className="hidden"
+            />
+          )}
 
           {/* Scrim for side cards to focus center hero */}
           {!isCenter && (
@@ -1031,6 +1058,7 @@ const VideoSection: React.FC = () => {
                 onCardClick={(idx) => handleCardClick(idx, video)}
                 videoRefs={videoRefs}
                 isSectionInView={isSectionInView}
+                isModalOpen={!!selectedVideo}
                 windowWidth={windowWidth}
               />
             ))}

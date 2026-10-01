@@ -394,8 +394,10 @@ const Experience: React.FC = () => {
       {/* ───────────────────────────────────────────────────────────────────── */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-[1] select-none overflow-hidden">
         <img
-          src="/assets/experience-cloudscape.png"
+          src="/assets/experience-cloudscape.webp"
           alt=""
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover object-[78%_bottom] md:object-[75%_bottom] xl:object-[72%_bottom] scale-[1.14] opacity-[0.95]"
           style={{
             maskImage:
@@ -443,8 +445,10 @@ const Experience: React.FC = () => {
         className="absolute bottom-[8%] right-[-6%] w-[36vw] min-w-[380px] max-w-[580px] h-auto pointer-events-none z-[2] select-none"
       >
         <img
-          src="/assets/cloud-right.png"
+          src="/assets/cloud-right.webp"
           alt=""
+          loading="lazy"
+          decoding="async"
           className="w-full h-auto object-contain object-bottom-right opacity-40 blur-[2px]"
           style={{
             maskImage:
@@ -462,8 +466,10 @@ const Experience: React.FC = () => {
         className="absolute top-[16%] right-[20%] w-28 h-28 pointer-events-none z-[2] select-none opacity-45"
       >
         <img
-          src="/assets/sparkle-set.png"
+          src="/assets/sparkle-set.webp"
           alt=""
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(246,215,178,0.6)]"
           draggable={false}
         />
@@ -478,8 +484,10 @@ const Experience: React.FC = () => {
         className="absolute bottom-0 left-[-2%] w-[26vw] min-w-[260px] max-w-[390px] h-auto pointer-events-none z-[2] select-none"
       >
         <img
-          src="/assets/cloud-left.png"
+          src="/assets/cloud-left.webp"
           alt=""
+          loading="lazy"
+          decoding="async"
           className="w-full h-auto object-contain object-bottom-left opacity-[0.82] filter blur-[0.6px]"
           style={{
             maskImage:
@@ -496,8 +504,10 @@ const Experience: React.FC = () => {
       {/* ───────────────────────────────────────────────────────────────────── */}
       <div className="absolute bottom-0 left-0 w-[33vw] min-w-[360px] max-w-[520px] xl:max-w-[560px] h-auto pointer-events-none z-[3] select-none">
         <img
-          src="/assets/experience-mountain-person.png"
+          src="/assets/experience-mountain-person.webp"
           alt="Arpit standing on the mountain peak looking towards the career journey"
+          loading="lazy"
+          decoding="async"
           className="w-full h-auto object-contain object-bottom-left"
           style={{
             maskImage:
