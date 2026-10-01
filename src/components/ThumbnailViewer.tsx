@@ -1,41 +1,15 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { youtubeThumbnails, YoutubeThumbnail } from '../data/portfolio';
 import { MediaViewerItem } from './MediaViewer';
+import { viewerSlideVariants } from '../utils/viewerTransitions';
 
 interface ThumbnailViewerProps {
   isOpen: boolean;
   onClose: () => void;
   item: MediaViewerItem | null;
 }
-
-const slideVariants = {
-  enter: (direction: number) => ({
-    x: direction > 0 ? 60 : -60,
-    opacity: 0,
-    scale: 0.98,
-  }),
-  center: {
-    x: 0,
-    opacity: 1,
-    scale: 1,
-    transition: {
-      x: { type: 'spring', stiffness: 340, damping: 32 },
-      opacity: { duration: 0.35, ease: 'easeOut' },
-      scale: { duration: 0.35, ease: 'easeOut' },
-    },
-  },
-  exit: (direction: number) => ({
-    x: direction < 0 ? 60 : -60,
-    opacity: 0,
-    scale: 0.98,
-    transition: {
-      duration: 0.28,
-      ease: 'easeIn',
-    },
-  }),
-};
 
 export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClose, item }) => {
   const totalThumbnails = youtubeThumbnails.length;
@@ -49,6 +23,7 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClos
 
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [direction, setDirection] = useState(0);
+  const isTransitioningRef = useRef(false);
 
   // Sync index whenever item changes
   useEffect(() => {
@@ -56,25 +31,52 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClos
       const found = youtubeThumbnails.findIndex((t) => t.id === item.id);
       if (found !== -1) {
         setCurrentIndex(found);
+        setDirection(0);
+        isTransitioningRef.current = false;
       }
     }
   }, [isOpen, item]);
 
+  // Preload adjacent images so next/prev transitions have zero decode latency
+  useEffect(() => {
+    if (!isOpen || totalThumbnails <= 1) return;
+    const nextItem = youtubeThumbnails[(currentIndex + 1) % totalThumbnails];
+    const prevItem = youtubeThumbnails[(currentIndex - 1 + totalThumbnails) % totalThumbnails];
+    if (nextItem?.image) {
+      const img = new Image();
+      img.src = nextItem.image;
+    }
+    if (prevItem?.image) {
+      const img = new Image();
+      img.src = prevItem.image;
+    }
+  }, [isOpen, currentIndex, totalThumbnails]);
+
   // Derived active, previous, next thumbnails
   const activeThumbnail: YoutubeThumbnail = youtubeThumbnails[currentIndex] || youtubeThumbnails[0];
 
-  // Navigation handlers
+  // Navigation handlers with debounce lock
   const handlePrevious = useCallback(() => {
+    if (isTransitioningRef.current) return;
+    isTransitioningRef.current = true;
     setDirection(-1);
     setCurrentIndex((prev) => (prev - 1 + totalThumbnails) % totalThumbnails);
+    setTimeout(() => {
+      isTransitioningRef.current = false;
+    }, 340);
   }, [totalThumbnails]);
 
   const handleNext = useCallback(() => {
+    if (isTransitioningRef.current) return;
+    isTransitioningRef.current = true;
     setDirection(1);
     setCurrentIndex((prev) => (prev + 1) % totalThumbnails);
+    setTimeout(() => {
+      isTransitioningRef.current = false;
+    }, 340);
   }, [totalThumbnails]);
 
-  // Keyboard navigation & scroll lock
+  // Keyboard navigation & scroll lock & wheel navigation
   useEffect(() => {
     if (!isOpen) return;
 
@@ -90,11 +92,27 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClos
       }
     };
 
+    const lastWheelTime = { current: 0 };
+    const handleWheel = (e: WheelEvent) => {
+      const now = Date.now();
+      if (now - lastWheelTime.current < 350) return;
+      if (Math.abs(e.deltaY) > 25 || Math.abs(e.deltaX) > 25) {
+        if (e.deltaY > 25 || e.deltaX > 25) {
+          handleNext();
+          lastWheelTime.current = now;
+        } else if (e.deltaY < -25 || e.deltaX < -25) {
+          handlePrevious();
+          lastWheelTime.current = now;
+        }
+      }
+    };
+
     document.body.style.overflow = 'hidden';
     if ((window as any).lenis) {
       (window as any).lenis.stop();
     }
     window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('wheel', handleWheel, { passive: true });
 
     return () => {
       document.body.style.overflow = '';
@@ -102,6 +120,7 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClos
         (window as any).lenis.start();
       }
       window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('wheel', handleWheel);
     };
   }, [isOpen, onClose, handlePrevious, handleNext]);
 
@@ -229,36 +248,38 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClos
 
           {/* Main 16:9 Artwork Container */}
           <div className="relative w-full max-w-[1140px] px-2 sm:px-12 md:px-16 lg:px-20 flex items-center justify-center">
-            <AnimatePresence mode="wait" custom={direction}>
-              <motion.div
-                key={activeThumbnail.id}
-                custom={direction}
-                variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                className="relative w-full max-h-[60vh] sm:max-h-[66vh] md:max-h-[70vh] flex items-center justify-center"
-              >
-                {/* 16:9 Aspect Frame */}
-                <div className="relative w-full aspect-[16/9] max-h-[60vh] sm:max-h-[66vh] md:max-h-[70vh] rounded-xl sm:rounded-2xl overflow-hidden border border-white/15 shadow-[0_25px_70px_-15px_rgba(0,0,0,0.85)] bg-[#0C0D0E] flex items-center justify-center">
+            {/* 16:9 Aspect Frame */}
+            <div className="relative w-full aspect-[16/9] max-h-[60vh] sm:max-h-[66vh] md:max-h-[70vh] rounded-xl sm:rounded-2xl overflow-hidden border border-white/15 shadow-[0_25px_70px_-15px_rgba(0,0,0,0.85)] bg-[#0C0D0E] flex items-center justify-center">
+              <AnimatePresence initial={false} custom={direction}>
+                <motion.div
+                  key={activeThumbnail.id}
+                  custom={direction}
+                  variants={viewerSlideVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  className="absolute inset-0 w-full h-full flex items-center justify-center"
+                >
                   <img
                     src={activeThumbnail.image}
                     alt={activeThumbnail.title}
                     className="w-full h-full object-contain select-none"
                     draggable={false}
+                    loading="eager"
+                    decoding="sync"
                   />
+                </motion.div>
+              </AnimatePresence>
 
-                  {/* Delicate Gloss Border */}
-                  <div
-                    className="absolute inset-0 rounded-xl sm:rounded-2xl pointer-events-none ring-1 ring-inset ring-white/20"
-                    style={{
-                      background:
-                        'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.01) 40%, transparent 100%)',
-                    }}
-                  />
-                </div>
-              </motion.div>
-            </AnimatePresence>
+              {/* Delicate Gloss Border */}
+              <div
+                className="absolute inset-0 rounded-xl sm:rounded-2xl pointer-events-none ring-1 ring-inset ring-white/20 z-10"
+                style={{
+                  background:
+                    'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.01) 40%, transparent 100%)',
+                }}
+              />
+            </div>
           </div>
 
           {/* Next Button (Desktop Right Flank) */}

@@ -20,6 +20,7 @@ import MobileStoryViewer from './MobileStoryViewer';
 import ThumbnailViewer from './ThumbnailViewer';
 import MobileThumbnailViewer from './MobileThumbnailViewer';
 import MobileReelsViewer from './MobileReelsViewer';
+import { viewerSlideVariants } from '../utils/viewerTransitions';
 import {
   featuredVideos,
   FeaturedVideo,
@@ -87,6 +88,8 @@ const VideoViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layout
   }, [item]);
 
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const [direction, setDirection] = useState(0);
+  const isTransitioningRef = useRef(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -109,11 +112,28 @@ const VideoViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layout
   useEffect(() => {
     if (isOpen) {
       setCurrentIndex(initialIndex);
+      setDirection(0);
+      isTransitioningRef.current = false;
       setIsPlaying(true);
       setProgress(0);
       setCurrentTime(0);
     }
   }, [isOpen, initialIndex]);
+
+  // Preload adjacent video posters for zero-delay slide entry
+  useEffect(() => {
+    if (!isOpen || totalVideos <= 1) return;
+    const nextItem = featuredVideos[(currentIndex + 1) % totalVideos];
+    const prevItem = featuredVideos[(currentIndex - 1 + totalVideos) % totalVideos];
+    if (nextItem?.poster) {
+      const img = new Image();
+      img.src = nextItem.poster;
+    }
+    if (prevItem?.poster) {
+      const img = new Image();
+      img.src = prevItem.poster;
+    }
+  }, [isOpen, currentIndex, totalVideos]);
 
   const isVideoMode = Boolean(
     item?.videoUrl ||
@@ -458,24 +478,36 @@ const VideoViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layout
     }
   };
 
-  // Previous & Next navigation
-  const handlePrevious = (e?: React.MouseEvent) => {
+  // Previous & Next navigation with debounce lock
+  const handlePrevious = useCallback((e?: React.MouseEvent) => {
     e?.stopPropagation();
+    if (isTransitioningRef.current) return;
+    isTransitioningRef.current = true;
+    setDirection(-1);
     setCurrentIndex(prevIndex);
     setProgress(0);
     setCurrentTime(0);
     setIsPlaying(true);
     resetControlsTimer();
-  };
+    setTimeout(() => {
+      isTransitioningRef.current = false;
+    }, 340);
+  }, [prevIndex]);
 
-  const handleNext = (e?: React.MouseEvent) => {
+  const handleNext = useCallback((e?: React.MouseEvent) => {
     e?.stopPropagation();
+    if (isTransitioningRef.current) return;
+    isTransitioningRef.current = true;
+    setDirection(1);
     setCurrentIndex(nextIndex);
     setProgress(0);
     setCurrentTime(0);
     setIsPlaying(true);
     resetControlsTimer();
-  };
+    setTimeout(() => {
+      isTransitioningRef.current = false;
+    }, 340);
+  }, [nextIndex]);
 
   const effectiveDuration = duration || parseDurationToSeconds(activeVideo?.duration);
 
@@ -544,18 +576,31 @@ const VideoViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layout
 
                     {/* C. FOREGROUND SHARP PORTRAIT VIDEO (Strict 9:16, no crop, no stretch) */}
                     <div className="relative z-10 flex items-center justify-center p-3 sm:p-6 pointer-events-none">
-                      <video
-                        key={`fg-${activeVideoUrl}`}
-                        ref={mainVideoRef}
-                        src={activeVideoUrl}
-                        poster={activePoster}
-                        playsInline
-                        autoPlay
-                        loop
-                        muted={isMuted}
-                        onClick={togglePlay}
-                        className="max-h-[70vh] md:max-h-[78vh] max-w-full aspect-[9/16] object-contain rounded-xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.85)] drop-shadow-2xl select-none pointer-events-auto cursor-pointer"
-                      />
+                      <div className="relative max-h-[70vh] md:max-h-[78vh] h-[70vh] md:h-[78vh] max-w-full aspect-[9/16] rounded-xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.85)] drop-shadow-2xl border border-white/10 bg-[#0C0C0E] overflow-hidden pointer-events-auto">
+                        <AnimatePresence initial={false} custom={direction}>
+                          <motion.div
+                            key={activeVideo?.id || `fg-${activeVideoUrl}`}
+                            custom={direction}
+                            variants={viewerSlideVariants}
+                            initial="enter"
+                            animate="center"
+                            exit="exit"
+                            className="absolute inset-0 w-full h-full flex items-center justify-center"
+                          >
+                            <video
+                              ref={mainVideoRef}
+                              src={activeVideoUrl}
+                              poster={activePoster}
+                              playsInline
+                              autoPlay
+                              loop
+                              muted={isMuted}
+                              onClick={togglePlay}
+                              className="w-full h-full object-contain select-none cursor-pointer"
+                            />
+                          </motion.div>
+                        </AnimatePresence>
+                      </div>
                     </div>
 
                     {/* D. TOP-LEFT LOGO & DYNAMIC POSITION INDICATOR (01 / 32) */}

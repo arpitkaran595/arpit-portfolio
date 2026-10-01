@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { storyPosters, StoryPoster } from '../data/portfolio';
+import { viewerSlideVariants } from '../utils/viewerTransitions';
 
 export interface StoryViewerItem {
   id: string;
@@ -140,11 +141,15 @@ export const MobileStoryViewer: React.FC<MobileStoryViewerProps> = ({
   }, [item, playlist]);
 
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const [direction, setDirection] = useState(0);
+  const isTransitioningRef = useRef(false);
 
   // Sync index on open
   useEffect(() => {
     if (isOpen) {
       setCurrentIndex(initialIndex);
+      setDirection(0);
+      isTransitioningRef.current = false;
     }
   }, [isOpen, initialIndex]);
 
@@ -157,15 +162,27 @@ export const MobileStoryViewer: React.FC<MobileStoryViewerProps> = ({
 
   const activeTheme = useMemo(() => getStoryTheme(activeStory), [activeStory]);
 
-  // Navigation handlers
+  // Navigation handlers with debounce lock
   const handlePrevious = useCallback((e?: React.MouseEvent) => {
     e?.stopPropagation();
+    if (isTransitioningRef.current) return;
+    isTransitioningRef.current = true;
+    setDirection(-1);
     setCurrentIndex((prev) => (prev - 1 + totalStories) % totalStories);
+    setTimeout(() => {
+      isTransitioningRef.current = false;
+    }, 340);
   }, [totalStories]);
 
   const handleNext = useCallback((e?: React.MouseEvent) => {
     e?.stopPropagation();
+    if (isTransitioningRef.current) return;
+    isTransitioningRef.current = true;
+    setDirection(1);
     setCurrentIndex((prev) => (prev + 1) % totalStories);
+    setTimeout(() => {
+      isTransitioningRef.current = false;
+    }, 340);
   }, [totalStories]);
 
   // Keyboard navigation & body scroll locking
@@ -429,110 +446,63 @@ export const MobileStoryViewer: React.FC<MobileStoryViewerProps> = ({
         </header>
 
         {/* ═══════════════════════════════════════════════════════════════════ */}
-        {/* 3. THREE-CARD 3D CAROUSEL ZONE                                      */}
+        {/* 3. CENTER ARTWORK ZONE WITH SEAMLESS HORIZONTAL SLIDE TRANSITION    */}
         {/* ═══════════════════════════════════════════════════════════════════ */}
         <main
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
-          className="relative z-30 w-full flex-1 flex flex-col items-center justify-center overflow-hidden my-auto"
-          style={{
-            perspective: 1200,
-            transformStyle: 'preserve-3d',
-          }}
+          className="relative z-30 w-full flex-1 flex flex-col items-center justify-center overflow-hidden my-auto px-4"
         >
-          {/* Card Carousel Anchor */}
-          <div
-            className="relative w-full flex items-center justify-center"
-            style={{ transformStyle: 'preserve-3d' }}
-          >
-            {/* Render Visible Stories (Within offset range [-2, 2]) */}
-            {playlist.map((story, idx) => {
-              const offset = getWrappedOffset(idx, currentIndex, totalStories);
-              if (Math.abs(offset) > 2) return null;
-
-              const transform = getCardTransform(offset);
-              const isCenter = offset === 0;
-
-              return (
-                <motion.div
-                  key={story.id}
-                  onClick={() => {
-                    if (offset === -1) handlePrevious();
-                    if (offset === 1) handleNext();
-                  }}
-                  animate={{
-                    x: transform.x,
-                    y: transform.y,
-                    scale: transform.scale,
-                    rotateY: transform.rotateY,
-                    z: transform.z,
-                    opacity: transform.opacity,
-                    filter: transform.filter,
-                  }}
-                  transition={{
-                    type: 'spring',
-                    stiffness: 300,
-                    damping: 30,
-                    mass: 0.9,
-                  }}
-                  style={{
-                    position: 'absolute',
-                    zIndex: transform.zIndex,
-                    pointerEvents: transform.pointerEvents,
-                    transformStyle: 'preserve-3d',
-                  }}
-                  className={`cursor-pointer ${isCenter ? 'cursor-default' : 'active:scale-95'}`}
-                >
-                  {/* The 9:16 Portrait Card */}
-                  <div
-                    style={{
-                      boxShadow: transform.shadow,
-                    }}
-                    className={`relative h-[clamp(300px,47dvh,430px)] aspect-[9/16] rounded-[1.25rem] overflow-hidden transition-all duration-300 ${
-                      isCenter
-                        ? 'border border-white/25 ring-1 ring-[#C4943A]/30'
-                        : 'border border-white/10'
-                    }`}
-                  >
-                    <img
-                      src={story.image}
-                      alt={story.title}
-                      loading={isCenter ? 'eager' : 'lazy'}
-                      decoding={isCenter ? 'sync' : 'async'}
-                      className="w-full h-full object-cover select-none pointer-events-none"
-                    />
-
-                    {/* Subtle Sheen Gradient on Center Card */}
-                    {isCenter && (
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-white/10 pointer-events-none" />
-                    )}
-                  </div>
-                </motion.div>
-              );
-            })}
-
-            {/* Left & Right Circular Navigation Arrow Buttons */}
-            <div className="absolute inset-x-3 sm:inset-x-5 flex items-center justify-between pointer-events-none z-40">
-              {/* Previous Button */}
-              <button
-                onClick={handlePrevious}
-                type="button"
-                aria-label="Previous Story"
-                className="w-10 h-10 rounded-full bg-black/60 backdrop-blur-xl border border-white/25 flex items-center justify-center text-white/90 hover:text-white active:scale-85 transition-all shadow-[0_6px_20px_rgba(0,0,0,0.65)] cursor-pointer pointer-events-auto"
+          {/* Card Slide Stage */}
+          <div className="relative w-full max-w-[280px] sm:max-w-[320px] h-[clamp(300px,47dvh,430px)] flex items-center justify-center overflow-hidden rounded-[1.25rem]">
+            <AnimatePresence initial={false} custom={direction}>
+              <motion.div
+                key={activeStory.id}
+                custom={direction}
+                variants={viewerSlideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-auto"
               >
-                <ChevronLeft className="w-5 h-5 -ml-0.5" />
-              </button>
+                {/* The 9:16 Portrait Card */}
+                <div className="relative h-full aspect-[9/16] rounded-[1.25rem] overflow-hidden transition-all duration-300 border border-white/25 ring-1 ring-[#C4943A]/30 shadow-[0_20px_50px_rgba(0,0,0,0.85)]">
+                  <img
+                    src={activeStory.image}
+                    alt={activeStory.title}
+                    loading="eager"
+                    decoding="sync"
+                    className="w-full h-full object-cover select-none pointer-events-none"
+                  />
 
-              {/* Next Button */}
-              <button
-                onClick={handleNext}
-                type="button"
-                aria-label="Next Story"
-                className="w-10 h-10 rounded-full bg-black/60 backdrop-blur-xl border border-white/25 flex items-center justify-center text-white/90 hover:text-white active:scale-85 transition-all shadow-[0_6px_20px_rgba(0,0,0,0.65)] cursor-pointer pointer-events-auto"
-              >
-                <ChevronRight className="w-5 h-5 -mr-0.5" />
-              </button>
-            </div>
+                  {/* Subtle Sheen Gradient on Center Card */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-white/10 pointer-events-none" />
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Left & Right Circular Navigation Arrow Buttons */}
+          <div className="absolute inset-x-3 sm:inset-x-5 flex items-center justify-between pointer-events-none z-40">
+            {/* Previous Button */}
+            <button
+              onClick={handlePrevious}
+              type="button"
+              aria-label="Previous Story"
+              className="w-10 h-10 rounded-full bg-black/60 backdrop-blur-xl border border-white/25 flex items-center justify-center text-white/90 hover:text-white active:scale-85 transition-all shadow-[0_6px_20px_rgba(0,0,0,0.65)] cursor-pointer pointer-events-auto"
+            >
+              <ChevronLeft className="w-5 h-5 -ml-0.5" />
+            </button>
+
+            {/* Next Button */}
+            <button
+              onClick={handleNext}
+              type="button"
+              aria-label="Next Story"
+              className="w-10 h-10 rounded-full bg-black/60 backdrop-blur-xl border border-white/25 flex items-center justify-center text-white/90 hover:text-white active:scale-85 transition-all shadow-[0_6px_20px_rgba(0,0,0,0.65)] cursor-pointer pointer-events-auto"
+            >
+              <ChevronRight className="w-5 h-5 -mr-0.5" />
+            </button>
           </div>
 
           {/* ───────────────────────────────────────────────────────────── */}

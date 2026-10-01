@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronRight } from 'lucide-react';
 import { storyPosters, StoryPoster } from '../data/portfolio';
+import { viewerSlideVariants } from '../utils/viewerTransitions';
 
 export interface StoryViewerItem {
   id: string;
@@ -30,13 +31,32 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ isOpen, onClose, item }) => {
   }, [item]);
 
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const [direction, setDirection] = useState(0);
+  const isTransitioningRef = useRef(false);
 
   // Sync index when viewer opens or item changes
   useEffect(() => {
     if (isOpen) {
       setCurrentIndex(initialIndex);
+      setDirection(0);
+      isTransitioningRef.current = false;
     }
   }, [isOpen, initialIndex]);
+
+  // Preload adjacent images so next/prev transitions have zero decode latency
+  useEffect(() => {
+    if (!isOpen || totalStories <= 1) return;
+    const nextItem = storyPosters[(currentIndex + 1) % totalStories];
+    const prevItem = storyPosters[(currentIndex - 1 + totalStories) % totalStories];
+    if (nextItem?.image) {
+      const img = new Image();
+      img.src = nextItem.image;
+    }
+    if (prevItem?.image) {
+      const img = new Image();
+      img.src = prevItem.image;
+    }
+  }, [isOpen, currentIndex, totalStories]);
 
   // Derived current, previous, and next stories
   const activeStory: StoryPoster = storyPosters[currentIndex] || storyPosters[0];
@@ -48,12 +68,24 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ isOpen, onClose, item }) => {
   // Navigation callbacks
   const handlePrevious = useCallback((e?: React.MouseEvent) => {
     e?.stopPropagation();
+    if (isTransitioningRef.current) return;
+    isTransitioningRef.current = true;
+    setDirection(-1);
     setCurrentIndex((prev) => (prev - 1 + totalStories) % totalStories);
+    setTimeout(() => {
+      isTransitioningRef.current = false;
+    }, 340);
   }, [totalStories]);
 
   const handleNext = useCallback((e?: React.MouseEvent) => {
     e?.stopPropagation();
+    if (isTransitioningRef.current) return;
+    isTransitioningRef.current = true;
+    setDirection(1);
     setCurrentIndex((prev) => (prev + 1) % totalStories);
+    setTimeout(() => {
+      isTransitioningRef.current = false;
+    }, 340);
   }, [totalStories]);
 
   // Keyboard navigation & scroll locking
@@ -72,11 +104,27 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ isOpen, onClose, item }) => {
       }
     };
 
+    const lastWheelTime = { current: 0 };
+    const handleWheel = (e: WheelEvent) => {
+      const now = Date.now();
+      if (now - lastWheelTime.current < 350) return;
+      if (Math.abs(e.deltaY) > 25 || Math.abs(e.deltaX) > 25) {
+        if (e.deltaY > 25 || e.deltaX > 25) {
+          handleNext();
+          lastWheelTime.current = now;
+        } else if (e.deltaY < -25 || e.deltaX < -25) {
+          handlePrevious();
+          lastWheelTime.current = now;
+        }
+      }
+    };
+
     document.body.style.overflow = 'hidden';
     if ((window as any).lenis) {
       (window as any).lenis.stop();
     }
     window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('wheel', handleWheel, { passive: true });
 
     return () => {
       document.body.style.overflow = '';
@@ -84,6 +132,7 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ isOpen, onClose, item }) => {
         (window as any).lenis.start();
       }
       window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('wheel', handleWheel);
     };
   }, [isOpen, onClose, handlePrevious, handleNext]);
 
@@ -197,19 +246,27 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ isOpen, onClose, item }) => {
 
             {/* E. FOREGROUND SHARP 9:16 STORY ARTWORK (Dominant focus) */}
             <div className="relative z-10 flex items-center justify-center p-3 sm:p-6 pointer-events-none">
-              <AnimatePresence mode="wait">
-                <motion.img
-                  key={activeStory.id}
-                  src={activeStory.image}
-                  alt={activeStory.title}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.25, ease: 'easeInOut' }}
-                  className="max-h-[70vh] md:max-h-[78vh] max-w-full aspect-[9/16] object-contain rounded-xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.85)] drop-shadow-2xl select-none pointer-events-auto border border-white/10"
-                  loading="eager"
-                />
-              </AnimatePresence>
+              <div className="relative max-h-[70vh] md:max-h-[78vh] h-[70vh] md:h-[78vh] max-w-full aspect-[9/16] rounded-xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.85)] drop-shadow-2xl border border-white/10 bg-[#0C0C0E] overflow-hidden pointer-events-auto">
+                <AnimatePresence initial={false} custom={direction}>
+                  <motion.div
+                    key={activeStory.id}
+                    custom={direction}
+                    variants={viewerSlideVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    className="absolute inset-0 w-full h-full flex items-center justify-center"
+                  >
+                    <img
+                      src={activeStory.image}
+                      alt={activeStory.title}
+                      className="w-full h-full object-contain select-none"
+                      loading="eager"
+                      decoding="sync"
+                    />
+                  </motion.div>
+                </AnimatePresence>
+              </div>
             </div>
 
             {/* F. NEXT STORY PREVIEW (Desktop Right Side - Clickable, No Separate Arrow) */}

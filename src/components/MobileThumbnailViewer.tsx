@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronUp, ChevronDown, Maximize2, Minimize2 } from 'lucide-react';
 import { youtubeThumbnails, YoutubeThumbnail } from '../data/portfolio';
+import { viewerSlideVariants } from '../utils/viewerTransitions';
 
 export interface MobileThumbnailViewerItem {
   id: string;
@@ -158,28 +159,58 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
   }, [item, playlist]);
 
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const [direction, setDirection] = useState(0);
+  const isTransitioningRef = useRef(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Sync index on open
   useEffect(() => {
     if (isOpen) {
       setCurrentIndex(initialIndex);
+      setDirection(0);
+      isTransitioningRef.current = false;
       setIsFullscreen(false);
     }
   }, [isOpen, initialIndex]);
+
+  // Preload adjacent images so next/prev transitions have zero decode latency
+  useEffect(() => {
+    if (!isOpen || totalThumbnails <= 1) return;
+    const nextItem = playlist[(currentIndex + 1) % totalThumbnails];
+    const prevItem = playlist[(currentIndex - 1 + totalThumbnails) % totalThumbnails];
+    if (nextItem?.image) {
+      const img = new Image();
+      img.src = nextItem.image;
+    }
+    if (prevItem?.image) {
+      const img = new Image();
+      img.src = prevItem.image;
+    }
+  }, [isOpen, currentIndex, totalThumbnails, playlist]);
 
   // Derived active thumbnail and theme
   const activeThumbnail = playlist[currentIndex] || playlist[0];
   const activeTheme = useMemo(() => getThumbnailTheme(activeThumbnail), [activeThumbnail]);
 
-  // Navigation handlers
-  // Note: NEXT is positioned above, PREVIOUS is positioned below
+  // Navigation handlers with debounce lock
   const handleNext = useCallback(() => {
+    if (isTransitioningRef.current) return;
+    isTransitioningRef.current = true;
+    setDirection(1);
     setCurrentIndex((prev) => (prev + 1) % totalThumbnails);
+    setTimeout(() => {
+      isTransitioningRef.current = false;
+    }, 340);
   }, [totalThumbnails]);
 
   const handlePrevious = useCallback(() => {
+    if (isTransitioningRef.current) return;
+    isTransitioningRef.current = true;
+    setDirection(-1);
     setCurrentIndex((prev) => (prev - 1 + totalThumbnails) % totalThumbnails);
+    setTimeout(() => {
+      isTransitioningRef.current = false;
+    }, 340);
   }, [totalThumbnails]);
 
   // Fullscreen toggle logic
@@ -279,30 +310,49 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
     };
   }, [isOpen, isFullscreen, onClose, handleNext, handlePrevious, exitFullscreen]);
 
-  // Touch swipe support (Swipe UP = Next, Swipe DOWN = Previous)
+  // Touch swipe support (Swipe UP / LEFT = Next, Swipe DOWN / RIGHT = Previous)
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [touchDeltaX, setTouchDeltaX] = useState<number>(0);
   const [touchStartY, setTouchStartY] = useState<number | null>(null);
   const [touchDeltaY, setTouchDeltaY] = useState<number>(0);
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.touches[0].clientX);
+    setTouchDeltaX(0);
     setTouchStartY(e.touches[0].clientY);
     setTouchDeltaY(0);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (touchStartY === null) return;
-    const currentY = e.touches[0].clientY;
-    setTouchDeltaY(currentY - touchStartY);
+    if (touchStartX !== null) {
+      setTouchDeltaX(e.touches[0].clientX - touchStartX);
+    }
+    if (touchStartY !== null) {
+      setTouchDeltaY(e.touches[0].clientY - touchStartY);
+    }
   };
 
   const handleTouchEnd = () => {
-    if (touchStartY === null) return;
-    if (touchDeltaY < -40) {
-      // Swiped UP -> Move to NEXT
-      handleNext();
-    } else if (touchDeltaY > 40) {
-      // Swiped DOWN -> Move to PREVIOUS
-      handlePrevious();
+    const isHorizontalSwipe = Math.abs(touchDeltaX) > Math.abs(touchDeltaY);
+    if (isHorizontalSwipe) {
+      if (touchDeltaX < -40) {
+        // Swiped LEFT -> Move to NEXT
+        handleNext();
+      } else if (touchDeltaX > 40) {
+        // Swiped RIGHT -> Move to PREVIOUS
+        handlePrevious();
+      }
+    } else {
+      if (touchDeltaY < -40) {
+        // Swiped UP -> Move to NEXT
+        handleNext();
+      } else if (touchDeltaY > 40) {
+        // Swiped DOWN -> Move to PREVIOUS
+        handlePrevious();
+      }
     }
+    setTouchStartX(null);
+    setTouchDeltaX(0);
     setTouchStartY(null);
     setTouchDeltaY(0);
   };
@@ -468,92 +518,56 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
             <ChevronUp className="w-3.5 h-3.5 text-white/60 group-hover:text-white transition-colors -mt-0.5" />
           </button>
 
-          {/* Vertical 3-Card Carousel Anchor */}
-          <div className="relative w-[clamp(280px,86vw,370px)] h-[clamp(158px,48.5vw,208px)] flex items-center justify-center">
-            {playlist.map((thumb, idx) => {
-              const offset = getWrappedOffset(idx, currentIndex, totalThumbnails);
-              if (Math.abs(offset) > 2.2) return null;
-
-              const transform = getCardTransform(offset);
-              const isCenter = offset === 0;
-
-              return (
-                <motion.div
-                  key={thumb.id}
-                  onClick={() => {
-                    if (offset === 1) handleNext();
-                    if (offset === -1) handlePrevious();
-                  }}
-                  animate={{
-                    y: transform.y,
-                    scale: transform.scale,
-                    opacity: transform.opacity,
-                    filter: transform.filter,
-                  }}
-                  transition={{
-                    type: 'spring',
-                    stiffness: 320,
-                    damping: 32,
-                    mass: 0.9,
-                  }}
+          {/* 16:9 Landscape Card Slide Stage */}
+          <div className="relative w-[clamp(280px,86vw,370px)] h-[clamp(158px,48.5vw,208px)] flex items-center justify-center overflow-hidden rounded-[16px] sm:rounded-[18px]">
+            <AnimatePresence initial={false} custom={direction}>
+              <motion.div
+                key={activeThumbnail.id}
+                custom={direction}
+                variants={viewerSlideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-auto"
+              >
+                {/* The 16:9 Landscape Card */}
+                <div
                   style={{
-                    position: 'absolute',
-                    zIndex: transform.zIndex,
-                    pointerEvents: transform.pointerEvents,
+                    boxShadow: '0 20px 50px rgba(0,0,0,0.85), 0 0 28px rgba(196,148,58,0.35)',
                   }}
-                  className={`w-full h-full cursor-pointer ${
-                    isCenter ? 'cursor-default' : 'active:scale-95'
-                  }`}
+                  className="relative w-full h-full aspect-[16/9] rounded-[16px] sm:rounded-[18px] overflow-hidden bg-[#141210] flex items-center justify-center border border-[#C4943A] ring-1 ring-[#C4943A]/40"
                 >
-                  {/* The 16:9 Landscape Card */}
-                  <div
-                    style={{
-                      boxShadow: transform.shadow,
-                    }}
-                    className={`relative w-full h-full aspect-[16/9] rounded-[16px] sm:rounded-[18px] overflow-hidden transition-all duration-300 bg-[#141210] flex items-center justify-center ${
-                      isCenter
-                        ? 'border border-[#C4943A] ring-1 ring-[#C4943A]/40'
-                        : 'border border-white/10'
-                    }`}
-                  >
-                    <img
-                      src={thumb.image}
-                      alt={thumb.title}
-                      loading={isCenter ? 'eager' : 'lazy'}
-                      decoding={isCenter ? 'sync' : 'async'}
-                      className="w-full h-full object-contain select-none pointer-events-none"
-                    />
+                  <img
+                    src={activeThumbnail.image}
+                    alt={activeThumbnail.title}
+                    loading="eager"
+                    decoding="sync"
+                    className="w-full h-full object-contain select-none pointer-events-none"
+                  />
 
-                    {/* Subtle Sheen Gradient on Center Card */}
-                    {isCenter && (
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-white/10 pointer-events-none" />
-                    )}
+                  {/* Subtle Sheen Gradient on Center Card */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-white/10 pointer-events-none" />
 
-                    {/* Gold CURRENT Pill Badge */}
-                    {isCenter && (
-                      <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 z-30 px-3 py-0.5 rounded-full bg-[#1A1612] border border-[#C4943A] text-[9px] font-sora font-bold tracking-wider text-[#C4943A] uppercase shadow-md select-none">
-                        CURRENT
-                      </div>
-                    )}
-
-                    {/* Full-Screen Button on Current Thumbnail */}
-                    {isCenter && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          enterFullscreen();
-                        }}
-                        type="button"
-                        aria-label="Enter Fullscreen"
-                        className="absolute bottom-2.5 right-2.5 z-30 w-8 h-8 rounded-full bg-black/75 backdrop-blur-md border border-white/25 hover:border-[#C4943A] text-white/90 hover:text-white flex items-center justify-center shadow-lg active:scale-90 transition-all cursor-pointer pointer-events-auto"
-                      >
-                        <Maximize2 className="w-4 h-4" />
-                      </button>
-                    )}
+                  {/* Gold CURRENT Pill Badge */}
+                  <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 z-30 px-3 py-0.5 rounded-full bg-[#1A1612] border border-[#C4943A] text-[9px] font-sora font-bold tracking-wider text-[#C4943A] uppercase shadow-md select-none">
+                    CURRENT
                   </div>
-                </motion.div>
-              );
-            })}
+
+                  {/* Full-Screen Button on Current Thumbnail */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      enterFullscreen();
+                    }}
+                    type="button"
+                    aria-label="Enter Fullscreen"
+                    className="absolute bottom-2.5 right-2.5 z-30 w-8 h-8 rounded-full bg-black/75 backdrop-blur-md border border-white/25 hover:border-[#C4943A] text-white/90 hover:text-white flex items-center justify-center shadow-lg active:scale-90 transition-all cursor-pointer pointer-events-auto"
+                  >
+                    <Maximize2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           {/* PREVIOUS Navigation Pill (Bottom) */}

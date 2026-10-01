@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronRight } from 'lucide-react';
 import { creativePosts, CreativePost } from '../data/portfolio';
+import { viewerSlideVariants, VIEWER_TRANSITION_DURATION, VIEWER_TRANSITION_EASE } from '../utils/viewerTransitions';
 
 export interface SocialPostViewerItem {
   id: string;
@@ -31,13 +32,32 @@ const SocialPostViewer: React.FC<SocialPostViewerProps> = ({ isOpen, onClose, it
   }, [item]);
 
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const [direction, setDirection] = useState(0);
+  const isTransitioningRef = useRef(false);
 
   // Sync index when viewer opens or item changes
   useEffect(() => {
     if (isOpen) {
       setCurrentIndex(initialIndex);
+      setDirection(0);
+      isTransitioningRef.current = false;
     }
   }, [isOpen, initialIndex]);
+
+  // Preload adjacent images so next/prev transitions have zero decode latency
+  useEffect(() => {
+    if (!isOpen || totalPosts <= 1) return;
+    const nextItem = creativePosts[(currentIndex + 1) % totalPosts];
+    const prevItem = creativePosts[(currentIndex - 1 + totalPosts) % totalPosts];
+    if (nextItem?.image) {
+      const img = new Image();
+      img.src = nextItem.image;
+    }
+    if (prevItem?.image) {
+      const img = new Image();
+      img.src = prevItem.image;
+    }
+  }, [isOpen, currentIndex, totalPosts]);
 
   // Derived current, previous, and next posts
   const activePost: CreativePost = creativePosts[currentIndex] || creativePosts[0];
@@ -49,12 +69,24 @@ const SocialPostViewer: React.FC<SocialPostViewerProps> = ({ isOpen, onClose, it
   // Navigation callbacks
   const handlePrevious = useCallback((e?: React.MouseEvent) => {
     e?.stopPropagation();
+    if (isTransitioningRef.current) return;
+    isTransitioningRef.current = true;
+    setDirection(-1);
     setCurrentIndex((prev) => (prev - 1 + totalPosts) % totalPosts);
+    setTimeout(() => {
+      isTransitioningRef.current = false;
+    }, 340);
   }, [totalPosts]);
 
   const handleNext = useCallback((e?: React.MouseEvent) => {
     e?.stopPropagation();
+    if (isTransitioningRef.current) return;
+    isTransitioningRef.current = true;
+    setDirection(1);
     setCurrentIndex((prev) => (prev + 1) % totalPosts);
+    setTimeout(() => {
+      isTransitioningRef.current = false;
+    }, 340);
   }, [totalPosts]);
 
   // Keyboard navigation & scroll locking
@@ -258,29 +290,36 @@ const SocialPostViewer: React.FC<SocialPostViewerProps> = ({ isOpen, onClose, it
               <motion.div
                 layout
                 transition={{
-                  layout: { duration: 0.35, ease: [0.22, 1, 0.36, 1] },
+                  layout: { duration: VIEWER_TRANSITION_DURATION, ease: VIEWER_TRANSITION_EASE },
                 }}
                 style={{
                   aspectRatio: `${activeRatio}`,
+                  height: isSquare ? 'min(64vh, 580px)' : 'min(72vh, 660px)',
                   maxHeight: isSquare ? 'min(64vh, 580px)' : 'min(72vh, 660px)',
                   maxWidth: isSquare ? 'min(64vh, 580px)' : `min(calc(72vh * ${activeRatio}), ${Math.round(660 * activeRatio)}px)`,
+                  width: 'auto',
                 }}
-                className="relative z-20 w-full h-auto flex items-center justify-center rounded-xl sm:rounded-2xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.85)] border border-white/10 bg-[#121214] pointer-events-auto"
+                className="relative z-20 flex items-center justify-center rounded-xl sm:rounded-2xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.85)] border border-white/10 bg-[#121214] pointer-events-auto"
               >
-                <AnimatePresence mode="wait">
-                  <motion.img
+                <AnimatePresence initial={false} custom={direction}>
+                  <motion.div
                     key={activePost.id}
-                    src={activePost.image}
-                    alt={activePost.title || 'Social media post'}
-                    onLoad={(e) => handleImageLoad(activePost.id, e)}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.25, ease: 'easeInOut' }}
-                    className="w-full h-full object-contain select-none"
-                    loading="eager"
-                    decoding="async"
-                  />
+                    custom={direction}
+                    variants={viewerSlideVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    className="absolute inset-0 w-full h-full flex items-center justify-center"
+                  >
+                    <img
+                      src={activePost.image}
+                      alt={activePost.title || 'Social media post'}
+                      onLoad={(e) => handleImageLoad(activePost.id, e)}
+                      className="w-full h-full object-contain select-none"
+                      loading="eager"
+                      decoding="sync"
+                    />
+                  </motion.div>
                 </AnimatePresence>
               </motion.div>
             </div>

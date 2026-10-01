@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { creativePosts, CreativePost } from '../data/portfolio';
+import { viewerSlideVariants } from '../utils/viewerTransitions';
 
 export interface MobileSocialPostViewerItem {
   id: string;
@@ -174,11 +175,14 @@ export const MobileSocialPostViewer: React.FC<MobileSocialPostViewerProps> = ({
   }, [item, playlist]);
 
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const [direction, setDirection] = useState(0);
 
   // Sync index on open
   useEffect(() => {
     if (isOpen) {
       setCurrentIndex(initialIndex);
+      setDirection(0);
+      isTransitioningRef.current = false;
     }
   }, [isOpen, initialIndex]);
 
@@ -190,23 +194,40 @@ export const MobileSocialPostViewer: React.FC<MobileSocialPostViewerProps> = ({
   const isTransitioningRef = useRef(false);
   const wasSwipingRef = useRef(false);
 
+  // Preload adjacent images so next/prev transitions have zero decode latency
+  useEffect(() => {
+    if (!isOpen || totalPosts <= 1) return;
+    const nextItem = playlist[(currentIndex + 1) % totalPosts];
+    const prevItem = playlist[(currentIndex - 1 + totalPosts) % totalPosts];
+    if (nextItem?.image) {
+      const img = new Image();
+      img.src = nextItem.image;
+    }
+    if (prevItem?.image) {
+      const img = new Image();
+      img.src = prevItem.image;
+    }
+  }, [isOpen, currentIndex, totalPosts, playlist]);
+
   // Navigation handlers with debounce lock
   const handlePrevious = useCallback(() => {
     if (isTransitioningRef.current) return;
     isTransitioningRef.current = true;
+    setDirection(-1);
     setCurrentIndex((prev) => (prev - 1 + totalPosts) % totalPosts);
     setTimeout(() => {
       isTransitioningRef.current = false;
-    }, 280);
+    }, 340);
   }, [totalPosts]);
 
   const handleNext = useCallback(() => {
     if (isTransitioningRef.current) return;
     isTransitioningRef.current = true;
+    setDirection(1);
     setCurrentIndex((prev) => (prev + 1) % totalPosts);
     setTimeout(() => {
       isTransitioningRef.current = false;
-    }, 280);
+    }, 340);
   }, [totalPosts]);
 
   // Keyboard navigation & body scroll locking
@@ -466,118 +487,70 @@ export const MobileSocialPostViewer: React.FC<MobileSocialPostViewerProps> = ({
         </header>
 
         {/* ═══════════════════════════════════════════════════════════════════ */}
-        {/* 3. THREE-CARD 3D CAROUSEL ZONE                                      */}
+        {/* 3. CENTER ARTWORK ZONE WITH SEAMLESS HORIZONTAL SLIDE TRANSITION    */}
         {/* ═══════════════════════════════════════════════════════════════════ */}
         <main
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          className="relative z-30 w-full flex-1 min-h-[200px] flex flex-col items-center justify-center my-auto"
-          style={{
-            perspective: 1200,
-            transformStyle: 'preserve-3d',
-          }}
+          className="relative z-30 w-full flex-1 min-h-[200px] flex flex-col items-center justify-center my-auto px-4"
         >
-          {/* Card Carousel Anchor */}
-          <div
-            className="relative w-full h-[clamp(210px,36dvh,340px)] flex items-center justify-center"
-            style={{ transformStyle: 'preserve-3d' }}
-          >
-            {/* Render Visible Posts (Within offset range [-2, 2]) */}
-            {playlist.map((post, idx) => {
-              const offset = getWrappedOffset(idx, currentIndex, totalPosts);
-              if (Math.abs(offset) > 2) return null;
-
-              const transform = getCardTransform(offset);
-              const isCenter = offset === 0;
-
-              return (
-                <motion.div
-                  key={post.id}
-                  onClick={() => {
-                    if (wasSwipingRef.current) return;
-                    if (offset === -1) handlePrevious();
-                    if (offset === 1) handleNext();
-                  }}
-                  animate={{
-                    x: transform.x,
-                    y: transform.y,
-                    scale: transform.scale,
-                    rotateY: transform.rotateY,
-                    z: transform.z,
-                    opacity: transform.opacity,
-                    filter: transform.filter,
-                  }}
-                  transition={{
-                    type: 'spring',
-                    stiffness: 300,
-                    damping: 30,
-                    mass: 0.9,
-                  }}
-                  style={{
-                    position: 'absolute',
-                    zIndex: transform.zIndex,
-                    pointerEvents: transform.pointerEvents,
-                    transformStyle: 'preserve-3d',
-                  }}
-                  className={`cursor-pointer ${isCenter ? 'cursor-default' : 'active:scale-95'}`}
-                >
-                  {/* The 4:5 Portrait Artwork Card */}
-                  <div
-                    style={{
-                      boxShadow: transform.shadow,
-                    }}
-                    className={`relative h-[clamp(210px,36dvh,340px)] aspect-[4/5] rounded-[18px] sm:rounded-2xl overflow-hidden transition-all duration-300 bg-[#121110] flex items-center justify-center ${
-                      isCenter
-                        ? 'border border-white/20 ring-1 ring-[#C4943A]/30'
-                        : 'border border-white/10'
-                    }`}
-                  >
-                    <img
-                      src={post.image}
-                      alt={post.title}
-                      loading={isCenter ? 'eager' : 'lazy'}
-                      decoding={isCenter ? 'sync' : 'async'}
-                      className="w-full h-full object-contain select-none pointer-events-none"
-                    />
-
-                    {/* Subtle Sheen Gradient on Center Card */}
-                    {isCenter && (
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-white/10 pointer-events-none" />
-                    )}
-                  </div>
-                </motion.div>
-              );
-            })}
-
-            {/* Left & Right Circular Navigation Chevron Buttons */}
-            <div className="absolute inset-x-2 sm:inset-x-4 inset-y-0 flex items-center justify-between pointer-events-none z-50">
-              {/* Previous Button */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handlePrevious();
-                }}
-                type="button"
-                aria-label="Previous Post"
-                className="w-10 h-10 rounded-full bg-black/65 backdrop-blur-md border border-white/25 flex items-center justify-center text-white/90 hover:text-white active:scale-85 transition-all shadow-[0_6px_20px_rgba(0,0,0,0.7)] cursor-pointer pointer-events-auto"
+          {/* Card Slide Stage */}
+          <div className="relative w-full max-w-[340px] h-[clamp(210px,36dvh,340px)] flex items-center justify-center overflow-hidden rounded-[18px] sm:rounded-2xl">
+            <AnimatePresence initial={false} custom={direction}>
+              <motion.div
+                key={activePost.id}
+                custom={direction}
+                variants={viewerSlideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-auto"
               >
-                <ChevronLeft className="w-5 h-5 -ml-0.5" />
-              </button>
+                {/* The 4:5 Portrait Artwork Card */}
+                <div className="relative h-full aspect-[4/5] rounded-[18px] sm:rounded-2xl overflow-hidden transition-all duration-300 bg-[#121110] flex items-center justify-center border border-white/20 ring-1 ring-[#C4943A]/30 shadow-[0_16px_40px_rgba(0,0,0,0.85)]">
+                  <img
+                    src={activePost.image}
+                    alt={activePost.title}
+                    loading="eager"
+                    decoding="sync"
+                    className="w-full h-full object-contain select-none pointer-events-none"
+                  />
 
-              {/* Next Button */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleNext();
-                }}
-                type="button"
-                aria-label="Next Post"
-                className="w-10 h-10 rounded-full bg-black/65 backdrop-blur-md border border-white/25 flex items-center justify-center text-white/90 hover:text-white active:scale-85 transition-all shadow-[0_6px_20px_rgba(0,0,0,0.7)] cursor-pointer pointer-events-auto"
-              >
-                <ChevronRight className="w-5 h-5 -mr-0.5" />
-              </button>
-            </div>
+                  {/* Subtle Sheen Gradient on Center Card */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-white/10 pointer-events-none" />
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Left & Right Circular Navigation Chevron Buttons */}
+          <div className="absolute inset-x-2 sm:inset-x-4 inset-y-0 flex items-center justify-between pointer-events-none z-50">
+            {/* Previous Button */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePrevious();
+              }}
+              type="button"
+              aria-label="Previous Post"
+              className="w-10 h-10 rounded-full bg-black/65 backdrop-blur-md border border-white/25 flex items-center justify-center text-white/90 hover:text-white active:scale-85 transition-all shadow-[0_6px_20px_rgba(0,0,0,0.7)] cursor-pointer pointer-events-auto"
+            >
+              <ChevronLeft className="w-5 h-5 -ml-0.5" />
+            </button>
+
+            {/* Next Button */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleNext();
+              }}
+              type="button"
+              aria-label="Next Post"
+              className="w-10 h-10 rounded-full bg-black/65 backdrop-blur-md border border-white/25 flex items-center justify-center text-white/90 hover:text-white active:scale-85 transition-all shadow-[0_6px_20px_rgba(0,0,0,0.7)] cursor-pointer pointer-events-auto"
+            >
+              <ChevronRight className="w-5 h-5 -mr-0.5" />
+            </button>
           </div>
         </main>
 

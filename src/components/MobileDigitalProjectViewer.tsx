@@ -19,6 +19,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { DigitalProject, digitalProjects } from '../data/portfolio';
+import { viewerSlideVariants } from '../utils/viewerTransitions';
 
 export interface MobileDigitalProjectViewerProps {
   isOpen: boolean;
@@ -38,6 +39,8 @@ export const MobileDigitalProjectViewer: React.FC<MobileDigitalProjectViewerProp
   const totalProjects = projects.length;
 
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const [direction, setDirection] = useState(0);
+  const isTransitioningRef = useRef(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Live preview overlay states
@@ -50,6 +53,8 @@ export const MobileDigitalProjectViewer: React.FC<MobileDigitalProjectViewerProp
   useEffect(() => {
     if (isOpen) {
       setCurrentIndex(Math.max(0, Math.min(initialIndex, totalProjects - 1)));
+      setDirection(0);
+      isTransitioningRef.current = false;
     }
   }, [isOpen, initialIndex, totalProjects]);
 
@@ -61,14 +66,38 @@ export const MobileDigitalProjectViewer: React.FC<MobileDigitalProjectViewerProp
   const prevProject = projects[prevIndex];
   const nextProject = projects[nextIndex];
 
-  // Navigation handlers
-  // In vertical carousel: NEXT advances forward (top card / up swipe), PREVIOUS moves backward (bottom card / down swipe)
+  // Preload adjacent project images so transitions are instant
+  useEffect(() => {
+    if (!isOpen || totalProjects <= 1) return;
+    if (nextProject?.previewImage) {
+      const img = new Image();
+      img.src = nextProject.previewImage;
+    }
+    if (prevProject?.previewImage) {
+      const img = new Image();
+      img.src = prevProject.previewImage;
+    }
+  }, [isOpen, nextProject?.previewImage, prevProject?.previewImage, totalProjects]);
+
+  // Navigation handlers with direction and debounce lock
   const handleNext = useCallback(() => {
+    if (isTransitioningRef.current) return;
+    isTransitioningRef.current = true;
+    setDirection(1);
     setCurrentIndex((prev) => (prev + 1) % totalProjects);
+    setTimeout(() => {
+      isTransitioningRef.current = false;
+    }, 340);
   }, [totalProjects]);
 
   const handlePrevious = useCallback(() => {
+    if (isTransitioningRef.current) return;
+    isTransitioningRef.current = true;
+    setDirection(-1);
     setCurrentIndex((prev) => (prev - 1 + totalProjects) % totalProjects);
+    setTimeout(() => {
+      isTransitioningRef.current = false;
+    }, 340);
   }, [totalProjects]);
 
   // Scroll locking for mobile background
@@ -167,32 +196,51 @@ export const MobileDigitalProjectViewer: React.FC<MobileDigitalProjectViewerProp
   }, []);
 
   // Touch gesture support:
-  // Swipe UP -> Next project
-  // Swipe DOWN -> Previous project
+  // Swipe UP / LEFT -> Next project
+  // Swipe DOWN / RIGHT -> Previous project
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [touchDeltaX, setTouchDeltaX] = useState<number>(0);
   const [touchStartY, setTouchStartY] = useState<number | null>(null);
   const [touchDeltaY, setTouchDeltaY] = useState<number>(0);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (isLivePreviewOpen) return;
+    setTouchStartX(e.touches[0].clientX);
+    setTouchDeltaX(0);
     setTouchStartY(e.touches[0].clientY);
     setTouchDeltaY(0);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (touchStartY === null || isLivePreviewOpen) return;
-    const currentY = e.touches[0].clientY;
-    setTouchDeltaY(currentY - touchStartY);
+    if (touchStartX !== null) {
+      setTouchDeltaX(e.touches[0].clientX - touchStartX);
+    }
+    setTouchDeltaY(e.touches[0].clientY - touchStartY);
   };
 
   const handleTouchEnd = () => {
     if (touchStartY === null || isLivePreviewOpen) return;
-    if (touchDeltaY < -45) {
-      // Swiped UP -> Move to NEXT project
-      handleNext();
-    } else if (touchDeltaY > 45) {
-      // Swiped DOWN -> Move to PREVIOUS project
-      handlePrevious();
+    const isHorizontal = Math.abs(touchDeltaX) > Math.abs(touchDeltaY);
+    if (isHorizontal) {
+      if (touchDeltaX < -45) {
+        // Swiped LEFT -> Move to NEXT project
+        handleNext();
+      } else if (touchDeltaX > 45) {
+        // Swiped RIGHT -> Move to PREVIOUS project
+        handlePrevious();
+      }
+    } else {
+      if (touchDeltaY < -45) {
+        // Swiped UP -> Move to NEXT project
+        handleNext();
+      } else if (touchDeltaY > 45) {
+        // Swiped DOWN -> Move to PREVIOUS project
+        handlePrevious();
+      }
     }
+    setTouchStartX(null);
+    setTouchDeltaX(0);
     setTouchStartY(null);
     setTouchDeltaY(0);
   };
@@ -329,54 +377,57 @@ export const MobileDigitalProjectViewer: React.FC<MobileDigitalProjectViewerProp
               )}
 
               {/* CENTER CARD: CURRENT PROJECT (Sharp, Prominent, Gold Border) */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentProject.id}
-                  initial={{ opacity: 0.7, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0.7, scale: 0.95 }}
-                  transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
-                  className="relative z-20 w-full h-full rounded-2xl overflow-hidden bg-[#161412] border border-[#C4943A]/60 shadow-[0_16px_48px_rgba(0,0,0,0.85),0_0_24px_rgba(196,148,58,0.22)] flex items-center justify-center group"
-                >
-                  <img
-                    src={currentProject.previewImage}
-                    alt={currentProject.title}
-                    className="w-full h-full object-cover object-top select-none"
-                    draggable={false}
-                  />
-
-                  {/* Gradient shadow overlay for high-end look */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none" />
-
-                  {/* FLANKING CHEVRON BUTTONS (< and >) */}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handlePrevious();
-                    }}
-                    aria-label="Previous project"
-                    className="absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/70 hover:bg-black/90 border border-white/20 hover:border-[#C4943A]/60 text-white/90 flex items-center justify-center active:scale-90 transition-all shadow-lg z-30 cursor-pointer"
+              <div className="relative z-20 w-full h-full rounded-2xl overflow-hidden">
+                <AnimatePresence initial={false} custom={direction}>
+                  <motion.div
+                    key={currentProject.id}
+                    custom={direction}
+                    variants={viewerSlideVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    className="absolute inset-0 w-full h-full rounded-2xl overflow-hidden bg-[#161412] border border-[#C4943A]/60 shadow-[0_16px_48px_rgba(0,0,0,0.85),0_0_24px_rgba(196,148,58,0.22)] flex items-center justify-center group"
                   >
-                    <ChevronLeft className="w-4 h-4 text-white" />
-                  </button>
+                    <img
+                      src={currentProject.previewImage}
+                      alt={currentProject.title}
+                      className="w-full h-full object-cover object-top select-none"
+                      draggable={false}
+                    />
 
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleNext();
-                    }}
-                    aria-label="Next project"
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/70 hover:bg-black/90 border border-white/20 hover:border-[#C4943A]/60 text-white/90 flex items-center justify-center active:scale-90 transition-all shadow-lg z-30 cursor-pointer"
-                  >
-                    <ChevronRight className="w-4 h-4 text-white" />
-                  </button>
+                    {/* Gradient shadow overlay for high-end look */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none" />
 
-                  {/* CURRENT PILL BADGE AT BOTTOM RIM */}
-                  <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 z-30 px-3 py-0.5 rounded-full bg-[#12110F]/95 border border-[#C4943A]/70 text-[#C4943A] font-sora text-[8.5px] font-bold tracking-[0.22em] uppercase shadow-lg pointer-events-none">
-                    CURRENT
-                  </div>
-                </motion.div>
-              </AnimatePresence>
+                    {/* FLANKING CHEVRON BUTTONS (< and >) */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePrevious();
+                      }}
+                      aria-label="Previous project"
+                      className="absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/70 hover:bg-black/90 border border-white/20 hover:border-[#C4943A]/60 text-white/90 flex items-center justify-center active:scale-90 transition-all shadow-lg z-30 cursor-pointer"
+                    >
+                      <ChevronLeft className="w-4 h-4 text-white" />
+                    </button>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleNext();
+                      }}
+                      aria-label="Next project"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/70 hover:bg-black/90 border border-white/20 hover:border-[#C4943A]/60 text-white/90 flex items-center justify-center active:scale-90 transition-all shadow-lg z-30 cursor-pointer"
+                    >
+                      <ChevronRight className="w-4 h-4 text-white" />
+                    </button>
+
+                    {/* CURRENT PILL BADGE AT BOTTOM RIM */}
+                    <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 z-30 px-3 py-0.5 rounded-full bg-[#12110F]/95 border border-[#C4943A]/70 text-[#C4943A] font-sora text-[8.5px] font-bold tracking-[0.22em] uppercase shadow-lg pointer-events-none">
+                      CURRENT
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
 
               {/* BOTTOM CARD: PREVIOUS PROJECT (Scaled down, Dimmed, Depth blur) */}
               {totalProjects > 1 && prevProject && (
