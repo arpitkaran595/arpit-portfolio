@@ -681,9 +681,11 @@ const VideoSection: React.FC = () => {
   }, [activeIndex]);
 
   // Section in-view trigger for pill morph animation (triggers at 25-35% in view)
+  // rootMargin of 400px ensures poster images start loading before section reaches viewport
   const isSectionInView = useInView(sectionRef, {
     amount: 0.28,
     once: false,
+    margin: '400px 0px 0px 0px',
   });
 
   const totalVideos = featuredVideos.length;

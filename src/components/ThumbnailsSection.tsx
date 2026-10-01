@@ -499,6 +499,8 @@ const ThumbnailsSection: React.FC = () => {
         <img
           src="/assets/atmospheric-mist.webp"
           alt=""
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover"
           draggable={false}
         />
@@ -517,6 +519,8 @@ const ThumbnailsSection: React.FC = () => {
         <img
           src="/assets/cloud-left.webp"
           alt=""
+          loading="lazy"
+          decoding="async"
           className="w-full h-auto object-contain mix-blend-multiply"
           draggable={false}
         />
@@ -534,6 +538,8 @@ const ThumbnailsSection: React.FC = () => {
         <img
           src="/assets/cloud-right.webp"
           alt=""
+          loading="lazy"
+          decoding="async"
           className="w-full h-auto object-contain mix-blend-multiply"
           draggable={false}
         />
