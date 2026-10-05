@@ -4,12 +4,15 @@ import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import SectionTransition from '../components/SectionTransition';
 import About from '../components/About';
+import DesignPhilosophy from '../components/DesignPhilosophy';
+import SelectedCaseStudies from '../components/SelectedCaseStudies';
 import VideoSection from '../components/VideoSection';
 import StoriesSection from '../components/StoriesSection';
 import CreativesSection from '../components/CreativesSection';
 import ThumbnailsSection from '../components/ThumbnailsSection';
 import DigitalWorkSection from '../components/DigitalWorkSection';
 import Experience from '../components/Experience';
+import PersonalBrandMoment from '../components/PersonalBrandMoment';
 import Contact from '../components/Contact';
 import Footer from '../components/Footer';
 import WorkArchiveOverlay from '../components/WorkArchiveOverlay';
@@ -106,6 +109,8 @@ export default function HomePage() {
       <main className="relative w-full overflow-x-clip">
         <Hero isLoaded={isHeroReady} navRef={navRef} />
         <About />
+        <DesignPhilosophy />
+        <SelectedCaseStudies />
         <SectionTransition variant="about-to-videos" />
 
         <VideoSection />
@@ -125,6 +130,8 @@ export default function HomePage() {
 
         <Experience />
         <SectionTransition variant="experience-to-contact" />
+
+        <PersonalBrandMoment />
 
         <Contact />
         <SectionTransition variant="contact-to-footer" />

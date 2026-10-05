@@ -475,57 +475,6 @@ const CreativesSection: React.FC = () => {
         }}
       />
 
-      {/* Atmospheric Mist Drift with Soft Mask */}
-      <div
-        className="absolute inset-0 flex justify-center pointer-events-none overflow-hidden opacity-15"
-        style={{
-          maskImage: 'linear-gradient(to bottom, black 0%, black 65%, transparent 95%)',
-          WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 65%, transparent 95%)',
-        }}
-      >
-        <img
-          src="/assets/atmospheric-mist.webp"
-          alt=""
-          className="w-full h-full object-cover"
-          draggable={false}
-        />
-      </div>
-
-      {/* Bottom Left Atmospheric Cloud Formation */}
-      <div
-        className="absolute -bottom-6 -left-16 sm:-bottom-8 sm:-left-24 w-[380px] sm:w-[480px] lg:w-[580px] pointer-events-none select-none opacity-35 z-0"
-        style={{
-          maskImage:
-            'linear-gradient(to bottom, black 0%, black 35%, rgba(0,0,0,0.4) 60%, transparent 85%)',
-          WebkitMaskImage:
-            'linear-gradient(to bottom, black 0%, black 35%, rgba(0,0,0,0.4) 60%, transparent 85%)',
-        }}
-      >
-        <img
-          src="/assets/cloud-left.webp"
-          alt=""
-          className="w-full h-auto object-contain mix-blend-multiply"
-          draggable={false}
-        />
-      </div>
-
-      {/* Bottom Right Atmospheric Cloud Formation */}
-      <div
-        className="absolute -bottom-6 -right-16 sm:-bottom-8 sm:-right-24 w-[380px] sm:w-[480px] lg:w-[580px] pointer-events-none select-none opacity-35 z-0"
-        style={{
-          maskImage:
-            'linear-gradient(to bottom, black 0%, black 35%, rgba(0,0,0,0.4) 60%, transparent 85%)',
-          WebkitMaskImage:
-            'linear-gradient(to bottom, black 0%, black 35%, rgba(0,0,0,0.4) 60%, transparent 85%)',
-        }}
-      >
-        <img
-          src="/assets/cloud-right.webp"
-          alt=""
-          className="w-full h-auto object-contain mix-blend-multiply"
-          draggable={false}
-        />
-      </div>
 
       {/* ───────────────────────────────────────────────────────────────────── */}
       {/* 2. MAIN HORIZONTAL EDITORIAL VIEWPORT CONTENT */}

@@ -376,7 +376,7 @@ const Contact: React.FC = () => {
           alt=""
           loading="lazy"
           decoding="async"
-          className="w-full min-w-[1300px] max-w-[2400px] h-auto object-cover object-bottom opacity-90"
+          className="w-full min-w-[1300px] max-w-[2400px] h-auto object-cover object-bottom opacity-40"
           draggable={false}
         />
       </div>
@@ -388,7 +388,7 @@ const Contact: React.FC = () => {
           alt=""
           loading="lazy"
           decoding="async"
-          className="w-full h-full object-cover object-bottom opacity-20 mix-blend-screen"
+          className="w-full h-full object-cover object-bottom opacity-15 mix-blend-screen"
           draggable={false}
         />
       </div>
@@ -426,32 +426,32 @@ const Contact: React.FC = () => {
         </svg>
       </div>
 
-      {/* 2.4 Lower-Left Cloud Plume (Assets 02 - hero-clouds-left.png) */}
+      {/* 2.4 Lower-Left Cloud Plume (Subtle, calm accent) */}
       <div
         ref={cloudLeftRef}
-        className="absolute -bottom-6 sm:-bottom-10 lg:-bottom-12 -left-8 sm:-left-10 lg:-left-14 w-[42vw] min-w-[320px] max-w-[580px] pointer-events-none z-[4] select-none"
+        className="hidden sm:block absolute -bottom-6 sm:-bottom-10 lg:-bottom-12 -left-8 sm:-left-10 lg:-left-14 w-[42vw] min-w-[320px] max-w-[580px] pointer-events-none z-[4] select-none opacity-30"
       >
         <img
           src="/assets/cloud-left.webp"
           alt=""
           loading="lazy"
           decoding="async"
-          className="w-full h-auto object-contain opacity-95 filter drop-shadow-[0_15px_35px_rgba(230,195,150,0.25)]"
+          className="w-full h-auto object-contain filter drop-shadow-[0_10px_25px_rgba(230,195,150,0.12)]"
           draggable={false}
         />
       </div>
 
-      {/* 2.5 Lower-Right Cloud Plume (Assets 02 - hero-clouds-Right.png) */}
+      {/* 2.5 Lower-Right Cloud Plume (Subtle, calm accent) */}
       <div
         ref={cloudRightRef}
-        className="absolute -bottom-6 sm:-bottom-10 lg:-bottom-12 -right-8 sm:-right-10 lg:-right-14 w-[44vw] min-w-[340px] max-w-[620px] pointer-events-none z-[4] select-none"
+        className="hidden sm:block absolute -bottom-6 sm:-bottom-10 lg:-bottom-12 -right-8 sm:-right-10 lg:-right-14 w-[44vw] min-w-[340px] max-w-[620px] pointer-events-none z-[4] select-none opacity-30"
       >
         <img
           src="/assets/cloud-right.webp"
           alt=""
           loading="lazy"
           decoding="async"
-          className="w-full h-auto object-contain opacity-95 filter drop-shadow-[0_15px_35px_rgba(230,195,150,0.25)]"
+          className="w-full h-auto object-contain filter drop-shadow-[0_10px_25px_rgba(230,195,150,0.12)]"
           draggable={false}
         />
       </div>

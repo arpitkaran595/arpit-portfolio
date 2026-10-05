@@ -520,17 +520,6 @@ export default function DigitalWorkSection() {
         style={{ backgroundImage: 'url(/assets/paper-texture.webp)' }}
       />
 
-      {/* Top subtle golden atmospheric mist */}
-      <div className="absolute top-0 inset-x-0 h-36 pointer-events-none overflow-hidden flex justify-center opacity-30">
-        <img
-          src="/assets/atmospheric-mist.webp"
-          alt=""
-          loading="lazy"
-          decoding="async"
-          className="w-full h-full object-cover object-top"
-          draggable={false}
-        />
-      </div>
 
       <div className="relative w-full max-w-[1720px] mx-auto px-3 sm:px-6 md:px-8 lg:px-10 flex flex-col items-center">
         {/* ═════════════════════════════════════════════════════════════════ */}

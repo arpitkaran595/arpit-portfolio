@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { personalInfo, socialLinks, handleResumeClick } from '../data/portfolio';
+import { personalInfo, socialLinks } from '../data/portfolio';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -34,6 +35,7 @@ const Footer: React.FC = () => {
   // ─────────────────────────────────────────────────────────────────────────────
   useEffect(() => {
     const ctx = gsap.context(() => {
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const idleTweens: gsap.core.Tween[] = [];
 
       const footerTrigger = ScrollTrigger.create({
@@ -50,10 +52,12 @@ const Footer: React.FC = () => {
         scrollTrigger: {
           trigger: footerRef.current,
           start: 'top 82%',
-          once: true, // Trigger ONCE when entering viewport
+          once: true,
         },
         onComplete: () => {
-          // Subtle continuous idle motion after entrance completes
+          if (prefersReduced) return;
+
+          // Subtle continuous idle motion for landscape elements
           if (mistRef.current) {
             idleTweens.push(
               gsap.to(mistRef.current, {
@@ -102,85 +106,94 @@ const Footer: React.FC = () => {
             );
           }
 
-          // If footer has moved out of view before entrance completes, pause immediately
           if (footerTrigger && !footerTrigger.isActive) {
             idleTweens.forEach((t) => t.pause());
           }
-          // Note: ARPIT AK typography remains strictly STATIC
         },
       });
 
-      // 0.00–0.25s: Upper footer atmosphere begins appearing
-      // 0.15–0.55s: Brand block fades upward
-      tl.fromTo(
-        '.footer-brand',
-        { opacity: 0, y: 18 },
-        { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' },
-        0.15
-      );
-
-      // 0.25–0.70s: Navigation columns stagger in
-      tl.fromTo(
-        '.footer-nav-col',
-        { opacity: 0, y: 16 },
-        { opacity: 1, y: 0, duration: 0.45, stagger: 0.06, ease: 'power2.out' },
-        0.25
-      );
-
-      // 0.45–0.80s: Social icons appear subtly
-      tl.fromTo(
-        '.footer-social',
-        { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, duration: 0.35, stagger: 0.04, ease: 'power2.out' },
-        0.45
-      );
-
-      // 0.55–0.90s: Copyright fades in
-      tl.fromTo(
-        '.footer-copyright',
-        { opacity: 0, y: 8 },
-        { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' },
-        0.55
-      );
-
-      // 0.60–1.10s: Blue atmospheric sky gradually becomes visible
-      if (skyRef.current) {
+      if (!prefersReduced) {
+        // 0.05–0.45s: Eyebrow and Main Editorial CTA Headline fade in
         tl.fromTo(
-          skyRef.current,
-          { opacity: 0.35 },
-          { opacity: 1, duration: 0.5, ease: 'power2.out' },
-          0.60
+          '.footer-cta-eyebrow, .footer-cta-headline',
+          { opacity: 0, y: 18 },
+          { opacity: 1, y: 0, duration: 0.55, stagger: 0.08, ease: 'power2.out' },
+          0.05
         );
-      }
 
-      // 0.75–1.30s: Background grass/hill settles into place
-      if (bgHillRef.current) {
+        // 0.20–0.60s: Personal brand sign-off fades in
         tl.fromTo(
-          bgHillRef.current,
-          { opacity: 0, y: 22 },
-          { opacity: 1, y: 0, duration: 0.55, ease: 'power2.out' },
-          0.75
+          '.footer-cta-brand',
+          { opacity: 0, y: 14 },
+          { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' },
+          0.2
         );
-      }
 
-      // 0.90–1.45s: Huge ARPIT AK rises subtly into position
-      if (nameLockupRef.current) {
+        // 0.35–0.75s: CTA Button settles into place
         tl.fromTo(
-          nameLockupRef.current,
-          { opacity: 0, y: 32 },
-          { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' },
-          0.90
+          '.footer-cta-btn',
+          { opacity: 0, scale: 0.96, y: 12 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.5, ease: 'power2.out' },
+          0.35
         );
-      }
 
-      // 1.10–1.65s: Foreground grass layer gently rises into final position
-      if (fgHillRef.current) {
+        // 0.45–0.85s: Navigation & social links appear
         tl.fromTo(
-          fgHillRef.current,
-          { opacity: 0.6, y: 28 },
-          { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' },
-          1.10
+          '.footer-nav-links',
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' },
+          0.45
         );
+
+        // 0.55–1.05s: Landscape sky reveals
+        if (skyRef.current) {
+          tl.fromTo(
+            skyRef.current,
+            { opacity: 0.35 },
+            { opacity: 1, duration: 0.5, ease: 'power2.out' },
+            0.55
+          );
+        }
+
+        // 0.70–1.25s: Background hill settles
+        if (bgHillRef.current) {
+          tl.fromTo(
+            bgHillRef.current,
+            { opacity: 0, y: 22 },
+            { opacity: 1, y: 0, duration: 0.55, ease: 'power2.out' },
+            0.7
+          );
+        }
+
+        // 0.85–1.40s: Huge ARPIT AK name rises in landscape
+        if (nameLockupRef.current) {
+          tl.fromTo(
+            nameLockupRef.current,
+            { opacity: 0, y: 30 },
+            { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' },
+            0.85
+          );
+        }
+
+        // 1.05–1.60s: Foreground hill rises into final framing
+        if (fgHillRef.current) {
+          tl.fromTo(
+            fgHillRef.current,
+            { opacity: 0.6, y: 26 },
+            { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' },
+            1.05
+          );
+        }
+      } else {
+        // Immediate display for reduced motion
+        gsap.set(
+          ['.footer-cta-eyebrow', '.footer-cta-headline', '.footer-cta-brand', '.footer-cta-btn', '.footer-nav-links'],
+          { opacity: 1, y: 0, scale: 1 }
+        );
+        if (skyRef.current) gsap.set(skyRef.current, { opacity: 1 });
+        if (bgHillRef.current) gsap.set(bgHillRef.current, { opacity: 1, y: 0 });
+        if (nameLockupRef.current) gsap.set(nameLockupRef.current, { opacity: 1, y: 0 });
+        if (fgHillRef.current) gsap.set(fgHillRef.current, { opacity: 1, y: 0 });
       }
     }, footerRef);
 
@@ -188,7 +201,7 @@ const Footer: React.FC = () => {
   }, []);
 
   // ─────────────────────────────────────────────────────────────────────────────
-  // 2. Fluid Lerped Cursor Masking for ARPIT AK → अर्पित
+  // 2. Fluid Lerped Cursor Masking for ARPIT AK → अर्पित in Landscape
   // ─────────────────────────────────────────────────────────────────────────────
   const updateMask = useCallback(() => {
     mousePos.current.x += (mousePos.current.targetX - mousePos.current.x) * 0.16;
@@ -203,14 +216,12 @@ const Footer: React.FC = () => {
       if (r > 0.5) {
         hindiTextRef.current.style.opacity = '1';
 
-        // Soft radial feathered reveal for Hindi layer
         const hindiMask = `radial-gradient(circle ${r}px at ${x}px ${y}px, black 0%, black 45%, rgba(0, 0, 0, 0.7) 70%, transparent 100%)`;
         hindiTextRef.current.style.maskImage = hindiMask;
         hindiTextRef.current.style.webkitMaskImage = hindiMask;
         hindiTextRef.current.style.maskRepeat = 'no-repeat';
         hindiTextRef.current.style.webkitMaskRepeat = 'no-repeat';
 
-        // Inverse soft radial mask for English layer (smoothly punches out where Hindi shows)
         const englishMask = `radial-gradient(circle ${r}px at ${x}px ${y}px, transparent 0%, transparent 40%, rgba(0, 0, 0, 0.3) 65%, black 100%)`;
         englishTextRef.current.style.maskImage = englishMask;
         englishTextRef.current.style.webkitMaskImage = englishMask;
@@ -281,19 +292,50 @@ const Footer: React.FC = () => {
     };
   }, []);
 
-  // Social URLs from portfolio data
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Smooth scroll handler to Contact section
+  const handleScrollToContact = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (location.pathname !== '/') {
+      navigate('/#contact');
+      return;
+    }
+    const target = document.getElementById('contact');
+    if (target) {
+      if ((window as any).lenis) {
+        (window as any).lenis.scrollTo(target, { offset: -75, duration: 1.2 });
+      } else {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
+  // Smooth scroll handler to internal sections
+  const handleScrollToSection = (e: React.MouseEvent, sectionId: string) => {
+    e.preventDefault();
+    if (location.pathname !== '/') {
+      navigate(`/#${sectionId}`);
+      return;
+    }
+    const target = document.getElementById(sectionId);
+    if (target) {
+      if ((window as any).lenis) {
+        (window as any).lenis.scrollTo(target, { offset: -75, duration: 1.2 });
+      } else {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
+  // Real existing social links from portfolio data
   const igUrl =
     socialLinks.find((l) => l.platform === 'Instagram')?.url ||
     'https://instagram.com/i_am__arpittt';
   const linkedinUrl =
     socialLinks.find((l) => l.platform === 'LinkedIn')?.url ||
     'https://www.linkedin.com/in/arpitdesigns';
-  const behanceUrl =
-    socialLinks.find((l) => l.platform === 'Behance')?.url ||
-    'https://www.behance.net/arpit-designs/projects';
-  const youtubeUrl =
-    socialLinks.find((l) => l.platform === 'YouTube')?.url || '#';
-  const whatsappUrl = personalInfo.whatsappUrl;
 
   return (
     <footer
@@ -302,12 +344,12 @@ const Footer: React.FC = () => {
       className="relative w-full min-h-screen min-h-[100svh] overflow-hidden flex flex-col justify-between text-[#1A1A1A] select-none"
       style={{
         background:
-          'linear-gradient(180deg, #FDF8F3 0%, #FAF4EC 16%, #FAF2EA 24%, #F2F1EC 32%, #E3EDF4 40%, #BFDEEE 48%, #79C3EC 58%, #52B4E6 70%, #82D8F6 84%, #D8F1FD 94%, #F0F8FE 100%)',
+          'linear-gradient(180deg, #FDF8F3 0%, #FAF4EC 12%, #FAF2EA 20%, #F0F2EB 28%, #D8ECF7 38%, #79C3EC 52%, #52B4E6 68%, #82D8F6 82%, #D8F1FD 94%, #F0F8FE 100%)',
       }}
     >
-      {/* Soft atmospheric transition mist bridging Upper Information and Sky */}
+      {/* Soft atmospheric horizon glow bridging the upper CTA zone and open sky */}
       <div
-        className="absolute top-[26%] sm:top-[28%] inset-x-0 h-44 sm:h-56 z-[2] pointer-events-none overflow-hidden select-none"
+        className="absolute top-[32%] sm:top-[34%] inset-x-0 h-44 sm:h-56 z-[2] pointer-events-none overflow-hidden select-none"
         style={{
           maskImage:
             'linear-gradient(to bottom, transparent 0%, black 35%, black 65%, transparent 100%)',
@@ -332,228 +374,108 @@ const Footer: React.FC = () => {
       </div>
 
       {/* ───────────────────────────────────────────────────────────────────── */}
-      {/* ZONE A: UPPER INFORMATION ZONE (~35-40% of viewport)                  */}
+      {/* ZONE A: THE FINAL SCENE (EDITORIAL CLOSING INVITATION)                */}
       {/* ───────────────────────────────────────────────────────────────────── */}
-      <div className="relative w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-8 sm:pt-14 md:pt-20 lg:pt-16 pb-2 z-10 flex flex-col justify-between">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 lg:gap-12 pb-4 sm:pb-6">
-          
-          {/* BRAND COLUMN (LEFT - 5 cols) */}
-          <div className="md:col-span-5 flex flex-col gap-3.5 footer-brand">
-            <div className="flex items-center gap-3">
-              <span className="font-sora font-extrabold text-2xl sm:text-[26px] tracking-tight text-[#1A1A1A]">
-                ARPIT AK
-              </span>
-            </div>
+      <div className="relative w-full max-w-4xl mx-auto px-5 sm:px-8 lg:px-12 pt-14 sm:pt-18 md:pt-22 pb-8 sm:pb-10 z-10 flex flex-col items-center text-center">
 
-            <p className="font-sora text-sm text-[#555] font-normal leading-relaxed max-w-sm">
-              Graphic Designer & Video Editor specializing in visual storytelling
-              through motion, brand identity, and high-impact digital experiences.
-            </p>
-
-            {/* Social Icons row */}
-            <div className="flex items-center gap-3 pt-1">
-              {/* Instagram */}
-              <a
-                href={igUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram Profile"
-                className="footer-social w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-[#DCD3C7] hover:border-[#1A1A1A] flex items-center justify-center text-[#555] hover:text-[#1A1A1A] hover:bg-black/[0.03] transition-all duration-200"
-              >
-                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" viewBox="0 0 24 24">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-                </svg>
-              </a>
-
-              {/* LinkedIn */}
-              <a
-                href={linkedinUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn Profile"
-                className="footer-social w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-[#DCD3C7] hover:border-[#1A1A1A] flex items-center justify-center text-[#555] hover:text-[#1A1A1A] hover:bg-black/[0.03] transition-all duration-200"
-              >
-                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" viewBox="0 0 24 24">
-                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                </svg>
-              </a>
-
-              {/* Behance */}
-              <a
-                href={behanceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Behance Portfolio"
-                className="footer-social w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-[#DCD3C7] hover:border-[#1A1A1A] flex items-center justify-center text-[#555] hover:text-[#1A1A1A] hover:bg-black/[0.03] transition-all duration-200"
-              >
-                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" viewBox="0 0 24 24">
-                  <path d="M6.938 4.5c-3.832 0-6.938 3.105-6.938 6.938 0 3.832 3.106 6.937 6.938 6.937 1.944 0 3.702-.8 4.966-2.09l-1.89-1.636c-.79.79-1.848 1.282-3.076 1.282-2.316 0-4.205-1.844-4.288-4.145h9.349c.046-.441.077-.893.077-1.348 0-3.308-2.348-5.938-5.138-5.938zm-2.482 4.673c.123-1.611 1.488-2.229 2.502-2.229 1.11 0 2.378.718 2.518 2.229h-5.02zm13.544-2.173h5.992v1.444h-5.992v-1.444zm-1.843 3.827c1.365 0 2.482-.676 2.482-2.04 0-1.258-.99-1.868-2.247-1.868h-4.392v10.081h4.746c1.624 0 2.624-.954 2.624-2.285 0-1.439-1.071-2.138-2.213-2.368 1.042-.23 1.843-.88 1.843-1.52zm-3.018-2.584h2.247c.691 0 1.182.35 1.182.956 0 .584-.491.936-1.182.936h-2.247v-1.892zm2.464 6.787h-2.464v-2.072h2.464c.83 0 1.346.402 1.346 1.036 0 .634-.516 1.036-1.346 1.036z" />
-                </svg>
-              </a>
-
-              {/* YouTube */}
-              <a
-                href={youtubeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="YouTube Channel"
-                className="footer-social w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-[#DCD3C7] hover:border-[#1A1A1A] flex items-center justify-center text-[#555] hover:text-[#1A1A1A] hover:bg-black/[0.03] transition-all duration-200"
-              >
-                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" viewBox="0 0 24 24">
-                  <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-                </svg>
-              </a>
-
-              {/* WhatsApp */}
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Chat on WhatsApp"
-                className="footer-social w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-[#DCD3C7] hover:border-[#1A1A1A] flex items-center justify-center text-[#555] hover:text-[#1A1A1A] hover:bg-black/[0.03] transition-all duration-200"
-              >
-                <svg
-                  className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-none stroke-current"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                  />
-                </svg>
-              </a>
-            </div>
-          </div>
-
-          {/* 4 NAVIGATION COLUMNS (RIGHT - 7 cols) Matching Reference Structure */}
-          <div className="md:col-span-7 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-7">
-            {/* Column 1: WORK */}
-            <div className="flex flex-col gap-3 footer-nav-col">
-              <h4 className="font-sora font-semibold text-xs tracking-[0.14em] uppercase text-[#1A1A1A]">
-                Work
-              </h4>
-              <nav className="flex flex-col gap-2 font-sora text-sm text-[#555]">
-                <a
-                  href="#work"
-                  className="hover:text-[#1A1A1A] transition-colors duration-150 w-fit"
-                >
-                  Videos
-                </a>
-                <a
-                  href="#stories"
-                  className="hover:text-[#1A1A1A] transition-colors duration-150 w-fit"
-                >
-                  Stories
-                </a>
-                <a
-                  href="#creatives"
-                  className="hover:text-[#1A1A1A] transition-colors duration-150 w-fit"
-                >
-                  Creatives
-                </a>
-                <a
-                  href="#thumbnails"
-                  className="hover:text-[#1A1A1A] transition-colors duration-150 w-fit"
-                >
-                  Thumbnails
-                </a>
-              </nav>
-            </div>
-
-            {/* Column 2: ABOUT */}
-            <div className="flex flex-col gap-3 footer-nav-col">
-              <h4 className="font-sora font-semibold text-xs tracking-[0.14em] uppercase text-[#1A1A1A]">
-                About
-              </h4>
-              <nav className="flex flex-col gap-2 font-sora text-sm text-[#555]">
-                <a
-                  href="#about"
-                  className="hover:text-[#1A1A1A] transition-colors duration-150 w-fit"
-                >
-                  About Me
-                </a>
-                <a
-                  href="#experience"
-                  className="hover:text-[#1A1A1A] transition-colors duration-150 w-fit"
-                >
-                  Experience
-                </a>
-                <a
-                  href="#home"
-                  className="hover:text-[#1A1A1A] transition-colors duration-150 w-fit"
-                >
-                  Philosophy
-                </a>
-                {personalInfo.hasResumeFile ? (
-                  <a
-                    href={personalInfo.resumePath}
-                    download="Arpit_AK_Resume.pdf"
-                    className="hover:text-[#1A1A1A] transition-colors duration-150 w-fit"
-                  >
-                    Resume
-                  </a>
-                ) : (
-                  <span className="text-[#888] cursor-default w-fit flex items-center gap-1.5 select-none" title="Resume coming soon">
-                    Resume
-                    <span className="text-[10px] text-[#A3772C] font-semibold bg-[#A3772C]/10 px-1 rounded">Soon</span>
-                  </span>
-                )}
-              </nav>
-            </div>
-
-            {/* Column 3: EXPERTISE */}
-            <div className="flex flex-col gap-3 footer-nav-col">
-              <h4 className="font-sora font-semibold text-xs tracking-[0.14em] uppercase text-[#1A1A1A]">
-                Expertise
-              </h4>
-              <nav className="flex flex-col gap-2 font-sora text-sm text-[#555]">
-                <span className="cursor-default">Storytelling</span>
-                <span className="cursor-default">Motion Design</span>
-                <span className="cursor-default">Visual Identity</span>
-                <span className="cursor-default">Video Editing</span>
-              </nav>
-            </div>
-
-            {/* Column 4: CONNECT */}
-            <div className="flex flex-col gap-3 footer-nav-col">
-              <h4 className="font-sora font-semibold text-xs tracking-[0.14em] uppercase text-[#1A1A1A]">
-                Connect
-              </h4>
-              <nav className="flex flex-col gap-2 font-sora text-sm text-[#555]">
-                <a
-                  href="#contact"
-                  className="hover:text-[#1A1A1A] transition-colors duration-150 w-fit"
-                >
-                  Contact Form
-                </a>
-                <a
-                  href={whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-[#1A1A1A] transition-colors duration-150 w-fit"
-                >
-                  Let&apos;s Talk
-                </a>
-                <a
-                  href={personalInfo.mailtoUrl}
-                  className="hover:text-[#1A1A1A] transition-colors duration-150 w-fit"
-                >
-                  Email Me
-                </a>
-              </nav>
-            </div>
-          </div>
-
+        {/* 1. Small Gold Eyebrow */}
+        <div className="footer-cta-eyebrow flex items-center justify-center gap-3 mb-4 sm:mb-5">
+          <div className="w-6 sm:w-10 h-[1.5px] bg-[#C4943A]/50" />
+          <span className="font-sora text-[10px] sm:text-[11px] uppercase tracking-[0.24em] font-semibold text-[#B8860B]">
+            THE FINAL SCENE
+          </span>
+          <div className="w-6 sm:w-10 h-[1.5px] bg-[#C4943A]/50" />
         </div>
 
-        {/* Centered Copyright bridging upper information and landscape */}
-        <div className="w-full flex justify-center items-center pt-2 pb-2 sm:pb-3 footer-copyright select-none">
-          <p className="font-sora text-xs sm:text-[13px] text-[#4A4A4A]/80 tracking-wide font-medium">
-            &copy; 2026 Arpit Ak. All rights reserved.
-          </p>
+        {/* 2. Dominant Editorial Headline */}
+        <h2 className="footer-cta-headline font-playfair font-bold text-[clamp(2.3rem,5.6vw,4.4rem)] text-[#1A1A1A] leading-[1.04] tracking-tight max-w-[680px] mb-5 sm:mb-7">
+          LET’S MAKE<br />
+          SOMETHING<br />
+          WORTH SEEING<span className="text-[#C4943A]">.</span>
+        </h2>
+
+        {/* 3. Personal Sign-off */}
+        <div className="footer-cta-brand flex flex-col items-center mb-6 sm:mb-8">
+          <span className="font-playfair font-bold text-[clamp(1.35rem,2.4vw,1.85rem)] text-[#1A1A1A] tracking-[-0.01em]">
+            ARPIT AK
+          </span>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="font-sora text-[10.5px] sm:text-[11.5px] uppercase tracking-[0.22em] font-semibold text-[#7D7060]">
+              GRAPHIC DESIGNER
+            </span>
+            <span className="text-[#C4943A]/60 text-[9px] select-none">•</span>
+            <span className="font-sora text-[10.5px] sm:text-[11.5px] uppercase tracking-[0.22em] font-semibold text-[#7D7060]">
+              VISUAL STORYTELLER
+            </span>
+          </div>
         </div>
+
+        {/* 4. Primary CTA Button: Smoothly navigates to Contact */}
+        <div className="footer-cta-btn mb-8 sm:mb-10">
+          <a
+            href="#contact"
+            onClick={handleScrollToContact}
+            className="group inline-flex items-center gap-3 px-8 sm:px-9 py-3.5 sm:py-4 rounded-full bg-[#1A1A1A] hover:bg-[#B8860B] text-[#FAF3E8] text-[11.5px] sm:text-[12px] font-sora font-semibold tracking-[0.16em] uppercase transition-all duration-300 shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+          >
+            <span>LET’S WORK TOGETHER</span>
+            <span className="text-[#E5C89C] transition-transform duration-300 group-hover:translate-x-1">→</span>
+          </a>
+        </div>
+
+        {/* 5. Delicate Editorial Hairline Divider */}
+        <div className="w-full max-w-lg h-[1px] bg-[#D8C7B2]/50 mb-6 sm:mb-7" />
+
+        {/* 6. Curated Secondary Navigation & Social Links */}
+        <nav
+          aria-label="Footer Navigation"
+          className="footer-nav-links flex flex-wrap items-center justify-center gap-x-5 sm:gap-x-7 gap-y-2.5 font-sora text-[10.5px] sm:text-[11.5px] uppercase tracking-[0.18em] font-semibold text-[#554C40]"
+        >
+          <a
+            href="#work"
+            onClick={(e) => handleScrollToSection(e, 'work')}
+            className="hover:text-[#B8860B] transition-colors duration-200"
+          >
+            WORK
+          </a>
+          <a
+            href="#about"
+            onClick={(e) => handleScrollToSection(e, 'about')}
+            className="hover:text-[#B8860B] transition-colors duration-200"
+          >
+            ABOUT
+          </a>
+          <a
+            href="#case-studies"
+            onClick={(e) => handleScrollToSection(e, 'case-studies')}
+            className="hover:text-[#B8860B] transition-colors duration-200"
+          >
+            CASE STUDIES
+          </a>
+          <span className="text-[#C4943A]/40 hidden sm:inline select-none">|</span>
+          <a
+            href={igUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-[#B8860B] transition-colors duration-200"
+          >
+            INSTAGRAM
+          </a>
+          <a
+            href={linkedinUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-[#B8860B] transition-colors duration-200"
+          >
+            LINKEDIN
+          </a>
+          <a
+            href={personalInfo.mailtoUrl}
+            className="hover:text-[#B8860B] transition-colors duration-200"
+          >
+            EMAIL
+          </a>
+        </nav>
+
       </div>
 
       {/* ───────────────────────────────────────────────────────────────────── */}
@@ -561,9 +483,9 @@ const Footer: React.FC = () => {
       {/* ───────────────────────────────────────────────────────────────────── */}
       <div
         ref={landscapeRef}
-        className="relative w-full overflow-hidden select-none flex-1 min-h-[380px] sm:min-h-[480px] md:min-h-[540px] lg:min-h-[580px]"
+        className="relative w-full overflow-hidden select-none flex-1 min-h-[380px] sm:min-h-[480px] md:min-h-[540px] lg:min-h-[580px] flex flex-col justify-end"
       >
-        {/* LAYER 1: ATMOSPHERIC SKY DEPTH (Starts completely transparent at top to eliminate any edge) */}
+        {/* LAYER 1: ATMOSPHERIC SKY DEPTH */}
         <div
           ref={skyRef}
           className="absolute inset-0 z-[1] pointer-events-none"
@@ -594,7 +516,7 @@ const Footer: React.FC = () => {
           />
         </div>
 
-        {/* LAYER 3: DISTANT BACKGROUND HILLS (Extends behind text, softer, naturally framed) */}
+        {/* LAYER 3: DISTANT BACKGROUND HILLS (Extends behind text) */}
         <div
           ref={bgHillRef}
           className="absolute z-[2] pointer-events-none select-none left-1/2 -translate-x-1/2 flex flex-col items-center"
@@ -703,10 +625,16 @@ const Footer: React.FC = () => {
             background: '#1b5a2b',
           }}
         />
+
+        {/* Copyright / Closing Baseline Details */}
+        <div className="relative w-full z-[10] py-2 sm:py-2.5 bg-[#14421e] text-center select-none">
+          <p className="font-sora text-[10px] sm:text-[10.5px] text-[#A5C7AD]/90 tracking-[0.18em] uppercase font-medium">
+            &copy; 2026 ARPIT AK • ALL RIGHTS RESERVED
+          </p>
+        </div>
       </div>
     </footer>
   );
 };
 
 export default Footer;
-

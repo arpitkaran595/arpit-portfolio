@@ -28,6 +28,8 @@ export default function SectionTransition({
     // ═══════════════════════════════════════════
     // 2. ABOUT → VIDEOS: Dedicated Overlapping Atmospheric Transition Zone
     // ═══════════════════════════════════════════
+    // 2. SELECTED CASE STUDIES → VIDEOS: Subtle Warm Bridge
+    // ═══════════════════════════════════════════
     case 'about-to-videos':
       return (
         <div
@@ -39,7 +41,7 @@ export default function SectionTransition({
             className="absolute -top-36 h-72 inset-x-0 pointer-events-none"
             style={{
               background:
-                'radial-gradient(ellipse at 50% 50%, rgba(246, 215, 178, 0.18) 0%, rgba(250, 243, 232, 0.05) 55%, transparent 75%)',
+                'radial-gradient(ellipse at 50% 50%, rgba(246, 215, 178, 0.12) 0%, rgba(250, 243, 232, 0.03) 55%, transparent 75%)',
             }}
           />
 
@@ -52,14 +54,14 @@ export default function SectionTransition({
             }}
           />
 
-          {/* 3. Soft atmospheric mist */}
+          {/* 3. Whisper-soft atmospheric mist */}
           <div className="absolute -top-32 h-64 inset-x-0 w-full overflow-hidden flex justify-center pointer-events-none">
             <img
               src="/assets/atmospheric-mist.webp"
               alt=""
               loading="lazy"
               decoding="async"
-              className="w-full h-full object-cover object-center opacity-30 min-w-full"
+              className="w-full h-full object-cover object-center opacity-10 min-w-full"
               style={{
                 filter: 'contrast(1.01) saturate(1.01)',
                 maskImage:
@@ -74,7 +76,7 @@ export default function SectionTransition({
       );
 
     // ═══════════════════════════════════════════
-    // 3. VIDEOS → STORIES: Dedicated Multi-Layered Atmospheric Dissolve
+    // 3. VIDEOS → STORIES: Clean Editorial Warm Transition
     // ═══════════════════════════════════════════
     case 'videos-to-stories':
       return (
@@ -82,38 +84,19 @@ export default function SectionTransition({
           className={`relative w-full h-0 pointer-events-none z-[12] flex items-center justify-center ${className}`}
           style={{ overflowX: 'clip', overflowY: 'visible' }}
         >
-          {/* 1. Broad ambient warm golden-peach radial warmth */}
+          {/* Ambient warm golden-peach radial warmth */}
           <div
             className="absolute -top-36 sm:-top-40 md:-top-48 lg:-top-52 h-72 sm:h-80 md:h-96 lg:h-[420px] inset-x-0 pointer-events-none"
             style={{
               background:
-                'radial-gradient(ellipse at 50% 50%, rgba(246, 215, 178, 0.11) 0%, rgba(250, 243, 232, 0.04) 55%, transparent 80%)',
+                'radial-gradient(ellipse at 50% 50%, rgba(246, 215, 178, 0.08) 0%, rgba(250, 243, 232, 0.02) 55%, transparent 80%)',
             }}
           />
-
-          {/* 2. Soft atmospheric mist drifting across the boundary */}
-          <div className="absolute -top-36 sm:-top-40 md:-top-48 lg:-top-52 h-72 sm:h-80 md:h-96 lg:h-[420px] inset-x-0 w-full overflow-hidden flex justify-center pointer-events-none">
-            <img
-              src="/assets/atmospheric-mist.webp"
-              alt=""
-              loading="lazy"
-              decoding="async"
-              className="w-full h-full object-cover object-center opacity-20 min-w-full"
-              style={{
-                filter: 'contrast(1.01) saturate(1.02)',
-                maskImage:
-                  'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.30) 20%, black 50%, rgba(0,0,0,0.30) 80%, transparent 100%)',
-                WebkitMaskImage:
-                  'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.30) 20%, black 50%, rgba(0,0,0,0.30) 80%, transparent 100%)',
-              }}
-              draggable={false}
-            />
-          </div>
         </div>
       );
 
     // ═══════════════════════════════════════════
-    // 4. STORIES → CREATIVES: Stories Canvas -> Creative Graphic Designs
+    // 4. STORIES → CREATIVES: Clean Editorial Warm Transition
     // ═══════════════════════════════════════════
     case 'stories-to-creatives':
       return (
@@ -121,38 +104,19 @@ export default function SectionTransition({
           className={`relative w-full h-0 pointer-events-none z-[12] flex items-center justify-center ${className}`}
           style={{ overflowX: 'clip', overflowY: 'visible' }}
         >
-          {/* 1. Broad ambient warm golden-peach radial warmth */}
+          {/* Ambient warm golden-peach radial warmth */}
           <div
             className="absolute -top-36 sm:-top-40 md:-top-48 lg:-top-52 h-72 sm:h-80 md:h-96 lg:h-[420px] inset-x-0 pointer-events-none"
             style={{
               background:
-                'radial-gradient(ellipse at 50% 50%, rgba(246, 215, 178, 0.14) 0%, rgba(250, 243, 232, 0.05) 55%, transparent 80%)',
+                'radial-gradient(ellipse at 50% 50%, rgba(246, 215, 178, 0.08) 0%, rgba(250, 243, 232, 0.02) 55%, transparent 80%)',
             }}
           />
-
-          {/* 2. Soft atmospheric mist drifting across the boundary */}
-          <div className="absolute -top-36 sm:-top-40 md:-top-48 lg:-top-52 h-72 sm:h-80 md:h-96 lg:h-[420px] inset-x-0 w-full overflow-hidden flex justify-center pointer-events-none">
-            <img
-              src="/assets/atmospheric-mist.webp"
-              alt=""
-              loading="lazy"
-              decoding="async"
-              className="w-full h-full object-cover object-center opacity-25 min-w-full"
-              style={{
-                filter: 'contrast(1.01) saturate(1.02)',
-                maskImage:
-                  'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.30) 20%, black 50%, rgba(0,0,0,0.30) 80%, transparent 100%)',
-                WebkitMaskImage:
-                  'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.30) 20%, black 50%, rgba(0,0,0,0.30) 80%, transparent 100%)',
-              }}
-              draggable={false}
-            />
-          </div>
         </div>
       );
 
     // ═══════════════════════════════════════════
-    // 5. CREATIVES → THUMBNAILS: Dedicated Multi-Layered Atmospheric Dissolve
+    // 5. CREATIVES → THUMBNAILS: Clean Editorial Warm Transition
     // ═══════════════════════════════════════════
     case 'creatives-to-thumbnails':
       return (
@@ -160,38 +124,19 @@ export default function SectionTransition({
           className={`relative w-full h-0 pointer-events-none z-[12] flex items-center justify-center ${className}`}
           style={{ overflowX: 'clip', overflowY: 'visible' }}
         >
-          {/* 1. Broad ambient warm golden-peach / sand radial glow */}
+          {/* Ambient warm golden-peach / sand radial glow */}
           <div
             className="absolute -top-48 sm:-top-56 md:-top-64 h-[420px] sm:h-[500px] md:h-[600px] inset-x-0 pointer-events-none"
             style={{
               background:
-                'radial-gradient(ellipse at 50% 50%, rgba(246, 215, 178, 0.14) 0%, rgba(250, 243, 232, 0.04) 55%, transparent 80%)',
+                'radial-gradient(ellipse at 50% 50%, rgba(246, 215, 178, 0.08) 0%, rgba(250, 243, 232, 0.02) 55%, transparent 80%)',
             }}
           />
-
-          {/* 2. Soft atmospheric mist */}
-          <div className="absolute -top-48 sm:-top-56 md:-top-64 h-[420px] sm:h-[500px] md:h-[600px] inset-x-0 w-full overflow-hidden flex justify-center pointer-events-none">
-            <img
-              src="/assets/atmospheric-mist.webp"
-              alt=""
-              loading="lazy"
-              decoding="async"
-              className="w-full h-full object-cover object-center opacity-25 min-w-full"
-              style={{
-                filter: 'contrast(1.01) saturate(1.02)',
-                maskImage:
-                  'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.30) 20%, black 50%, rgba(0,0,0,0.30) 80%, transparent 100%)',
-                WebkitMaskImage:
-                  'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.30) 20%, black 50%, rgba(0,0,0,0.30) 80%, transparent 100%)',
-              }}
-              draggable={false}
-            />
-          </div>
         </div>
       );
 
     // ═══════════════════════════════════════════
-    // 6. THUMBNAILS → DIGITAL WORK: Seamless Multi-Layered Atmospheric Dissolve
+    // 6. THUMBNAILS → DIGITAL WORK: Clean Editorial Warm Transition
     // ═══════════════════════════════════════════
     case 'thumbnails-to-digital':
     case 'thumbnails-to-experience':
@@ -200,33 +145,14 @@ export default function SectionTransition({
           className={`relative w-full h-0 pointer-events-none z-[12] flex items-center justify-center ${className}`}
           style={{ overflowX: 'clip', overflowY: 'visible' }}
         >
-          {/* 1. Broad ambient warm golden-peach / sand radial glow */}
+          {/* Ambient warm golden-peach / sand radial glow */}
           <div
             className="absolute -top-48 sm:-top-56 md:-top-64 h-[420px] sm:h-[500px] md:h-[600px] inset-x-0 pointer-events-none"
             style={{
               background:
-                'radial-gradient(ellipse at 50% 50%, rgba(246, 215, 178, 0.16) 0%, rgba(250, 243, 232, 0.05) 55%, transparent 80%)',
+                'radial-gradient(ellipse at 50% 50%, rgba(246, 215, 178, 0.09) 0%, rgba(250, 243, 232, 0.02) 55%, transparent 80%)',
             }}
           />
-
-          {/* 2. Soft atmospheric mist */}
-          <div className="absolute -top-48 sm:-top-56 md:-top-64 h-[420px] sm:h-[500px] md:h-[600px] inset-x-0 w-full overflow-hidden flex justify-center pointer-events-none">
-            <img
-              src="/assets/atmospheric-mist.webp"
-              alt=""
-              loading="lazy"
-              decoding="async"
-              className="w-full h-full object-cover object-center opacity-25 min-w-full"
-              style={{
-                filter: 'contrast(1.01) saturate(1.02)',
-                maskImage:
-                  'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.30) 20%, black 50%, rgba(0,0,0,0.30) 80%, transparent 100%)',
-                WebkitMaskImage:
-                  'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.30) 20%, black 50%, rgba(0,0,0,0.30) 80%, transparent 100%)',
-              }}
-              draggable={false}
-            />
-          </div>
         </div>
       );
 
@@ -294,7 +220,7 @@ export default function SectionTransition({
               alt=""
               loading="lazy"
               decoding="async"
-              className="w-full h-full object-cover object-center opacity-25 min-w-full"
+              className="w-full h-full object-cover object-center opacity-10 min-w-full"
               style={{
                 filter: 'contrast(1.01) saturate(1.02)',
                 maskImage:
