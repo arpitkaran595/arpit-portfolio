@@ -667,6 +667,8 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
       id="home"
       className="relative w-full h-[100svh] min-h-[100svh] max-h-[100svh] bg-[#FAF3E8] overflow-hidden select-none box-border"
     >
+      <h1 className="sr-only">Arpit AK — Creative Designer, Video Editor &amp; Visual Storyteller</h1>
+
       {/* ═══════════════════════════════════════════
           LAYER 01 — ATMOSPHERIC WARM SKY LIGHTING & MOUSE-REACTIVE LIGHT GLOW
           Seamless warm ivory sky with golden-peach and lilac-lavender depth
