@@ -398,14 +398,15 @@ export default function DigitalWorkSection() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Filter projects based on active category
+  // Filter projects based on active category (curating primary client & product deliverables)
   const filteredProjects = useMemo(() => {
-    if (selectedCategory === 'ALL') return digitalProjects;
+    const list = digitalProjects.filter((p) => p.slug !== 'arpit-designs');
+    if (selectedCategory === 'ALL') return list;
     if (selectedCategory === 'UI/UX')
-      return digitalProjects.filter((p) => p.type === 'ui' || p.type === 'webapp');
+      return list.filter((p) => p.type === 'ui' || p.type === 'webapp');
     if (selectedCategory === 'WEBSITES')
-      return digitalProjects.filter((p) => p.type === 'website');
-    return digitalProjects;
+      return list.filter((p) => p.type === 'website');
+    return list;
   }, [selectedCategory]);
 
   // Keep index within bounds if filtered projects change

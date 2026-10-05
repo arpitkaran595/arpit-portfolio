@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Maximize2, Minimize2 } from 'lucide-react';
-import { youtubeThumbnails, YoutubeThumbnail } from '../data/portfolio';
+import { youtubeThumbnails, allYoutubeThumbnails, YoutubeThumbnail } from '../data/portfolio';
 import { MediaViewerItem } from './MediaViewer';
 import { viewerSlideVariants } from '../utils/viewerTransitions';
 
@@ -12,14 +12,21 @@ interface ThumbnailViewerProps {
 }
 
 export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClose, item }) => {
-  const totalThumbnails = youtubeThumbnails.length;
+  const thumbnailList = useMemo(() => {
+    if (!item) return youtubeThumbnails;
+    if (item.isArchive) return allYoutubeThumbnails;
+    const exists = youtubeThumbnails.some((t) => t.id === item.id);
+    return exists ? youtubeThumbnails : allYoutubeThumbnails;
+  }, [item]);
+
+  const totalThumbnails = thumbnailList.length;
 
   // Find index of current thumbnail from dataset
   const initialIndex = useMemo(() => {
     if (!item) return 0;
-    const found = youtubeThumbnails.findIndex((t) => t.id === item.id);
+    const found = thumbnailList.findIndex((t) => t.id === item.id);
     return found !== -1 ? found : 0;
-  }, [item]);
+  }, [item, thumbnailList]);
 
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [direction, setDirection] = useState(0);
@@ -30,20 +37,20 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClos
   // Sync index whenever item changes
   useEffect(() => {
     if (isOpen && item) {
-      const found = youtubeThumbnails.findIndex((t) => t.id === item.id);
+      const found = thumbnailList.findIndex((t) => t.id === item.id);
       if (found !== -1) {
         setCurrentIndex(found);
         setDirection(0);
         isTransitioningRef.current = false;
       }
     }
-  }, [isOpen, item]);
+  }, [isOpen, item, thumbnailList]);
 
   // Preload adjacent images so next/prev transitions have zero decode latency
   useEffect(() => {
     if (!isOpen || totalThumbnails <= 1) return;
-    const nextItem = youtubeThumbnails[(currentIndex + 1) % totalThumbnails];
-    const prevItem = youtubeThumbnails[(currentIndex - 1 + totalThumbnails) % totalThumbnails];
+    const nextItem = thumbnailList[(currentIndex + 1) % totalThumbnails];
+    const prevItem = thumbnailList[(currentIndex - 1 + totalThumbnails) % totalThumbnails];
     if (nextItem?.image) {
       const img = new Image();
       img.src = nextItem.image;
@@ -52,10 +59,10 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClos
       const img = new Image();
       img.src = prevItem.image;
     }
-  }, [isOpen, currentIndex, totalThumbnails]);
+  }, [isOpen, currentIndex, totalThumbnails, thumbnailList]);
 
   // Derived active, previous, next thumbnails
-  const activeThumbnail: YoutubeThumbnail = youtubeThumbnails[currentIndex] || youtubeThumbnails[0];
+  const activeThumbnail: YoutubeThumbnail = thumbnailList[currentIndex] || thumbnailList[0];
 
   // Navigation handlers with debounce lock
   const handlePrevious = useCallback(() => {

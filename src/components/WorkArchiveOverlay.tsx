@@ -2,10 +2,10 @@ import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Play } from 'lucide-react';
 import {
-  featuredVideos,
-  youtubeThumbnails,
-  creativePosts,
-  storyPosters,
+  allFeaturedVideos,
+  allYoutubeThumbnails,
+  allCreativePosts,
+  allStoryPosters,
   FeaturedVideo,
   YoutubeThumbnail,
   CreativePost,
@@ -27,6 +27,7 @@ interface ActiveMediaItem {
   category?: string;
   type?: 'video' | 'post' | 'story' | 'thumbnail' | 'creative';
   aspectRatio?: number;
+  isArchive?: boolean;
 }
 
 const CATEGORIES: ArchiveCategory[] = [
@@ -123,15 +124,15 @@ export const WorkArchiveOverlay: React.FC = () => {
 
     // Dynamically derive max length from actual datasets
     const maxLen = Math.max(
-      featuredVideos.length,
-      youtubeThumbnails.length,
-      creativePosts.length,
-      storyPosters.length
+      allFeaturedVideos.length,
+      allYoutubeThumbnails.length,
+      allCreativePosts.length,
+      allStoryPosters.length
     );
 
     for (let i = 0; i < maxLen; i++) {
-      if (featuredVideos[i]) {
-        const v = featuredVideos[i];
+      if (allFeaturedVideos[i]) {
+        const v = allFeaturedVideos[i];
         items.push({
           type: 'video',
           data: v,
@@ -144,8 +145,8 @@ export const WorkArchiveOverlay: React.FC = () => {
           videoUrl: v.videoUrl,
         });
       }
-      if (youtubeThumbnails[i]) {
-        const t = youtubeThumbnails[i];
+      if (allYoutubeThumbnails[i]) {
+        const t = allYoutubeThumbnails[i];
         items.push({
           type: 'thumbnail',
           data: t,
@@ -157,8 +158,8 @@ export const WorkArchiveOverlay: React.FC = () => {
           views: t.views,
         });
       }
-      if (creativePosts[i]) {
-        const c = creativePosts[i];
+      if (allCreativePosts[i]) {
+        const c = allCreativePosts[i];
         items.push({
           type: 'creative',
           data: c,
@@ -169,8 +170,8 @@ export const WorkArchiveOverlay: React.FC = () => {
           aspectRatioClass: c.aspectRatio === 1 ? 'aspect-[1/1]' : 'aspect-[4/5]',
         });
       }
-      if (storyPosters[i]) {
-        const s = storyPosters[i];
+      if (allStoryPosters[i]) {
+        const s = allStoryPosters[i];
         items.push({
           type: 'story',
           data: s,
@@ -198,6 +199,7 @@ export const WorkArchiveOverlay: React.FC = () => {
       duration: video.duration,
       category: 'Video Project',
       type: 'video',
+      isArchive: true,
     });
   }, []);
 
@@ -210,6 +212,7 @@ export const WorkArchiveOverlay: React.FC = () => {
       thumbnail: thumb.image,
       category: 'YouTube Thumbnail',
       type: 'thumbnail',
+      isArchive: true,
     });
   }, []);
 
@@ -223,6 +226,7 @@ export const WorkArchiveOverlay: React.FC = () => {
       category: 'Creative Design',
       type: 'post',
       aspectRatio: post.aspectRatio,
+      isArchive: true,
     });
   }, []);
 
@@ -235,6 +239,7 @@ export const WorkArchiveOverlay: React.FC = () => {
       thumbnail: story.image,
       category: 'Story Artwork',
       type: 'story',
+      isArchive: true,
     });
   }, []);
 
@@ -393,7 +398,7 @@ export const WorkArchiveOverlay: React.FC = () => {
                     className="w-full"
                   >
                     <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 sm:gap-3.5 md:gap-4">
-                      {featuredVideos.map((video) => (
+                      {allFeaturedVideos.map((video) => (
                         <div
                           key={video.id}
                           onClick={() => handleVideoClick(video)}
@@ -447,7 +452,7 @@ export const WorkArchiveOverlay: React.FC = () => {
                     transition={{ duration: 0.35 }}
                     className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-6"
                   >
-                    {youtubeThumbnails.map((thumb) => (
+                    {allYoutubeThumbnails.map((thumb) => (
                       <div
                         key={thumb.id}
                         onClick={() => handleThumbnailClick(thumb)}
@@ -494,7 +499,7 @@ export const WorkArchiveOverlay: React.FC = () => {
                     transition={{ duration: 0.35 }}
                     className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5"
                   >
-                    {creativePosts.map((post) => {
+                    {allCreativePosts.map((post) => {
                       const isSquare = post.aspectRatio === 1;
                       return (
                         <div
@@ -539,7 +544,7 @@ export const WorkArchiveOverlay: React.FC = () => {
                     transition={{ duration: 0.35 }}
                     className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5"
                   >
-                    {storyPosters.map((story) => (
+                    {allStoryPosters.map((story) => (
                       <div
                         key={story.id}
                         onClick={() => handleStoryClick(story)}

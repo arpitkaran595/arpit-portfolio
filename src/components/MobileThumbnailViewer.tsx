@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Maximize2, Minimize2 } from 'lucide-react';
-import { youtubeThumbnails, YoutubeThumbnail } from '../data/portfolio';
+import { youtubeThumbnails, allYoutubeThumbnails, YoutubeThumbnail } from '../data/portfolio';
 import { viewerSlideVariants } from '../utils/viewerTransitions';
 
 export interface MobileThumbnailViewerItem {
@@ -12,6 +12,7 @@ export interface MobileThumbnailViewerItem {
   description?: string;
   aspectRatio?: number;
   type?: string;
+  isArchive?: boolean;
 }
 
 export interface MobileThumbnailViewerProps {
@@ -131,10 +132,16 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
   // Playlist fallback from existing dataset
   const playlist = useMemo<YoutubeThumbnail[]>(() => {
     if (!item) return youtubeThumbnails;
+    if (item.isArchive) return allYoutubeThumbnails;
     const exists = youtubeThumbnails.some(
       (t) => t.id === item.id || t.image === item.thumbnail || t.title === item.title
     );
     if (exists) return youtubeThumbnails;
+
+    const inAll = allYoutubeThumbnails.find(
+      (t) => t.id === item.id || t.image === item.thumbnail || t.title === item.title
+    );
+    if (inAll) return allYoutubeThumbnails;
 
     const customThumb: YoutubeThumbnail = {
       id: item.id || 'custom-yt',

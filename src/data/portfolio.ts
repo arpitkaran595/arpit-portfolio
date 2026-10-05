@@ -453,7 +453,7 @@ export const legacyBraceletVideos: FeaturedVideo[] = [
 
 // ===== Portfolio Content — ATA Store Reels (14 Unique Reels) =====
 // Standard portrait 9:16 format with high-performance WebP posters
-export const featuredVideos: FeaturedVideo[] = [
+export const allFeaturedVideos: FeaturedVideo[] = [
   {
     id: 'vid-1',
     index: '01',
@@ -848,6 +848,15 @@ export const featuredVideos: FeaturedVideo[] = [
   },
 ];
 
+// Curated homepage selection (5 diverse flagship commercial reels)
+export const featuredVideos: FeaturedVideo[] = [
+  { ...allFeaturedVideos.find((v) => v.id === 'vid-1')!, index: '01' },
+  { ...allFeaturedVideos.find((v) => v.id === 'vid-2')!, index: '02' },
+  { ...allFeaturedVideos.find((v) => v.id === 'vid-3')!, index: '03' },
+  { ...allFeaturedVideos.find((v) => v.id === 'vid-6')!, index: '04' },
+  { ...allFeaturedVideos.find((v) => v.id === 'vid-10')!, index: '05' },
+];
+
 export const videoSectionData: VideoSectionData = {
   eyebrow: 'FEATURED WORK',
   heading: 'My Videos.',
@@ -951,7 +960,7 @@ export const storySectionData: StorySectionData = {
 
 // ===== Portfolio Content — Instagram Stories / Portrait Posters =====
 // Strict 9:16 portrait social artwork & story designs
-export const storyPosters: StoryPoster[] = [
+export const allStoryPosters: StoryPoster[] = [
   {
     id: 'story-01',
     index: '01',
@@ -1106,6 +1115,23 @@ export const storyPosters: StoryPoster[] = [
   },
 ];
 
+// Curated homepage selection (8 most distinct editorial & typography story posters)
+const curatedStoryIds = [
+  'story-01', // Self Care & Health
+  'story-02', // Natural Nutrition
+  'story-03', // Hydration Routine
+  'story-05', // Mindful Growth
+  'story-10', // Morning Routine
+  'story-14', // Nutrition Facts
+  'story-18', // Storytelling Poster
+  'story-19', // Visual Narrative
+];
+
+export const storyPosters: StoryPoster[] = curatedStoryIds.map((id, idx) => ({
+  ...allStoryPosters.find((s) => s.id === id)!,
+  index: `0${idx + 1}`,
+}));
+
 // Backwards compatibility export
 export const stories: Story[] = storyPosters.map((s) => ({
   id: s.id,
@@ -1178,7 +1204,7 @@ export const creativesSectionData: CreativesSectionData = {
   ],
 };
 
-export const creativePosts: CreativePost[] = [
+export const allCreativePosts: CreativePost[] = [
   {
     id: 'post-01',
     image: 'https://res.cloudinary.com/dtxdirayo/image/upload/v1790584450/ChatGPT_Image_Aug_7_2026_12_37_16_PM_wayjne.png',
@@ -1307,6 +1333,20 @@ export const creativePosts: CreativePost[] = [
   },
 ];
 
+// Curated homepage selection (6 strongest luxury campaign & product creatives)
+const curatedCreativeIds = [
+  'post-01', // Ruby Power & Confidence
+  'post-03', // Timeless Gem Elegance
+  'post-05', // Strengthens The Sun
+  'post-08', // Crafted Precision
+  'post-10', // Royal Ruby Halo Ring
+  'post-13', // Silk & Stone Harmony
+];
+
+export const creativePosts: CreativePost[] = curatedCreativeIds.map(
+  (id) => allCreativePosts.find((p) => p.id === id)!
+);
+
 // Backwards compatibility export
 export const creatives: Creative[] = creativePosts.map((p) => ({
   id: p.id,
@@ -1377,7 +1417,7 @@ export const thumbnailSectionData: ThumbnailSectionData = {
 
 // ===== Portfolio Content — YouTube Thumbnails =====
 
-export const youtubeThumbnails: YoutubeThumbnail[] = [
+export const allYoutubeThumbnails: YoutubeThumbnail[] = [
   {
     id: 'yt-1',
     index: '01',
@@ -1459,6 +1499,20 @@ export const youtubeThumbnails: YoutubeThumbnail[] = [
     aspectRatio: 16 / 9,
   },
 ];
+
+// Curated homepage selection (5 diverse documentary, tech & peak gaming thumbnails)
+const curatedThumbnailIds = [
+  'yt-3', // History of Enzo Ferrari (Documentary, 2.1M views)
+  'yt-4', // The Rise of Artificial Intelligence (Tech, 1.8M views)
+  'yt-1', // BGMI Live Stream Tournament (Gaming, 1.4M views)
+  'yt-6', // BGMI Ultimate Clutch Moments (Gaming, 950K views)
+  'yt-7', // Free Fire Championship (Gaming, 1.2M views)
+];
+
+export const youtubeThumbnails: YoutubeThumbnail[] = curatedThumbnailIds.map((id, idx) => ({
+  ...allYoutubeThumbnails.find((t) => t.id === id)!,
+  index: `0${idx + 1}`,
+}));
 
 // Backward-compatibility export
 export const thumbnails: Thumbnail[] = youtubeThumbnails.map((yt) => ({

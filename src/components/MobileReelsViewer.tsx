@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import {
   featuredVideos,
+  allFeaturedVideos,
   FeaturedVideo,
   SOFTWARE_ICON_MAP,
   SoftwareIconType,
@@ -107,10 +108,16 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
   // Construct videos playlist starting from featuredVideos
   const playlist = useMemo<FeaturedVideo[]>(() => {
     if (!item) return featuredVideos;
+    if (item.isArchive) return allFeaturedVideos;
     const exists = featuredVideos.some(
       (v) => v.id === item.id || v.videoUrl === item.videoUrl || v.title === item.title
     );
     if (exists) return featuredVideos;
+
+    const inAll = allFeaturedVideos.find(
+      (v) => v.id === item.id || v.videoUrl === item.videoUrl || v.title === item.title
+    );
+    if (inAll) return allFeaturedVideos;
 
     // Synthesize item as a FeaturedVideo if not directly present
     const customVideo: FeaturedVideo = {

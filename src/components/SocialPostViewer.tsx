@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronRight } from 'lucide-react';
-import { creativePosts, CreativePost } from '../data/portfolio';
+import { creativePosts, allCreativePosts, CreativePost } from '../data/portfolio';
 import { viewerSlideVariants, VIEWER_TRANSITION_DURATION, VIEWER_TRANSITION_EASE } from '../utils/viewerTransitions';
 
 export interface SocialPostViewerItem {
@@ -11,6 +11,7 @@ export interface SocialPostViewerItem {
   category?: string;
   description?: string;
   aspectRatio?: number;
+  isArchive?: boolean;
 }
 
 interface SocialPostViewerProps {
@@ -20,16 +21,25 @@ interface SocialPostViewerProps {
 }
 
 const SocialPostViewer: React.FC<SocialPostViewerProps> = ({ isOpen, onClose, item }) => {
-  const totalPosts = creativePosts.length;
+  const postList = useMemo(() => {
+    if (!item) return creativePosts;
+    if (item.isArchive) return allCreativePosts;
+    const exists = creativePosts.some(
+      (p) => p.id === item.id || p.image === item.thumbnail || p.title === item.title
+    );
+    return exists ? creativePosts : allCreativePosts;
+  }, [item]);
+
+  const totalPosts = postList.length;
 
   // Resolve initial post index matching clicked item
   const initialIndex = useMemo(() => {
     if (!item) return 0;
-    const foundIdx = creativePosts.findIndex(
+    const foundIdx = postList.findIndex(
       (p) => p.id === item.id || p.image === item.thumbnail || p.title === item.title
     );
     return foundIdx >= 0 ? foundIdx : 0;
-  }, [item]);
+  }, [item, postList]);
 
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [direction, setDirection] = useState(0);
@@ -47,8 +57,8 @@ const SocialPostViewer: React.FC<SocialPostViewerProps> = ({ isOpen, onClose, it
   // Preload adjacent images so next/prev transitions have zero decode latency
   useEffect(() => {
     if (!isOpen || totalPosts <= 1) return;
-    const nextItem = creativePosts[(currentIndex + 1) % totalPosts];
-    const prevItem = creativePosts[(currentIndex - 1 + totalPosts) % totalPosts];
+    const nextItem = postList[(currentIndex + 1) % totalPosts];
+    const prevItem = postList[(currentIndex - 1 + totalPosts) % totalPosts];
     if (nextItem?.image) {
       const img = new Image();
       img.src = nextItem.image;
@@ -57,14 +67,14 @@ const SocialPostViewer: React.FC<SocialPostViewerProps> = ({ isOpen, onClose, it
       const img = new Image();
       img.src = prevItem.image;
     }
-  }, [isOpen, currentIndex, totalPosts]);
+  }, [isOpen, currentIndex, totalPosts, postList]);
 
   // Derived current, previous, and next posts
-  const activePost: CreativePost = creativePosts[currentIndex] || creativePosts[0];
+  const activePost: CreativePost = postList[currentIndex] || postList[0];
   const prevIndex = (currentIndex - 1 + totalPosts) % totalPosts;
   const nextIndex = (currentIndex + 1) % totalPosts;
-  const prevPost = creativePosts[prevIndex];
-  const nextPost = creativePosts[nextIndex];
+  const prevPost = postList[prevIndex];
+  const nextPost = postList[nextIndex];
 
   // Navigation callbacks
   const handlePrevious = useCallback((e?: React.MouseEvent) => {

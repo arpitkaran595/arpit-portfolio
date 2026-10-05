@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-import { storyPosters, StoryPoster } from '../data/portfolio';
+import { storyPosters, allStoryPosters, StoryPoster } from '../data/portfolio';
 import { viewerSlideVariants } from '../utils/viewerTransitions';
 
 export interface StoryViewerItem {
@@ -10,6 +10,7 @@ export interface StoryViewerItem {
   thumbnail: string;
   category?: string;
   description?: string;
+  isArchive?: boolean;
 }
 
 export interface MobileStoryViewerProps {
@@ -111,10 +112,16 @@ export const MobileStoryViewer: React.FC<MobileStoryViewerProps> = ({
   // Construct playlist fallback
   const playlist = useMemo<StoryPoster[]>(() => {
     if (!item) return storyPosters;
+    if (item.isArchive) return allStoryPosters;
     const exists = storyPosters.some(
       (s) => s.id === item.id || s.image === item.thumbnail || s.title === item.title
     );
     if (exists) return storyPosters;
+
+    const inAll = allStoryPosters.find(
+      (s) => s.id === item.id || s.image === item.thumbnail || s.title === item.title
+    );
+    if (inAll) return allStoryPosters;
 
     // Synthesize custom story poster if not directly in array
     const customStory: StoryPoster = {

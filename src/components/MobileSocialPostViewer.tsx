@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-import { creativePosts, CreativePost } from '../data/portfolio';
+import { creativePosts, allCreativePosts, CreativePost } from '../data/portfolio';
 import { viewerSlideVariants } from '../utils/viewerTransitions';
 
 export interface MobileSocialPostViewerItem {
@@ -12,6 +12,7 @@ export interface MobileSocialPostViewerItem {
   description?: string;
   aspectRatio?: number;
   type?: string;
+  isArchive?: boolean;
 }
 
 export interface MobileSocialPostViewerProps {
@@ -147,10 +148,16 @@ export const MobileSocialPostViewer: React.FC<MobileSocialPostViewerProps> = ({
   // Construct playlist fallback
   const playlist = useMemo<CreativePost[]>(() => {
     if (!item) return creativePosts;
+    if (item.isArchive) return allCreativePosts;
     const exists = creativePosts.some(
       (p) => p.id === item.id || p.image === item.thumbnail || p.title === item.title
     );
     if (exists) return creativePosts;
+
+    const inAll = allCreativePosts.find(
+      (p) => p.id === item.id || p.image === item.thumbnail || p.title === item.title
+    );
+    if (inAll) return allCreativePosts;
 
     const customPost: CreativePost = {
       id: item.id || 'custom-post',

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronRight } from 'lucide-react';
-import { storyPosters, StoryPoster } from '../data/portfolio';
+import { storyPosters, allStoryPosters, StoryPoster } from '../data/portfolio';
 import { viewerSlideVariants } from '../utils/viewerTransitions';
 
 export interface StoryViewerItem {
@@ -10,6 +10,7 @@ export interface StoryViewerItem {
   thumbnail: string;
   category?: string;
   description?: string;
+  isArchive?: boolean;
 }
 
 interface StoryViewerProps {
@@ -19,16 +20,25 @@ interface StoryViewerProps {
 }
 
 const StoryViewer: React.FC<StoryViewerProps> = ({ isOpen, onClose, item }) => {
-  const totalStories = storyPosters.length;
+  const storyList = useMemo(() => {
+    if (!item) return storyPosters;
+    if (item.isArchive) return allStoryPosters;
+    const exists = storyPosters.some(
+      (s) => s.id === item.id || s.image === item.thumbnail || s.title === item.title
+    );
+    return exists ? storyPosters : allStoryPosters;
+  }, [item]);
+
+  const totalStories = storyList.length;
 
   // Resolve initial story index matching clicked item
   const initialIndex = useMemo(() => {
     if (!item) return 0;
-    const foundIdx = storyPosters.findIndex(
+    const foundIdx = storyList.findIndex(
       (s) => s.id === item.id || s.image === item.thumbnail || s.title === item.title
     );
     return foundIdx >= 0 ? foundIdx : 0;
-  }, [item]);
+  }, [item, storyList]);
 
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [direction, setDirection] = useState(0);
@@ -46,8 +56,8 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ isOpen, onClose, item }) => {
   // Preload adjacent images so next/prev transitions have zero decode latency
   useEffect(() => {
     if (!isOpen || totalStories <= 1) return;
-    const nextItem = storyPosters[(currentIndex + 1) % totalStories];
-    const prevItem = storyPosters[(currentIndex - 1 + totalStories) % totalStories];
+    const nextItem = storyList[(currentIndex + 1) % totalStories];
+    const prevItem = storyList[(currentIndex - 1 + totalStories) % totalStories];
     if (nextItem?.image) {
       const img = new Image();
       img.src = nextItem.image;
@@ -56,14 +66,14 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ isOpen, onClose, item }) => {
       const img = new Image();
       img.src = prevItem.image;
     }
-  }, [isOpen, currentIndex, totalStories]);
+  }, [isOpen, currentIndex, totalStories, storyList]);
 
   // Derived current, previous, and next stories
-  const activeStory: StoryPoster = storyPosters[currentIndex] || storyPosters[0];
+  const activeStory: StoryPoster = storyList[currentIndex] || storyList[0];
   const prevIndex = (currentIndex - 1 + totalStories) % totalStories;
   const nextIndex = (currentIndex + 1) % totalStories;
-  const prevStory = storyPosters[prevIndex];
-  const nextStory = storyPosters[nextIndex];
+  const prevStory = storyList[prevIndex];
+  const nextStory = storyList[nextIndex];
 
   // Navigation callbacks
   const handlePrevious = useCallback((e?: React.MouseEvent) => {

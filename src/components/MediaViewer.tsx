@@ -23,10 +23,14 @@ import MobileReelsViewer from './MobileReelsViewer';
 import { viewerSlideVariants } from '../utils/viewerTransitions';
 import {
   featuredVideos,
+  allFeaturedVideos,
   FeaturedVideo,
   storyPosters,
+  allStoryPosters,
   creativePosts,
+  allCreativePosts,
   youtubeThumbnails,
+  allYoutubeThumbnails,
   SOFTWARE_ICON_MAP,
   SoftwareToolItem,
 } from '../data/portfolio';
@@ -43,6 +47,7 @@ export interface MediaViewerItem {
   type?: 'video' | 'post' | 'story' | 'thumbnail' | 'creative';
   aspectRatio?: number;
   orientation?: 'portrait' | 'landscape';
+  isArchive?: boolean;
 }
 
 interface MediaViewerProps {
@@ -76,16 +81,25 @@ function parseDurationToSeconds(dur?: string): number {
 }
 
 const VideoViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layoutId, onActiveVideoChange }) => {
-  const totalVideos = featuredVideos.length;
+  const videoList = useMemo(() => {
+    if (!item) return featuredVideos;
+    if (item.isArchive) return allFeaturedVideos;
+    const existsInCurated = featuredVideos.some(
+      (v) => v.id === item.id || v.videoUrl === item.videoUrl || v.title === item.title
+    );
+    return existsInCurated ? featuredVideos : allFeaturedVideos;
+  }, [item]);
+
+  const totalVideos = videoList.length;
 
   // Find initial video index matching the opened item
   const initialIndex = useMemo(() => {
     if (!item) return 0;
-    const foundIdx = featuredVideos.findIndex(
+    const foundIdx = videoList.findIndex(
       (v) => v.id === item.id || v.videoUrl === item.videoUrl || v.title === item.title
     );
     return foundIdx >= 0 ? foundIdx : 0;
-  }, [item]);
+  }, [item, videoList]);
 
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [direction, setDirection] = useState(0);
@@ -123,8 +137,8 @@ const VideoViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layout
   // Preload adjacent video posters for zero-delay slide entry
   useEffect(() => {
     if (!isOpen || totalVideos <= 1) return;
-    const nextItem = featuredVideos[(currentIndex + 1) % totalVideos];
-    const prevItem = featuredVideos[(currentIndex - 1 + totalVideos) % totalVideos];
+    const nextItem = videoList[(currentIndex + 1) % totalVideos];
+    const prevItem = videoList[(currentIndex - 1 + totalVideos) % totalVideos];
     if (nextItem?.poster) {
       const img = new Image();
       img.src = nextItem.poster;
@@ -133,22 +147,22 @@ const VideoViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layout
       const img = new Image();
       img.src = prevItem.poster;
     }
-  }, [isOpen, currentIndex, totalVideos]);
+  }, [isOpen, currentIndex, totalVideos, videoList]);
 
   const isVideoMode = Boolean(
     item?.videoUrl ||
     item?.type === 'video' ||
-    (!item?.type && item?.id && featuredVideos.some((v) => v.id === item.id))
+    (!item?.type && item?.id && (featuredVideos.some((v) => v.id === item.id) || allFeaturedVideos.some((v) => v.id === item.id)))
   );
   const activeVideo: FeaturedVideo | undefined = isVideoMode
-    ? featuredVideos[currentIndex]
+    ? videoList[currentIndex]
     : undefined;
 
   // Derive previous and next video objects
   const prevIndex = (currentIndex - 1 + totalVideos) % totalVideos;
   const nextIndex = (currentIndex + 1) % totalVideos;
-  const prevVideo = featuredVideos[prevIndex];
-  const nextVideo = featuredVideos[nextIndex];
+  const prevVideo = videoList[prevIndex];
+  const nextVideo = videoList[nextIndex];
 
   // Derive active content metadata
   const activeTitle = activeVideo?.title || item?.title || '';
@@ -986,7 +1000,8 @@ const MediaViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layout
   const isThumbnail = Boolean(
     item.type === 'thumbnail' ||
     (item.id && item.id.startsWith('yt-')) ||
-    youtubeThumbnails.some((t) => t.id === item.id)
+    youtubeThumbnails.some((t) => t.id === item.id) ||
+    allYoutubeThumbnails.some((t) => t.id === item.id)
   );
 
   if (isThumbnail) {
@@ -1000,7 +1015,8 @@ const MediaViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layout
     const isStory = Boolean(
       item.type === 'story' ||
       (item.id && item.id.startsWith('story-')) ||
-      storyPosters.some((s) => s.id === item.id)
+      storyPosters.some((s) => s.id === item.id) ||
+      allStoryPosters.some((s) => s.id === item.id)
     );
 
     if (isStory) {
@@ -1017,7 +1033,8 @@ const MediaViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layout
         item.type === 'post' ||
         item.type === 'creative' ||
         (item.id && item.id.startsWith('post-')) ||
-        creativePosts.some((c) => c.id === item.id)
+        creativePosts.some((c) => c.id === item.id) ||
+        allCreativePosts.some((c) => c.id === item.id)
       );
 
       if (isSocialPost) {

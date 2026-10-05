@@ -4,11 +4,10 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { digitalProjects, DigitalProject } from '../data/portfolio';
 
-// Select the 3 strongest, distinct existing projects with dedicated case studies:
+// Select the 2 flagship distinct client & product projects with dedicated case studies:
 // 1. ImageMint (Web Application / Utility & Product Design)
-// 2. ARPIT DESIGNS (Editorial Brand & Motion Showcase)
-// 3. Yogesh Naharwara (Client Interface & Framer Development)
-const selectedSlugs = ['imagemint', 'arpit-designs', 'yogesh-naharwara'];
+// 2. Yogesh Naharwara (Client Interface & Framer Development)
+const selectedSlugs = ['imagemint', 'yogesh-naharwara'];
 
 interface SelectedProjectItem {
   project: DigitalProject;
@@ -32,8 +31,6 @@ const selectedCaseStudies: SelectedProjectItem[] = selectedSlugs
     const discipline =
       proj.slug === 'imagemint'
         ? 'Product Design & Web Utility'
-        : proj.slug === 'arpit-designs'
-        ? 'Visual Identity & Web Design'
         : 'Interface Design & Framer Development';
 
     const tags = proj.caseStudy?.services || (proj.tools ? proj.tools.slice(0, 3) : []);
