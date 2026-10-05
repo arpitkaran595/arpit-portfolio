@@ -15,8 +15,43 @@ import Footer from '../components/Footer';
 import WorkArchiveOverlay from '../components/WorkArchiveOverlay';
 
 export default function HomePage() {
-  const [isLoaded, setIsLoaded] = useState(() => {
+  const [isHeroReady, setIsHeroReady] = useState(() => {
+    if (sessionStorage.getItem('came_from_case_study') === 'true') {
+      return true;
+    }
+
+    const navEntries =
+      typeof performance !== 'undefined' && performance.getEntriesByType
+        ? performance.getEntriesByType('navigation')
+        : [];
+    const isReload =
+      navEntries.length > 0 &&
+      (navEntries[0] as PerformanceNavigationTiming).type === 'reload';
+    if (isReload) {
+      sessionStorage.removeItem('portfolio_intro_shown');
+      return false;
+    }
+
     return Boolean(sessionStorage.getItem('portfolio_intro_shown'));
+  });
+
+  const [showIntro, setShowIntro] = useState(() => {
+    if (sessionStorage.getItem('came_from_case_study') === 'true') {
+      return false;
+    }
+
+    const navEntries =
+      typeof performance !== 'undefined' && performance.getEntriesByType
+        ? performance.getEntriesByType('navigation')
+        : [];
+    const isReload =
+      navEntries.length > 0 &&
+      (navEntries[0] as PerformanceNavigationTiming).type === 'reload';
+    if (isReload) {
+      return true;
+    }
+
+    return !sessionStorage.getItem('portfolio_intro_shown');
   });
   const navRef = useRef<HTMLElement>(null);
 
@@ -48,18 +83,28 @@ export default function HomePage() {
     };
   }, []);
 
+  const handleRevealStart = useCallback(() => {
+    setIsHeroReady(true);
+  }, []);
+
   const handleLoadingComplete = useCallback(() => {
-    setIsLoaded(true);
+    setIsHeroReady(true);
+    setShowIntro(false);
     sessionStorage.setItem('portfolio_intro_shown', 'true');
   }, []);
 
   return (
     <>
-      {!isLoaded && <LoadingScreen onComplete={handleLoadingComplete} />}
-      <Navbar isLoaded={isLoaded} navRef={navRef} />
+      {showIntro && (
+        <LoadingScreen
+          onComplete={handleLoadingComplete}
+          onRevealStart={handleRevealStart}
+        />
+      )}
+      <Navbar isLoaded={isHeroReady} navRef={navRef} />
 
       <main className="relative w-full overflow-x-clip">
-        <Hero isLoaded={isLoaded} navRef={navRef} />
+        <Hero isLoaded={isHeroReady} navRef={navRef} />
         <About />
         <SectionTransition variant="about-to-videos" />
 
