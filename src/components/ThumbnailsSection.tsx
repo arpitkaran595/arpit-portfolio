@@ -171,6 +171,7 @@ interface ThumbnailCardProps {
   totalCount: number;
   screenWidth: number;
   onCardClick: (index: number, item: YoutubeThumbnail) => void;
+  onOpenLightbox: (item: YoutubeThumbnail) => void;
 }
 
 const ThumbnailCard: React.FC<ThumbnailCardProps> = ({
@@ -180,6 +181,7 @@ const ThumbnailCard: React.FC<ThumbnailCardProps> = ({
   totalCount,
   screenWidth,
   onCardClick,
+  onOpenLightbox,
 }) => {
   const x = useTransform(progress, (p) => {
     const u = getWrappedOffset(index, p, totalCount);
@@ -224,7 +226,7 @@ const ThumbnailCard: React.FC<ThumbnailCardProps> = ({
   const pointerEvents = useTransform(progress, (p) => {
     const u = getWrappedOffset(index, p, totalCount);
     const absU = Math.abs(u);
-    return absU <= (screenWidth < 640 ? 0.8 : 2.2) ? 'auto' : 'none';
+    return absU <= (screenWidth < 640 ? 1.5 : 2.2) ? 'auto' : 'none';
   });
 
   return (
@@ -267,9 +269,17 @@ const ThumbnailCard: React.FC<ThumbnailCardProps> = ({
 
         {/* Lightbox Trigger Top-Right */}
         <div className="absolute top-2.5 sm:top-3.5 right-2.5 sm:right-3.5 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-black/60 backdrop-blur-md border border-white/30 text-white flex items-center justify-center">
+          <button
+            type="button"
+            aria-label={`Open ${item.title} in viewer`}
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenLightbox(item);
+            }}
+            className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-black/60 backdrop-blur-md border border-white/30 text-white flex items-center justify-center hover:bg-black/90 hover:border-gold-400/80 hover:text-gold-400 transition-all cursor-pointer shadow-md active:scale-95"
+          >
             <Maximize2 className="w-3.5 h-3.5" />
-          </span>
+          </button>
         </div>
 
         {/* Title and Index Bottom Overlay */}
@@ -550,6 +560,7 @@ const ThumbnailsSection: React.FC = () => {
                 totalCount={totalThumbnails}
                 screenWidth={screenWidth}
                 onCardClick={handleCardClick}
+                onOpenLightbox={setSelectedThumbnail}
               />
             ))}
           </div>

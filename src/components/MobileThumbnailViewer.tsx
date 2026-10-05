@@ -529,6 +529,7 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
                     }}
                     type="button"
                     aria-label="Enter Fullscreen"
+                    data-testid="mobile-thumbnail-enter-fs-btn"
                     className="absolute bottom-2.5 right-2.5 z-30 w-8 h-8 rounded-full bg-black/75 backdrop-blur-md border border-white/25 hover:border-[#C4943A] text-white/90 hover:text-white flex items-center justify-center shadow-lg active:scale-90 transition-all cursor-pointer pointer-events-auto"
                   >
                     <Maximize2 className="w-4 h-4" />
@@ -631,6 +632,51 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
                 }}
               >
                 <Minimize2 className="w-5 h-5" />
+              </button>
+
+              {/* Fullscreen Position Counter */}
+              <div
+                className="absolute top-4 left-4 z-50 px-2.5 py-1 rounded-md bg-black/60 backdrop-blur-md border border-white/20 pointer-events-none select-none text-[11px] font-sora font-semibold text-white/85"
+                style={{
+                  top: 'max(env(safe-area-inset-top, 0px), 16px)',
+                  left: 'max(env(safe-area-inset-left, 0px), 16px)',
+                }}
+              >
+                {String(currentIndex + 1).padStart(2, '0')}&nbsp;/&nbsp;{String(totalThumbnails).padStart(2, '0')}
+              </div>
+
+              {/* Previous Floating Button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePrevious();
+                }}
+                type="button"
+                aria-label="Previous Thumbnail"
+                data-testid="mobile-fullscreen-prev-btn"
+                className="absolute left-3 top-1/2 -translate-y-1/2 z-50 w-11 h-11 rounded-full bg-black/60 hover:bg-black/80 active:scale-90 border border-white/20 text-white flex items-center justify-center transition-all shadow-xl cursor-pointer pointer-events-auto"
+                style={{
+                  left: 'max(env(safe-area-inset-left, 0px), 12px)',
+                }}
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+
+              {/* Next Floating Button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNext();
+                }}
+                type="button"
+                aria-label="Next Thumbnail"
+                data-testid="mobile-fullscreen-next-btn"
+                className="absolute right-3 top-1/2 -translate-y-1/2 z-50 w-11 h-11 rounded-full bg-black/60 hover:bg-black/80 active:scale-90 border border-white/20 text-white flex items-center justify-center transition-all shadow-xl cursor-pointer pointer-events-auto"
+                style={{
+                  right: 'max(env(safe-area-inset-right, 0px), 12px)',
+                }}
+              >
+                <ChevronRight className="w-6 h-6" />
               </button>
 
               {/* Fullscreen Artwork with Contain (Never Cropped or Stretched) */}

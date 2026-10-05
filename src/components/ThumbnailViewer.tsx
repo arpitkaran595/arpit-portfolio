@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Maximize2, Minimize2 } from 'lucide-react';
 import { youtubeThumbnails, YoutubeThumbnail } from '../data/portfolio';
 import { MediaViewerItem } from './MediaViewer';
 import { viewerSlideVariants } from '../utils/viewerTransitions';
@@ -23,6 +23,8 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClos
 
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [direction, setDirection] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const isTransitioningRef = useRef(false);
 
   // Sync index whenever item changes
@@ -76,13 +78,69 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClos
     }, 340);
   }, [totalThumbnails]);
 
+  // Fullscreen toggle logic
+  const enterFullscreen = useCallback(async () => {
+    setIsFullscreen(true);
+    try {
+      const root = containerRef.current || document.documentElement;
+      if (root.requestFullscreen) {
+        await root.requestFullscreen();
+      } else if ((root as any).webkitRequestFullscreen) {
+        await (root as any).webkitRequestFullscreen();
+      }
+    } catch {
+      // Fullscreen API blocked or unsupported
+    }
+  }, []);
+
+  const exitFullscreen = useCallback(async () => {
+    setIsFullscreen(false);
+    try {
+      if (document.fullscreenElement || (document as any).webkitFullscreenElement) {
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        } else if ((document as any).webkitExitFullscreen) {
+          await (document as any).webkitExitFullscreen();
+        }
+      }
+    } catch {
+      // Safe fallback
+    }
+  }, []);
+
+  const handleClose = useCallback(() => {
+    if (isFullscreen) {
+      exitFullscreen();
+    }
+    onClose();
+  }, [isFullscreen, exitFullscreen, onClose]);
+
+  // Sync with browser fullscreen state changes
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement && !(document as any).webkitFullscreenElement) {
+        setIsFullscreen(false);
+      }
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+    };
+  }, []);
+
   // Keyboard navigation & scroll lock & wheel navigation
   useEffect(() => {
     if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        onClose();
+        if (isFullscreen) {
+          exitFullscreen();
+        } else {
+          handleClose();
+        }
       } else if (e.key === 'ArrowLeft') {
         e.preventDefault();
         handlePrevious();
@@ -122,7 +180,7 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClos
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('wheel', handleWheel);
     };
-  }, [isOpen, onClose, handlePrevious, handleNext]);
+  }, [isOpen, handleClose, handlePrevious, handleNext, isFullscreen, exitFullscreen]);
 
   // Touch swipe support for mobile
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
@@ -149,85 +207,109 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClos
 
   return (
     <AnimatePresence>
-      {/* 1. Backdrop (Unified Dark Gallery Backdrop with Ambient Blur) */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.35 }}
-        className="fixed inset-0 z-[100] bg-black/85 viewer-backdrop backdrop-blur-md"
-        onClick={onClose}
-      />
+      <div ref={containerRef} className="fixed inset-0 z-[100] overflow-hidden">
+        {/* 1. Backdrop (Unified Dark Gallery Backdrop with Ambient Blur) */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.35 }}
+          className="fixed inset-0 z-[100] bg-black/85 viewer-backdrop backdrop-blur-md"
+          onClick={handleClose}
+        />
 
-      {/* 2. Ambient Blurred Background Layer (Derived from current active thumbnail) */}
-      <div className="fixed inset-0 z-[101] pointer-events-none overflow-hidden select-none">
-        <AnimatePresence mode="popLayout">
-          <motion.div
-            key={`ambient-${activeThumbnail.id}`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.45, ease: 'easeInOut' }}
-            className="absolute inset-0"
-          >
-            <div
-              className="absolute inset-0 w-full h-full bg-cover bg-center scale-115 filter blur-3xl opacity-25"
-              style={{
-                backgroundImage: `url(${activeThumbnail.image})`,
-              }}
-            />
-            {/* Deep Vignette & Dark Overlay to eliminate bright distraction and keep background subtle */}
-            <div className="absolute inset-0 bg-black/55" />
-            <div
+        {/* 2. Ambient Blurred Background Layer (Derived from current active thumbnail) */}
+        <div className="fixed inset-0 z-[101] pointer-events-none overflow-hidden select-none">
+          <AnimatePresence mode="popLayout">
+            <motion.div
+              key={`ambient-${activeThumbnail.id}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.45, ease: 'easeInOut' }}
               className="absolute inset-0"
-              style={{
-                background:
-                  'radial-gradient(ellipse at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.78) 65%, rgba(0,0,0,0.96) 100%)',
-              }}
-            />
-          </motion.div>
-        </AnimatePresence>
-      </div>
+            >
+              <div
+                className="absolute inset-0 w-full h-full bg-cover bg-center scale-115 filter blur-3xl opacity-25"
+                style={{
+                  backgroundImage: `url(${activeThumbnail.image})`,
+                }}
+              />
+              {/* Deep Vignette & Dark Overlay to eliminate bright distraction and keep background subtle */}
+              <div className="absolute inset-0 bg-black/55" />
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    'radial-gradient(ellipse at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.78) 65%, rgba(0,0,0,0.96) 100%)',
+                }}
+              />
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
-      {/* 3. Full-Screen Interactive Stage */}
-      <div
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-        className="fixed inset-0 z-[102] flex flex-col justify-between p-3 sm:p-6 md:p-8 pointer-events-none select-none overflow-hidden"
-      >
-        {/* ═══════════════════════════════════════════════════════════ */}
-        {/* A. TOP BAR: IDENTITY (LEFT) + CLOSE BUTTON (RIGHT)         */}
-        {/* ═══════════════════════════════════════════════════════════ */}
-        <div className="w-full flex items-center justify-between pointer-events-auto z-20">
-          {/* Top-Left Brand Logo & Dynamic Indicator */}
-          <div className="px-2.5 py-1 sm:px-0 sm:py-0 rounded-lg bg-black/45 sm:bg-transparent backdrop-blur-xs sm:backdrop-blur-none border border-white/10 sm:border-transparent">
-            <div className="font-playfair text-xs sm:text-[13px] font-bold tracking-[0.16em] text-white/90 uppercase drop-shadow-md">
-              ARPIT <span className="text-[#C4943A]">AK</span>
+        {/* 3. Full-Screen Interactive Stage */}
+        <div
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          className="fixed inset-0 z-[102] flex flex-col justify-between p-3 sm:p-6 md:p-8 pointer-events-none select-none overflow-hidden"
+        >
+          {/* ═══════════════════════════════════════════════════════════ */}
+          {/* A. TOP BAR: IDENTITY (LEFT) + FULLSCREEN & CLOSE (RIGHT)   */}
+          {/* ═══════════════════════════════════════════════════════════ */}
+          <div className="w-full flex items-center justify-between pointer-events-auto z-20">
+            {/* Top-Left Brand Logo & Dynamic Indicator */}
+            <div className="px-2.5 py-1 sm:px-0 sm:py-0 rounded-lg bg-black/45 sm:bg-transparent backdrop-blur-xs sm:backdrop-blur-none border border-white/10 sm:border-transparent">
+              <div className="font-playfair text-xs sm:text-[13px] font-bold tracking-[0.16em] text-white/90 uppercase drop-shadow-md">
+                ARPIT <span className="text-[#C4943A]">AK</span>
+              </div>
+              <div className="font-sora text-[10px] sm:text-[11px] font-semibold text-white/60 tracking-widest mt-0.5 drop-shadow-sm">
+                16:9 THUMBNAIL&nbsp;•&nbsp;
+                <span className="text-white/85">
+                  {String(currentIndex + 1).padStart(2, '0')}&nbsp;/&nbsp;{String(totalThumbnails).padStart(2, '0')}
+                </span>
+              </div>
             </div>
-            <div className="font-sora text-[10px] sm:text-[11px] font-semibold text-white/60 tracking-widest mt-0.5 drop-shadow-sm">
-              16:9 THUMBNAIL&nbsp;•&nbsp;
-              <span className="text-white/85">
-                {String(currentIndex + 1).padStart(2, '0')}&nbsp;/&nbsp;{String(totalThumbnails).padStart(2, '0')}
-              </span>
+
+            {/* Top-Right Controls: Fullscreen Toggle & Close Button */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              {/* Fullscreen / Maximize Toggle */}
+              <button
+                onClick={isFullscreen ? exitFullscreen : enterFullscreen}
+                type="button"
+                aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+                data-testid="thumbnail-fullscreen-btn"
+                className="group flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 border border-white/15 backdrop-blur-md text-white/80 hover:text-white transition-all duration-200 cursor-pointer shadow-lg"
+              >
+                <span className="text-[11px] sm:text-xs font-sora font-medium tracking-wider uppercase">
+                  {isFullscreen ? 'EXIT' : 'FULLSCREEN'}
+                </span>
+                <div className="w-5 h-5 rounded-full bg-white/15 flex items-center justify-center group-hover:bg-white/25 transition-colors">
+                  {isFullscreen ? (
+                    <Minimize2 className="w-3.2 sm:w-3.5 h-3.2 sm:h-3.5 text-white" />
+                  ) : (
+                    <Maximize2 className="w-3.2 sm:w-3.5 h-3.2 sm:h-3.5 text-white" />
+                  )}
+                </div>
+              </button>
+
+              {/* Close Button */}
+              <button
+                onClick={handleClose}
+                type="button"
+                aria-label="Close thumbnail viewer"
+                data-testid="thumbnail-close-btn"
+                className="group flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 border border-white/15 backdrop-blur-md text-white/80 hover:text-white transition-all duration-200 cursor-pointer shadow-lg"
+              >
+                <span className="text-[11px] sm:text-xs font-sora font-medium tracking-wider uppercase">
+                  CLOSE
+                </span>
+                <div className="w-5 h-5 rounded-full bg-white/15 flex items-center justify-center group-hover:bg-white/25 transition-colors">
+                  <X className="w-3.2 sm:w-3.5 h-3.2 sm:h-3.5 text-white" />
+                </div>
+              </button>
             </div>
           </div>
-
-          {/* Top-Right Close Button */}
-          <button
-            onClick={onClose}
-            type="button"
-            aria-label="Close thumbnail viewer"
-            data-testid="thumbnail-close-btn"
-            className="group flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 border border-white/15 backdrop-blur-md text-white/80 hover:text-white transition-all duration-200 cursor-pointer shadow-lg"
-          >
-            <span className="text-[11px] sm:text-xs font-sora font-medium tracking-wider uppercase">
-              CLOSE
-            </span>
-            <div className="w-5 h-5 rounded-full bg-white/15 flex items-center justify-center group-hover:bg-white/25 transition-colors">
-              <X className="w-3.2 sm:w-3.5 h-3.2 sm:h-3.5 text-white" />
-            </div>
-          </button>
-        </div>
 
         {/* ═══════════════════════════════════════════════════════════ */}
         {/* B. CENTER HERO: 16:9 ARTWORK WITH FLANKING NAVIGATION      */}
@@ -379,8 +461,9 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClos
           </div>
         </div>
       </div>
-    </AnimatePresence>
-  );
+    </div>
+  </AnimatePresence>
+);
 };
 
 export default ThumbnailViewer;

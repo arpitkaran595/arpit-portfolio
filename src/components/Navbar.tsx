@@ -111,6 +111,8 @@ export default function Navbar({ isLoaded, navRef }: NavbarProps) {
 
           {/* Mobile Hamburger */}
           <button 
+            type="button"
+            aria-label="Open navigation menu"
             className="md:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1.5 z-[60]"
             onClick={() => setIsMobileMenuOpen(true)}
           >
@@ -125,6 +127,8 @@ export default function Navbar({ isLoaded, navRef }: NavbarProps) {
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-[100] bg-cream-100 flex flex-col justify-center items-center">
           <button 
+            type="button"
+            aria-label="Close navigation menu"
             className="absolute top-6 right-6 text-charcoal-800 p-2"
             onClick={() => setIsMobileMenuOpen(false)}
           >

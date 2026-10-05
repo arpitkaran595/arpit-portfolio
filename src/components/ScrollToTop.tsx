@@ -23,24 +23,95 @@ export default function ScrollToTop() {
       const savedScroll = sessionStorage.getItem('home_scroll_pos');
       if (savedScroll) {
         const top = parseInt(savedScroll, 10);
-        const restore = () => {
-          if ((window as any).lenis) {
-            (window as any).lenis.scrollTo(top, { immediate: true });
+        if (top > 0) {
+          sessionStorage.setItem('is_restoring_scroll', 'true');
+
+          let rafId: number;
+          let attempts = 0;
+          const maxAttempts = 150; // ~2.5s maximum wait
+          let stableFrames = 0;
+
+          const applyScroll = (targetY: number) => {
+            if ((window as any).lenis) {
+              (window as any).lenis.scrollTo(targetY, { immediate: true });
+            }
+            window.scrollTo({ top: targetY, left: 0, behavior: 'instant' });
+          };
+
+          const ro = new ResizeObserver(() => {
+            if (sessionStorage.getItem('is_restoring_scroll') === 'true') {
+              const scrollHeight = Math.max(
+                document.documentElement.scrollHeight,
+                document.body ? document.body.scrollHeight : 0
+              );
+              const clientHeight = window.innerHeight || document.documentElement.clientHeight;
+              const maxScroll = Math.max(0, scrollHeight - clientHeight);
+              if (maxScroll >= top) {
+                applyScroll(top);
+              }
+            }
+          });
+
+          const cancelRestoration = () => {
+            cancelAnimationFrame(rafId);
+            ro.disconnect();
+            sessionStorage.removeItem('is_restoring_scroll');
+            window.removeEventListener('wheel', cancelRestoration);
+            window.removeEventListener('touchmove', cancelRestoration);
+          };
+
+          const checkAndRestore = () => {
+            attempts++;
+            const lenis = (window as any).lenis;
+            if (lenis?.resize) {
+              lenis.resize();
+            }
+
+            const scrollHeight = Math.max(
+              document.documentElement.scrollHeight,
+              document.body ? document.body.scrollHeight : 0
+            );
+            const clientHeight = window.innerHeight || document.documentElement.clientHeight;
+            const maxScroll = Math.max(0, scrollHeight - clientHeight);
+
+            if (maxScroll >= top) {
+              applyScroll(top);
+              stableFrames++;
+              if (stableFrames >= 4 || attempts >= maxAttempts) {
+                sessionStorage.removeItem('is_restoring_scroll');
+                ro.disconnect();
+                return;
+              }
+            } else if (attempts >= maxAttempts) {
+              const fallbackTop = Math.min(top, maxScroll);
+              applyScroll(fallbackTop);
+              sessionStorage.removeItem('is_restoring_scroll');
+              ro.disconnect();
+              return;
+            }
+
+            rafId = requestAnimationFrame(checkAndRestore);
+          };
+
+          window.addEventListener('wheel', cancelRestoration, { passive: true, once: true });
+          window.addEventListener('touchmove', cancelRestoration, { passive: true, once: true });
+
+          if (document.body) {
+            ro.observe(document.body);
           }
-          window.scrollTo({ top, left: 0, behavior: 'instant' });
-        };
+          ro.observe(document.documentElement);
 
-        restore();
-        const t1 = setTimeout(restore, 40);
-        const t2 = setTimeout(restore, 120);
-        const t3 = setTimeout(restore, 300);
+          checkAndRestore();
 
-        prevPathRef.current = pathname;
-        return () => {
-          clearTimeout(t1);
-          clearTimeout(t2);
-          clearTimeout(t3);
-        };
+          prevPathRef.current = pathname;
+          return () => {
+            cancelAnimationFrame(rafId);
+            ro.disconnect();
+            window.removeEventListener('wheel', cancelRestoration);
+            window.removeEventListener('touchmove', cancelRestoration);
+            sessionStorage.removeItem('is_restoring_scroll');
+          };
+        }
       }
     }
 

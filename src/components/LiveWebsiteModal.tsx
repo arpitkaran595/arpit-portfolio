@@ -418,7 +418,7 @@ export default function LiveWebsiteModal({
             <div
               className={`relative ${
                 deviceMode === 'mobile'
-                  ? 'w-[min(82vw,320px,33.5vh)] aspect-[427/858]'
+                  ? 'w-[min(82vw,clamp(260px,36vh,320px))] aspect-[427/858]'
                   : deviceMode === 'tablet'
                   ? 'w-full max-w-[740px] aspect-[1090/900] max-h-[66vh]'
                   : 'w-full max-w-[1060px] aspect-[1536/1024] max-h-[66vh]'

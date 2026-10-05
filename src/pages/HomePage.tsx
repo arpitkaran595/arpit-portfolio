@@ -68,6 +68,10 @@ export default function HomePage() {
     const onScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
+          if (sessionStorage.getItem('is_restoring_scroll') === 'true') {
+            ticking = false;
+            return;
+          }
           if (window.scrollY > 0) {
             sessionStorage.setItem('home_scroll_pos', window.scrollY.toString());
           }
@@ -77,12 +81,25 @@ export default function HomePage() {
       }
     };
 
+    // Before navigating away to a case study, capture the exact current scroll position
+    const handleDocumentClick = (e: MouseEvent) => {
+      const link = (e.target as HTMLElement)?.closest('a');
+      if (link && link.getAttribute('href')?.includes('/work/')) {
+        if (window.scrollY > 0) {
+          sessionStorage.setItem('home_scroll_pos', window.scrollY.toString());
+        }
+      }
+    };
+
     window.addEventListener('scroll', onScroll, { passive: true });
+    document.addEventListener('click', handleDocumentClick, { capture: true });
+
     return () => {
-      if (window.scrollY > 0) {
+      if (sessionStorage.getItem('is_restoring_scroll') !== 'true' && window.scrollY > 0) {
         sessionStorage.setItem('home_scroll_pos', window.scrollY.toString());
       }
       window.removeEventListener('scroll', onScroll);
+      document.removeEventListener('click', handleDocumentClick, { capture: true });
     };
   }, []);
 
