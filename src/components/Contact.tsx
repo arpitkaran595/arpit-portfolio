@@ -551,10 +551,10 @@ const Contact: React.FC = () => {
                   </div>
                   <div className="min-w-0">
                     <div className="font-sora text-[11px] lg:text-[11.5px] font-bold text-[#1F1F1F]">
-                      WhatsApp
+                      WhatsApp / Phone
                     </div>
                     <div className="font-sora text-[9px] xl:text-[9.5px] 2xl:text-[10px] text-[#7A7265] whitespace-nowrap">
-                      Chat on WhatsApp
+                      {personalInfo.phone}
                     </div>
                   </div>
                 </div>
@@ -585,6 +585,14 @@ const Contact: React.FC = () => {
                     >
                       {personalInfo.emails.primary}
                     </div>
+                    {personalInfo.emails.work && (
+                      <div
+                        className="font-sora text-[8px] xl:text-[8.5px] 2xl:text-[9px] text-[#8C8275] whitespace-nowrap"
+                        title={personalInfo.emails.work}
+                      >
+                        {personalInfo.emails.work}
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">

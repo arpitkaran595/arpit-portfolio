@@ -1057,7 +1057,7 @@ export default function About() {
                   </svg>
                   <div className="flex flex-col items-center justify-center text-center select-none pt-0.5">
                     <span className="font-playfair text-[1.55rem] xs:text-[1.75rem] font-bold leading-none text-[#B8860B]">
-                      3+
+                      3
                     </span>
                     <span className="font-sora text-[0.42rem] xs:text-[0.46rem] uppercase tracking-[0.18em] font-semibold text-[#5A5044] mt-0.5">
                       YEARS
@@ -1384,10 +1384,10 @@ export default function About() {
               </g>
             </svg>
 
-            {/* Static Center: 3+ Years Experience */}
+            {/* Static Center: 3 Years Experience */}
             <div className="flex flex-col items-center justify-center text-center select-none pt-1">
               <span className="font-playfair text-[1.65rem] sm:text-[1.85rem] lg:text-[2.05rem] xl:text-[2.2rem] font-bold leading-none text-[#B8860B]">
-                3+
+                3
               </span>
               <span className="font-sora text-[0.44rem] sm:text-[0.48rem] lg:text-[0.52rem] xl:text-[0.56rem] uppercase tracking-[0.18em] font-semibold text-[#5A5044] mt-0.5">
                 YEARS

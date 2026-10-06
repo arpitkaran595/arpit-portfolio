@@ -973,7 +973,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
               <a
                 ref={btnRightRef}
                 href={personalInfo.resumePath}
-                download="Arpit_AK_Resume.pdf"
+                download="Arpit_Karan_Resume.pdf"
                 className="hero-cta-card opacity-0 pointer-events-auto group"
               >
                 <div className="w-11 h-11 rounded-full bg-[#1A1A1A] flex items-center justify-center text-white shrink-0 group-hover:scale-105 transition-transform duration-300">

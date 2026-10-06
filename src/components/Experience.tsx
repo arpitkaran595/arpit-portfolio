@@ -68,10 +68,10 @@ const experiences: ExperienceItem[] = [
     id: 'exp-innovana',
     company: 'Innovana Thinklabs Ltd.',
     role: 'Video Editor',
-    date: 'Jan 2026 — Present',
+    date: 'July 2025 — Present',
     responsibilities: [
-      'Edited and enhanced videos using AI tools to improve quality, speed, and visual impact.',
-      'Delivered engaging social media content while maintaining brand consistency and deadlines.',
+      'Producing video content and motion graphics for technology products under strict deadlines.',
+      'Internship/contract (July–Dec 2025); Full-time Video Editor (Jan 2026–Present).',
     ],
     icon: 'video',
     progress: 0.85, // Exact position along the SVG path

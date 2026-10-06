@@ -531,7 +531,7 @@ export const MobileDigitalProjectViewer: React.FC<MobileDigitalProjectViewerProp
                 <Play className="w-3 h-3 text-[#C4943A] fill-[#C4943A]" />
                 <span>LIVE PREVIEW</span>
               </button>
-            ) : (
+            ) : currentProject.url ? (
               <button
                 onClick={handleOpenExternalProject}
                 aria-label="Open project in new tab"
@@ -540,7 +540,7 @@ export const MobileDigitalProjectViewer: React.FC<MobileDigitalProjectViewerProp
                 <span>OPEN SITE</span>
                 <ExternalLink className="w-3.5 h-3.5 text-[#C4943A]" />
               </button>
-            )}
+            ) : null}
 
             {/* Fullscreen Button */}
             <button

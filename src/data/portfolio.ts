@@ -126,6 +126,7 @@ export const personalInfo = {
   },
   resumePath: '/assets/resume.pdf',
   hasResumeFile: true,
+  phone: '+91 6377467850',
   whatsappUrl:
     'https://wa.me/916377467850?text=Hi%20Arpit%20%F0%9F%91%8B%0AI%20just%20visited%20your%20portfolio%20and%20would%20love%20to%20discuss%20a%20project%20with%20you.',
   emails: {
@@ -254,11 +255,11 @@ export const experiences: ExperienceItem[] = [
   },
   {
     id: 'exp-3',
-    period: 'Jan 2026 — Present',
+    period: 'July 2025 — Present',
     company: 'Innovana Thinklabs Ltd.',
     role: 'Video Editor',
     description:
-      'Producing professional video content for a technology company, focusing on product videos, internal communications, and brand storytelling.',
+      'Producing professional video content and motion graphics for technology products and corporate communications under strict deadlines. (Internship / Contract: July–Dec 2025 | Full-time: Jan 2026–Present).',
     icon: 'crown',
   },
 ];
@@ -1638,15 +1639,15 @@ export const digitalProjects: DigitalProject[] = [
     category: 'Web Application / Utility',
     categoryLabel: 'WEB APPLICATION & UTILITY',
     url: 'https://imagemint.free.je/?i=2',
-    description: 'A smart image optimization tool for compressing images across different sizes and formats.',
+    description: 'Client-side image compression tool supporting WebP, AVIF, JPEG, and PNG formats. Features target file size and percentage compression options, live preview, and fast in-browser processing using HTML5 Canvas API without server uploads.',
     previewImage: '/assets/ui-websites/imagemint.webp',
     tallPreviewImage: '/assets/ui-websites/imagemint-tall.webp',
     hasLivePreview: false,
-    tools: ['React', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
+    tools: ['React', 'TypeScript', 'Tailwind CSS', 'HTML5 Canvas API'],
     featured: true,
     caseStudy: {
       year: '2024',
-      role: 'Product Designer & Frontend Engineer',
+      role: 'UI/UX Design & Frontend Development',
       services: ['UI/UX Design', 'Client-Side Engineering', 'Design Systems'],
       summary: 'A high-performance in-browser image optimization workspace designed for zero server uploads, privacy, and granular format control.',
       overview: {
@@ -1755,9 +1756,163 @@ export const digitalProjects: DigitalProject[] = [
     },
   },
   {
+    id: 'proj-open-compress',
+    slug: 'open-compress',
+    index: '02',
+    title: 'Open Compress',
+    type: 'webapp',
+    category: 'Desktop Application / Tool',
+    categoryLabel: 'DESKTOP APPLICATION & TOOL',
+    url: '',
+    description:
+      'Cross-platform desktop video compression application built with Tauri and FFmpeg. Supports 14 video formats, custom target size in MB, percentage reduction, resolution scaling, video trimming, and hardware-accelerated encoding with real-time progress.',
+    previewImage: '/assets/ui-websites/open-compress.webp',
+    tallPreviewImage: '/assets/ui-websites/open-compress-tall.webp',
+    hasLivePreview: false,
+    tools: ['Tauri', 'Rust', 'React', 'TypeScript', 'Tailwind CSS', 'FFmpeg'],
+    featured: true,
+    caseStudy: {
+      year: '2025',
+      role: 'UI/UX Design & Product Development',
+      services: ['Desktop Interface Design', 'Systems Architecture', 'Transcoding Engine'],
+      summary:
+        'A high-performance offline desktop video compression suite built with Tauri and FFmpeg for private, hardware-accelerated media reduction.',
+      overview: {
+        context:
+          'Open Compress was designed and developed to provide creators, videographers, and editors with a private, zero-subscription desktop utility to shrink multi-gigabyte video files without cloud uploads or restrictive file size limits.',
+        statement:
+          'Private, hardware-accelerated desktop video compression with precision target-size control.',
+        stats: [
+          { label: 'Supported Video Formats', value: '14 Formats' },
+          { label: 'Cloud Upload Overhead', value: '0 Bytes' },
+          { label: 'Compression Target Precision', value: 'Exact MB' },
+        ],
+      },
+      challenge: {
+        problem:
+          'Traditional online compressors enforce strict upload limits, sacrifice confidentiality, and introduce network delays, while standard command-line FFmpeg workflows present an intimidating barrier for visual creators.',
+        keyPoints: [
+          'Absolute local privacy: High-resolution client video footage never leaves the machine.',
+          'Predictable target sizing: Compressing video files to fit precise email or upload caps without trial and error.',
+          'Hardware-accelerated performance: Harnessing local GPU encoders for rapid processing without system lag.',
+        ],
+      },
+      goal: {
+        objective:
+          'Engineer an ergonomic desktop application that combines deep FFmpeg power with an intuitive, modern visual interface for instant batch compression.',
+        deliverables: [
+          'Compact, low-resource desktop app powered by Tauri v2 and Rust',
+          'Dual compression modes: Target File Size (MB) and Percentage Reduction',
+          'Interactive video trimmer and multi-format batch queue',
+          'Real-time frame-by-frame progress tracking and instant OS file reveal',
+        ],
+      },
+      approach: {
+        philosophy:
+          'Precision utility wrapped in dark, focused aesthetics. The workspace provides clear visual telemetry, format pills, and slider controls tailored for editing workflows.',
+        steps: [
+          {
+            number: '01',
+            title: 'Native Tauri & Rust Architecture',
+            description:
+              'Leveraged Tauri v2 with asynchronous Rust commands to manage background FFmpeg child processes with minimal memory footprint.',
+          },
+          {
+            number: '02',
+            title: 'Dynamic Bitrate Calculation Engine',
+            description:
+              'Engineered mathematical bitrate algorithms that compute precise video and audio allocations based on video duration to hit target megabyte limits accurately.',
+          },
+          {
+            number: '03',
+            title: 'Creator-Centric Queue Controls',
+            description:
+              'Built an intuitive drag-and-drop batch queue featuring inline trim sliders, resolution downscaling presets, and one-click destination directory reveal.',
+          },
+        ],
+      },
+      designSystem: {
+        headingFont: 'Playfair Display (Commanding Serif)',
+        bodyFont: 'Sora (Clean Technical Sans)',
+        notes:
+          'Deep graphite surfaces (#0F1117) with refined violet accents (#6366F1) and emerald status badges (#10B981) indicating completed jobs.',
+        palette: [
+          { name: 'Dark Slate', hex: '#0F1117', role: 'Main Canvas Ground' },
+          { name: 'Electric Indigo', hex: '#6366F1', role: 'Active Controls & Progress' },
+          { name: 'Emerald Mint', hex: '#10B981', role: 'Success Telemetry' },
+          { name: 'Pure White', hex: '#F9FAFB', role: 'Headlines & Metrics' },
+        ],
+      },
+      keyScreens: [
+        {
+          title: 'Batch Compression Studio',
+          description:
+            'Main desktop staging area featuring the drag-and-drop queue, format selector, and target size controls.',
+          image: '/assets/ui-websites/open-compress.webp',
+          layout: 'hero-wide',
+        },
+        {
+          title: 'Detailed Video Parameter Inspector',
+          description:
+            'Per-video configuration panel with custom resolution presets, audio bitrate toggles, and frame-accurate trimming.',
+          image: '/assets/ui-websites/open-compress-tall.webp',
+          layout: 'split-detail',
+        },
+      ],
+      interactions: {
+        uxThinking:
+          'Focused on immediate clarity during heavy transcoding tasks: smooth progress bars, estimated time remaining, and instant OS folder reveal.',
+        features: [
+          {
+            title: 'Target File Size Slider',
+            detail:
+              'Set exact desired file size in MB; FFmpeg calculates ideal video and audio bitrates dynamically.',
+          },
+          {
+            title: 'Interactive Video Trimmer',
+            detail:
+              'Clip start and end timestamps visually to transcode only desired video segments.',
+          },
+          {
+            title: 'One-Click File Reveal',
+            detail:
+              'Instantly reveals compressed media in Windows Explorer or macOS Finder when processing completes.',
+          },
+        ],
+      },
+      finalExperience: {
+        overview:
+          'An indispensable, privacy-preserving desktop companion that gives video editors complete control over output sizes with desktop-native responsiveness.',
+        previewImage: '/assets/ui-websites/open-compress.webp',
+        tallImage: '/assets/ui-websites/open-compress-tall.webp',
+      },
+      techStack: [
+        {
+          category: 'Native Application & Frontend',
+          items: [
+            'Tauri v2',
+            'Rust',
+            'React 18',
+            'TypeScript',
+            'Tailwind CSS',
+            'Zustand',
+            'FFmpeg',
+            'HTML5 Video API',
+          ],
+        },
+      ],
+      outcome: {
+        summary:
+          'Open Compress demonstrates that cross-platform desktop applications can provide native desktop performance, instant startup, and tiny resource overhead using Tauri and modern web technologies.',
+        impactTakeaway:
+          '100% offline privacy, sub-30MB executable footprint, and reliable hardware-accelerated video compression.',
+      },
+    },
+  },
+  {
     id: 'proj-arpit-designs-net',
     slug: 'arpit-designs',
-    index: '02',
+    index: '04',
     title: 'ARPIT DESIGNS',
     type: 'website',
     category: 'Website / Portfolio',
@@ -1888,15 +2043,15 @@ export const digitalProjects: DigitalProject[] = [
     category: 'Portfolio Website',
     categoryLabel: 'PORTFOLIO WEBSITE',
     url: 'https://yogesh-naharwara.framer.website/',
-    description: 'Creative portfolio designed and built in Framer with dynamic interactions and fluid aesthetics.',
+    description: 'Personal developer portfolio website featuring a dark theme, 3D card tilt effects, custom cursor interactions, responsive layout, and Framer CMS integration for project management.',
     previewImage: '/assets/ui-websites/yogesh-portfolio.webp',
     tallPreviewImage: '/assets/ui-websites/yogesh-tall.webp',
     hasLivePreview: true,
-    tools: ['Framer', 'UI/UX', 'Interaction Design'],
+    tools: ['Framer', 'CMS', 'Interaction Design'],
     featured: true,
     caseStudy: {
       year: '2024',
-      role: 'UI/UX Designer & Framer Builder',
+      role: 'UI/UX Design & Framer Development',
       services: ['Interface Design', 'Framer Development', 'Interaction Design'],
       summary: 'A modern developer and creator portfolio designed and published in Framer with dynamic interactions and dark aesthetic.',
       overview: {
@@ -2007,7 +2162,7 @@ export const digitalProjects: DigitalProject[] = [
   {
     id: 'proj-arpit-designs-framer',
     slug: 'arpit-designs-framer',
-    index: '04',
+    index: '05',
     title: 'ARPIT DESIGNS Framer Portfolio',
     type: 'website',
     category: 'Portfolio Website',
