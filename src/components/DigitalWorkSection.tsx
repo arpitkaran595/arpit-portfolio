@@ -246,6 +246,13 @@ function MacbookScreen({ project, transitionPhase, onOpenLive }: MacbookScreenPr
     }
   };
 
+  const handleImageError = () => {
+    if (cutoutRef.current) {
+      setStageHeight(cutoutRef.current.clientHeight);
+      maxScrollRef.current = 0;
+    }
+  };
+
   const isUiType = project.type === 'ui';
 
   return (
@@ -292,8 +299,9 @@ function MacbookScreen({ project, transitionPhase, onOpenLive }: MacbookScreenPr
             <img
               src={project.previewImage}
               alt={project.title}
-              loading="lazy"
+              loading="eager"
               decoding="async"
+              onError={handleImageError}
               className="max-w-full max-h-full object-contain rounded-md shadow-2xl"
               draggable={false}
             />
@@ -312,9 +320,10 @@ function MacbookScreen({ project, transitionPhase, onOpenLive }: MacbookScreenPr
               ref={imgRef}
               src={project.tallPreviewImage || project.previewImage}
               alt={project.title}
-              loading="lazy"
+              loading="eager"
               decoding="async"
               onLoad={handleImageLoad}
+              onError={handleImageError}
               className="w-full h-auto block select-none"
               draggable={false}
             />

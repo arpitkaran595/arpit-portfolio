@@ -250,8 +250,51 @@ const Footer: React.FC = () => {
     }
   }, [updateMask]);
 
+  const touchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isTouchRevealedRef = useRef(false);
+  const lastTouchTimeRef = useRef(0);
+
+  const triggerTouchReveal = useCallback((clientX?: number, clientY?: number) => {
+    const now = performance.now();
+    if (now - lastTouchTimeRef.current < 250) return;
+    lastTouchTimeRef.current = now;
+
+    if (!textStageRef.current) return;
+    const rect = textStageRef.current.getBoundingClientRect();
+    const relX = clientX !== undefined ? clientX - rect.left : rect.width / 2;
+    const relY = clientY !== undefined ? clientY - rect.top : rect.height / 2;
+
+    mousePos.current.x = relX;
+    mousePos.current.y = relY;
+    mousePos.current.targetX = relX;
+    mousePos.current.targetY = relY;
+
+    if (isTouchRevealedRef.current) {
+      maskRadius.current.target = 0;
+      isHovering.current = false;
+      isTouchRevealedRef.current = false;
+      if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current);
+    } else {
+      const revealRadius = Math.max(rect.width, rect.height) * 0.85;
+      maskRadius.current.target = Math.max(140, revealRadius);
+      isHovering.current = true;
+      isTouchRevealedRef.current = true;
+
+      if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current);
+      touchTimeoutRef.current = setTimeout(() => {
+        maskRadius.current.target = 0;
+        isHovering.current = false;
+        isTouchRevealedRef.current = false;
+        startAnimation();
+      }, 3500);
+    }
+
+    startAnimation();
+  }, [startAnimation]);
+
   const handlePointerEnter = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.pointerType === 'touch') return;
+    if (isTouchRevealedRef.current) return;
     if (!textStageRef.current) return;
     const rect = textStageRef.current.getBoundingClientRect();
     const relX = e.clientX - rect.left;
@@ -270,6 +313,7 @@ const Footer: React.FC = () => {
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.pointerType === 'touch') return;
+    if (isTouchRevealedRef.current) return;
     if (!textStageRef.current) return;
     const rect = textStageRef.current.getBoundingClientRect();
     mousePos.current.targetX = e.clientX - rect.left;
@@ -278,16 +322,40 @@ const Footer: React.FC = () => {
     startAnimation();
   };
 
-  const handlePointerLeave = () => {
+  const handlePointerLeave = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'touch') return;
+    if (isTouchRevealedRef.current) return;
     maskRadius.current.target = 0;
     isHovering.current = false;
     startAnimation();
+  };
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'touch') {
+      triggerTouchReveal(e.clientX, e.clientY);
+    }
+  };
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (window.matchMedia('(pointer: coarse)').matches) {
+      triggerTouchReveal(e.clientX, e.clientY);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      triggerTouchReveal();
+    }
   };
 
   useEffect(() => {
     return () => {
       if (rafId.current) {
         cancelAnimationFrame(rafId.current);
+      }
+      if (touchTimeoutRef.current) {
+        clearTimeout(touchTimeoutRef.current);
       }
     };
   }, []);
@@ -544,10 +612,16 @@ const Footer: React.FC = () => {
         >
           <div
             ref={textStageRef}
+            role="button"
+            tabIndex={0}
+            aria-label="Toggle bilingual name reveal"
             onPointerEnter={handlePointerEnter}
             onPointerMove={handlePointerMove}
             onPointerLeave={handlePointerLeave}
-            className="relative inline-block select-none cursor-default py-2 touch-none whitespace-nowrap"
+            onPointerDown={handlePointerDown}
+            onClick={handleClick}
+            onKeyDown={handleKeyDown}
+            className="relative inline-block select-none cursor-pointer sm:cursor-default py-2 touch-none whitespace-nowrap focus:outline-none"
           >
             {/* Physical Terrain Contact / Grounding Shadow at Letter Base */}
             <div

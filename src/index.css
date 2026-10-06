@@ -153,8 +153,10 @@ html.lenis, html.lenis body {
 @media (max-width: 767px) {
   .hero-cta-card {
     width: 100%;
-    max-width: 320px;
-    height: 68px;
+    max-width: 310px;
+    height: 58px;
+    padding-left: 0.85rem;
+    padding-right: 0.95rem;
   }
 
   .hero-marquee-text {
@@ -183,7 +185,7 @@ html.lenis, html.lenis body {
 
 /* ===== Hero CTA Position ===== */
 .hero-ui-shell {
-  bottom: clamp(165px, 22vh, 205px);
+  bottom: clamp(52px, 7.5vh, 76px);
 }
 @media (min-width: 768px) {
   .hero-ui-shell {
@@ -200,7 +202,7 @@ html.lenis, html.lenis body {
 
 /* ===== Footer Name Mobile Position ===== */
 .footer-name-lockup {
-  bottom: clamp(76px, 18vw, 105px);
+  bottom: clamp(98px, 24vw, 126px);
 }
 @media (min-width: 640px) {
   .footer-name-lockup {

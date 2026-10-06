@@ -207,6 +207,55 @@ const Experience: React.FC = () => {
           }
         });
 
+        const revealedNodes = [false, false, false];
+
+        const revealMilestone = (idx: number) => {
+          if (revealedNodes[idx]) return;
+          revealedNodes[idx] = true;
+
+          const node = experienceNodesRef.current[idx];
+          if (!node) return;
+
+          const droplet = node.querySelector('.glass-droplet');
+          const icon = node.querySelector('.droplet-icon');
+          const connector = node.querySelector('.exp-connector');
+          const card = node.querySelector('.exp-card');
+
+          const nodeTl = gsap.timeline();
+          nodeTl
+            .to(
+              droplet,
+              {
+                opacity: 1,
+                scale: 1,
+                duration: 0.6,
+                ease: 'power2.out',
+              },
+              0
+            )
+            .to(
+              icon,
+              {
+                opacity: 1,
+                scale: 1,
+                duration: 0.45,
+                ease: 'power2.out',
+              },
+              0.05
+            )
+            .to(
+              [connector, card],
+              {
+                opacity: 1,
+                scale: 1,
+                y: 0,
+                duration: 0.55,
+                ease: 'power2.out',
+              },
+              0.1
+            );
+        };
+
         const totalDuration = 3.6;
         const mainTl = gsap.timeline({
           scrollTrigger: {
@@ -214,6 +263,14 @@ const Experience: React.FC = () => {
             start: 'top 75%',
             end: 'bottom 85%',
             scrub: 1,
+            onUpdate: (self) => {
+              const currentProgress = self.progress;
+              experiences.forEach((e, idx) => {
+                if (!revealedNodes[idx] && currentProgress >= e.progress) {
+                  revealMilestone(idx);
+                }
+              });
+            },
           },
         });
 
@@ -227,55 +284,6 @@ const Experience: React.FC = () => {
           },
           0
         );
-
-        // Sequence milestone reveals synchronized to the exact progress of the path
-        experiences.forEach((e, idx) => {
-          const node = experienceNodesRef.current[idx];
-          if (node) {
-            const droplet = node.querySelector('.glass-droplet');
-            const icon = node.querySelector('.droplet-icon');
-            const connector = node.querySelector('.exp-connector');
-            const card = node.querySelector('.exp-card');
-            const arrivalTime = totalDuration * e.progress;
-
-            // 1. Glass cloud droplet softly materializes as the path line arrives at its exact center
-            mainTl.to(
-              droplet,
-              {
-                opacity: 1,
-                scale: 1,
-                duration: 0.6,
-                ease: 'power2.out',
-              },
-              arrivalTime
-            );
-
-            // 2. Central gold icon fades & scales into visibility
-            mainTl.to(
-              icon,
-              {
-                opacity: 1,
-                scale: 1,
-                duration: 0.45,
-                ease: 'power2.out',
-              },
-              arrivalTime + 0.05
-            );
-
-            // 3. Connector trail & card reveal smoothly
-            mainTl.to(
-              [connector, card],
-              {
-                opacity: 1,
-                scale: 1,
-                y: 0,
-                duration: 0.55,
-                ease: 'power2.out',
-              },
-              arrivalTime + 0.1
-            );
-          }
-        });
 
         // Terminal arrowhead appears when path reaches the end
         if (arrowMarkerRef.current) {

@@ -52,8 +52,42 @@ export default function Navbar({ isLoaded, navRef }: NavbarProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Lock background scroll (including Lenis) when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+      if ((window as any).lenis) {
+        (window as any).lenis.stop();
+      }
+
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          setIsMobileMenuOpen(false);
+        }
+      };
+
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+        document.body.style.overflow = '';
+        if ((window as any).lenis) {
+          (window as any).lenis.start();
+        }
+      };
+    } else {
+      document.body.style.overflow = '';
+      if ((window as any).lenis) {
+        (window as any).lenis.start();
+      }
+    }
+  }, [isMobileMenuOpen]);
+
   const scrollToSection = (sectionId: string) => {
     setIsMobileMenuOpen(false);
+    document.body.style.overflow = '';
+    if ((window as any).lenis) {
+      (window as any).lenis.start();
+    }
 
     if (location.pathname !== '/') {
       navigate(`/#${sectionId}`);
