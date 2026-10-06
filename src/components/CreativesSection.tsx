@@ -86,6 +86,8 @@ const CreativesSection: React.FC = () => {
   const row1SetRef = useRef<HTMLDivElement>(null);
   const pos1Ref = useRef(0);
   const row1WidthRef = useRef(1600);
+  const isPointerDown1Ref = useRef(false);
+  const hasDragged1Ref = useRef(false);
   const isDragging1Ref = useRef(false);
   const isHovered1Ref = useRef(false);
   const dragStartX1Ref = useRef(0);
@@ -101,6 +103,8 @@ const CreativesSection: React.FC = () => {
   const row2SetRef = useRef<HTMLDivElement>(null);
   const pos2Ref = useRef(-75);
   const row2WidthRef = useRef(1600);
+  const isPointerDown2Ref = useRef(false);
+  const hasDragged2Ref = useRef(false);
   const isDragging2Ref = useRef(false);
   const isHovered2Ref = useRef(false);
   const dragStartX2Ref = useRef(0);
@@ -276,7 +280,9 @@ const CreativesSection: React.FC = () => {
     if ((e.target as HTMLElement).closest('button')) return;
     if (e.button !== 0 && e.pointerType === 'mouse') return;
 
-    isDragging1Ref.current = true;
+    isPointerDown1Ref.current = true;
+    hasDragged1Ref.current = false;
+    isDragging1Ref.current = false;
     targetOffset1Ref.current = null;
     inertia1Ref.current = 0;
 
@@ -285,20 +291,28 @@ const CreativesSection: React.FC = () => {
     lastPointerX1Ref.current = e.clientX;
     pointerVelocity1Ref.current = 0;
     dragStartPos1Ref.current = pos1Ref.current;
-
-    if (e.currentTarget.setPointerCapture) {
-      try {
-        e.currentTarget.setPointerCapture(e.pointerId);
-      } catch {
-        // Safe fallback
-      }
-    }
   };
 
   const handlePointerMoveRow1 = (e: React.PointerEvent) => {
-    if (!isDragging1Ref.current) return;
+    if (!isPointerDown1Ref.current) return;
 
     const deltaX = e.clientX - dragStartX1Ref.current;
+    if (!isDragging1Ref.current) {
+      if (Math.abs(deltaX) > 8) {
+        isDragging1Ref.current = true;
+        hasDragged1Ref.current = true;
+        if (e.currentTarget.setPointerCapture) {
+          try {
+            e.currentTarget.setPointerCapture(e.pointerId);
+          } catch {
+            // Safe fallback
+          }
+        }
+      } else {
+        return;
+      }
+    }
+
     const now = performance.now();
     const dtPointer = Math.max((now - dragStartTime1Ref.current) / 1000, 0.001);
 
@@ -310,8 +324,7 @@ const CreativesSection: React.FC = () => {
   };
 
   const handlePointerUpRow1 = (e: React.PointerEvent) => {
-    if (!isDragging1Ref.current) return;
-    isDragging1Ref.current = false;
+    isPointerDown1Ref.current = false;
 
     if (e.currentTarget.releasePointerCapture) {
       try {
@@ -320,6 +333,9 @@ const CreativesSection: React.FC = () => {
         // Safe fallback
       }
     }
+
+    if (!isDragging1Ref.current) return;
+    isDragging1Ref.current = false;
 
     const deltaX = e.clientX - dragStartX1Ref.current;
     const totalDuration = performance.now() - dragStartTime1Ref.current;
@@ -338,7 +354,9 @@ const CreativesSection: React.FC = () => {
     if ((e.target as HTMLElement).closest('button')) return;
     if (e.button !== 0 && e.pointerType === 'mouse') return;
 
-    isDragging2Ref.current = true;
+    isPointerDown2Ref.current = true;
+    hasDragged2Ref.current = false;
+    isDragging2Ref.current = false;
     targetOffset2Ref.current = null;
     inertia2Ref.current = 0;
 
@@ -347,20 +365,28 @@ const CreativesSection: React.FC = () => {
     lastPointerX2Ref.current = e.clientX;
     pointerVelocity2Ref.current = 0;
     dragStartPos2Ref.current = pos2Ref.current;
-
-    if (e.currentTarget.setPointerCapture) {
-      try {
-        e.currentTarget.setPointerCapture(e.pointerId);
-      } catch {
-        // Safe fallback
-      }
-    }
   };
 
   const handlePointerMoveRow2 = (e: React.PointerEvent) => {
-    if (!isDragging2Ref.current) return;
+    if (!isPointerDown2Ref.current) return;
 
     const deltaX = e.clientX - dragStartX2Ref.current;
+    if (!isDragging2Ref.current) {
+      if (Math.abs(deltaX) > 8) {
+        isDragging2Ref.current = true;
+        hasDragged2Ref.current = true;
+        if (e.currentTarget.setPointerCapture) {
+          try {
+            e.currentTarget.setPointerCapture(e.pointerId);
+          } catch {
+            // Safe fallback
+          }
+        }
+      } else {
+        return;
+      }
+    }
+
     const now = performance.now();
     const dtPointer = Math.max((now - dragStartTime2Ref.current) / 1000, 0.001);
 
@@ -372,8 +398,7 @@ const CreativesSection: React.FC = () => {
   };
 
   const handlePointerUpRow2 = (e: React.PointerEvent) => {
-    if (!isDragging2Ref.current) return;
-    isDragging2Ref.current = false;
+    isPointerDown2Ref.current = false;
 
     if (e.currentTarget.releasePointerCapture) {
       try {
@@ -382,6 +407,9 @@ const CreativesSection: React.FC = () => {
         // Safe fallback
       }
     }
+
+    if (!isDragging2Ref.current) return;
+    isDragging2Ref.current = false;
 
     const deltaX = e.clientX - dragStartX2Ref.current;
     const totalDuration = performance.now() - dragStartTime2Ref.current;
@@ -437,19 +465,15 @@ const CreativesSection: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleNext, handlePrev]);
 
-  // Card click handler (only triggers if not dragging)
+  // Card click handler (reliably triggers on simple click)
   const handleCardClick1 = (post: CreativePost) => {
-    const moveDistance = Math.abs(lastPointerX1Ref.current - dragStartX1Ref.current);
-    if (moveDistance < 6) {
-      setSelectedPost(post);
-    }
+    if (hasDragged1Ref.current) return;
+    setSelectedPost(post);
   };
 
   const handleCardClick2 = (post: CreativePost) => {
-    const moveDistance = Math.abs(lastPointerX2Ref.current - dragStartX2Ref.current);
-    if (moveDistance < 6) {
-      setSelectedPost(post);
-    }
+    if (hasDragged2Ref.current) return;
+    setSelectedPost(post);
   };
 
   return (

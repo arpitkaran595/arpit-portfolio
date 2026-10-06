@@ -991,7 +991,7 @@ export default function About() {
                     ref={characterMobileInnerRef}
                     src="/assets/Assets 01 - Main Character.webp"
                     alt="Arpit AK"
-                    loading="eager"
+                    loading="lazy"
                     decoding="async"
                     className="h-[780px] xs:h-[840px] sm:h-[900px] w-auto max-w-none object-contain object-top drop-shadow-[0_20px_38px_rgba(45,30,20,0.18)] opacity-0 select-none"
                     style={{
@@ -1009,7 +1009,7 @@ export default function About() {
                 <img
                   src="/assets/about-clouds.webp"
                   alt=""
-                  loading="eager"
+                  loading="lazy"
                   decoding="async"
                   className="absolute inset-x-0 -bottom-1 z-[4] w-full h-[62%] sm:h-[65%] object-cover object-bottom opacity-95 pointer-events-none select-none"
                   style={{
@@ -1233,6 +1233,8 @@ export default function About() {
                       <img
                         src={item.icon}
                         alt={item.name}
+                        loading="lazy"
+                        decoding="async"
                         className="w-5 h-5 xs:w-5.5 xs:h-5.5 sm:w-6 sm:h-6 object-contain transition-transform duration-300 group-hover:scale-115 drop-shadow-[0_2px_4px_rgba(0,0,0,0.06)]"
                         draggable={false}
                       />

@@ -14,26 +14,41 @@ export default function Navbar({ isLoaded, navRef }: NavbarProps) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+    let ticking = false;
+    let lastScrolled = false;
+    let lastSection = 'home';
 
-      const sections = ['home', 'work', 'about', 'experience', 'contact'];
-      for (const section of sections) {
-        const el = document.getElementById(section);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top <= 100 && rect.bottom >= 100) {
-            setActiveSection(section);
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          const scrolled = scrollY > 50;
+          if (scrolled !== lastScrolled) {
+            lastScrolled = scrolled;
+            setIsScrolled(scrolled);
           }
-        }
+
+          const sections = ['home', 'work', 'about', 'experience', 'contact'];
+          for (const section of sections) {
+            const el = document.getElementById(section);
+            if (el) {
+              const rect = el.getBoundingClientRect();
+              if (rect.top <= 100 && rect.bottom >= 100) {
+                if (section !== lastSection) {
+                  lastSection = section;
+                  setActiveSection(section);
+                }
+                break;
+              }
+            }
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 

@@ -218,7 +218,7 @@ const StoryCard: React.FC<StoryCardProps> = ({
   const pointerEvents = useTransform(progress, (p) => {
     const u = getWrappedOffset(index, p, totalCount);
     const absU = Math.abs(u);
-    return absU <= (screenWidth < 640 ? 0.8 : 1.6) ? 'auto' : 'none';
+    return absU <= (screenWidth < 640 ? 1.0 : 2.2) ? 'auto' : 'none';
   });
 
   return (
@@ -371,48 +371,51 @@ const StoriesSection: React.FC = () => {
     navigateTo(nearest - 1);
   }, [navigateTo, progress]);
 
-  const handleCardClick = useCallback(
-    (cardIndex: number) => {
-      const currentP = progress.get();
-      const offset = getWrappedOffset(cardIndex, currentP, totalStories);
-      if (Math.abs(offset) > 0.3) {
-        // If clicking a side card, smoothly navigate to make it active
-        navigateTo(currentP + offset);
-      } else {
-        // Active card clicked: open full-screen story viewer
-        const normalizedIndex = ((((cardIndex % totalStories) + totalStories) % totalStories));
-        setSelectedStory(storyPosters[normalizedIndex] || storyPosters[0]);
-      }
-    },
-    [navigateTo, progress, totalStories]
-  );
-
-  // ───────────────────────────────────────────────────────────────────────────
-  // PHYSICAL DRAG / SWIPE TRACKING
-  // ───────────────────────────────────────────────────────────────────────────
+  const isPointerDownRef = useRef(false);
+  const hasDraggedRef = useRef(false);
   const isDraggingRef = useRef(false);
   const dragStartXRef = useRef(0);
   const dragStartTimeRef = useRef(0);
   const dragStartProgressRef = useRef(0);
 
+  const handleCardClick = useCallback(
+    (cardIndex: number) => {
+      // If user performed a drag gesture, do not trigger opening
+      if (hasDraggedRef.current) return;
+      // Any visible story poster clicked: open full-screen story viewer directly
+      const normalizedIndex = ((((cardIndex % totalStories) + totalStories) % totalStories));
+      setSelectedStory(storyPosters[normalizedIndex] || storyPosters[0]);
+    },
+    [totalStories]
+  );
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // PHYSICAL DRAG / SWIPE TRACKING
+  // ───────────────────────────────────────────────────────────────────────────
   const handlePointerDown = (e: React.PointerEvent) => {
     // Prevent starting drag if user clicked directly on navigation buttons
     if ((e.target as HTMLElement).closest('button')) return;
     if (e.button !== 0 && e.pointerType === 'mouse') return;
 
+    isPointerDownRef.current = true;
+    hasDraggedRef.current = false;
+    isDraggingRef.current = false;
     dragStartXRef.current = e.clientX;
     dragStartTimeRef.current = performance.now();
     dragStartProgressRef.current = progress.get();
-    isDraggingRef.current = false;
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
+    // CRITICAL FIX: Strictly do not react to mouse movement when pointer is not down
+    if (!isPointerDownRef.current) return;
+
     const deltaX = e.clientX - dragStartXRef.current;
 
     // Only engage drag if moved beyond threshold
     if (!isDraggingRef.current) {
-      if (Math.abs(deltaX) > 6) {
+      if (Math.abs(deltaX) > 10) {
         isDraggingRef.current = true;
+        hasDraggedRef.current = true;
         progress.stop();
         if (e.currentTarget.setPointerCapture) {
           try {
@@ -434,6 +437,8 @@ const StoriesSection: React.FC = () => {
   };
 
   const handlePointerUp = (e: React.PointerEvent) => {
+    isPointerDownRef.current = false;
+
     if (e.currentTarget.releasePointerCapture) {
       try {
         e.currentTarget.releasePointerCapture(e.pointerId);

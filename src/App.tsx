@@ -1,14 +1,18 @@
 import { useEffect } from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Lenis from 'lenis';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import { ArchiveProvider } from './context/ArchiveContext';
 import ScrollToTop from './components/ScrollToTop';
 import HomePage from './pages/HomePage';
 import CaseStudyPage from './pages/CaseStudyPage';
 
+gsap.registerPlugin(ScrollTrigger);
+
 function App() {
-  // Initialize Lenis smooth scrolling
+  // Initialize Lenis smooth scrolling synchronized with GSAP
   useEffect(() => {
     const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
 
@@ -21,16 +25,18 @@ function App() {
 
     (window as any).lenis = lenis;
 
-    let rafId: number;
-    function raf(time: number) {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    }
+    // Synchronize Lenis scroll updates directly with GSAP ScrollTrigger
+    lenis.on('scroll', ScrollTrigger.update);
 
-    rafId = requestAnimationFrame(raf);
+    // Drive Lenis strictly through GSAP ticker for a single unified RAF cycle
+    const updateLenis = (time: number) => {
+      lenis.raf(time * 1000);
+    };
+    gsap.ticker.add(updateLenis);
+    gsap.ticker.lagSmoothing(0);
 
     return () => {
-      cancelAnimationFrame(rafId);
+      gsap.ticker.remove(updateLenis);
       (window as any).lenis = undefined;
       lenis.destroy();
     };

@@ -24,10 +24,10 @@ const DEVICE_CONFIGS: Record<DeviceMode, DeviceConfig> = {
     aspectClass: 'aspect-[1536/1024]',
     maxWidthClass: 'max-w-[1060px]',
     cutoutStyle: {
-      left: '13.80%',
-      top: '4.49%',
-      width: '72.40%',
-      height: '68.94%',
+      left: '13.932%',
+      top: '6.738%',
+      width: '72.135%',
+      height: '66.406%',
       borderRadius: '8px 8px 0 0',
     },
     virtualWidth: 1280,
@@ -138,7 +138,7 @@ export default function LiveWebsiteModal({
     }
   }, [isOpen]);
 
-  // Compute visual scale & precision centering for target logical viewport
+  // Compute visual scale for target logical viewport to fill screen cutout exactly
   const updateScale = useCallback(() => {
     if (screenCutoutRef.current) {
       const cutoutWidth = screenCutoutRef.current.clientWidth;
@@ -148,17 +148,7 @@ export default function LiveWebsiteModal({
       if (cutoutWidth > 0 && config.virtualWidth > 0) {
         const newScale = cutoutWidth / config.virtualWidth;
         setScale((prev) => (Math.abs(prev - newScale) > 0.001 ? newScale : prev));
-
-        const scaledHeight = config.virtualHeight * newScale;
-        const scaledWidth = config.virtualWidth * newScale;
-        const offsetY = Math.max(0, (cutoutHeight - scaledHeight) / 2);
-        const offsetX = Math.max(0, (cutoutWidth - scaledWidth) / 2);
-
-        setOffsets((prev) =>
-          Math.abs(prev.x - offsetX) > 0.5 || Math.abs(prev.y - offsetY) > 0.5
-            ? { x: offsetX, y: offsetY }
-            : prev
-        );
+        setOffsets({ x: 0, y: 0 });
       }
     }
   }, [deviceMode]);
@@ -418,16 +408,16 @@ export default function LiveWebsiteModal({
             <div
               className={`relative ${
                 deviceMode === 'mobile'
-                  ? 'w-[min(82vw,clamp(260px,36vh,320px))] aspect-[427/858]'
+                  ? 'w-[min(82vw,clamp(260px,calc(66vh*427/858),320px))] aspect-[427/858]'
                   : deviceMode === 'tablet'
-                  ? 'w-full max-w-[740px] aspect-[1090/900] max-h-[66vh]'
-                  : 'w-full max-w-[1060px] aspect-[1536/1024] max-h-[66vh]'
+                  ? 'w-full max-w-[min(740px,calc(66vh*1090/900))] aspect-[1090/900]'
+                  : 'w-full max-w-[min(1060px,calc(66vh*1.5))] aspect-[1536/1024]'
               } flex items-center justify-center select-none transition-all duration-300 mx-auto shrink-0`}
             >
               {/* Screen Display Container behind the Mockup Frame Cutout */}
               <div
                 ref={screenCutoutRef}
-                className="absolute overflow-hidden bg-black flex items-center justify-center"
+                className="absolute overflow-hidden bg-black flex items-center justify-center pointer-events-auto"
                 style={{
                   ...(currentConfig.frameSrc && !frameImageErrors[deviceMode]
                     ? currentConfig.cutoutStyle
@@ -449,28 +439,28 @@ export default function LiveWebsiteModal({
                 {hasLivePreview && project.url && !hasError ? (
                   <div
                     ref={viewportRef}
-                    className="absolute origin-top-left pointer-events-auto rounded-[inherit] overflow-hidden"
-                    style={{
-                      width: `${currentConfig.virtualWidth}px`,
-                      height: `${currentConfig.virtualHeight}px`,
-                      transform: `scale(${scale})`,
-                      transformOrigin: '0 0',
-                      left: `${offsets.x}px`,
-                      top: `${offsets.y}px`,
-                      borderRadius: 'inherit',
-                      overflow: 'hidden',
-                    }}
+                    className="absolute inset-0 pointer-events-auto rounded-[inherit] overflow-hidden"
                   >
-                    <iframe
-                      key={`${iframeKey}-${deviceMode}`}
-                      ref={iframeRef}
-                      src={project.url}
-                      title={`${project.title} - ${currentConfig.name}`}
-                      onLoad={handleIframeLoad}
-                      onError={handleIframeError}
-                      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"
-                      className="w-full h-full border-0 bg-white rounded-[inherit] overflow-hidden"
-                    />
+                    <div
+                      style={{
+                        width: `${currentConfig.virtualWidth}px`,
+                        height: `${scale > 0 && screenCutoutRef.current ? Math.round(screenCutoutRef.current.clientHeight / scale) : currentConfig.virtualHeight}px`,
+                        transform: `scale(${scale})`,
+                        transformOrigin: '0 0',
+                      }}
+                      className="origin-top-left rounded-[inherit] overflow-hidden"
+                    >
+                      <iframe
+                        key={`${iframeKey}-${deviceMode}`}
+                        ref={iframeRef}
+                        src={project.url}
+                        title={`${project.title} - ${currentConfig.name}`}
+                        onLoad={handleIframeLoad}
+                        onError={handleIframeError}
+                        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"
+                        className="w-full h-full border-0 bg-white rounded-[inherit] overflow-hidden"
+                      />
+                    </div>
                   </div>
                 ) : (
                   /* 3. CASE: High-Res Interactive Scrollable View (Webapp or Restricted Preview) */

@@ -62,23 +62,19 @@ export default function HomePage() {
     document.title = 'ARPIT AK — Creative Designer, Video Editor & Frontend Developer';
   }, []);
 
-  // Continuously persist homepage scroll position so returning from Case Studies restores exact view
+  // Persist homepage scroll position cleanly so returning from Case Studies restores exact view
   useEffect(() => {
-    let ticking = false;
+    let scrollTimer: ReturnType<typeof setTimeout> | null = null;
     const onScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          if (sessionStorage.getItem('is_restoring_scroll') === 'true') {
-            ticking = false;
-            return;
-          }
-          if (window.scrollY > 0) {
-            sessionStorage.setItem('home_scroll_pos', window.scrollY.toString());
-          }
-          ticking = false;
-        });
-        ticking = true;
-      }
+      if (scrollTimer) clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        if (sessionStorage.getItem('is_restoring_scroll') === 'true') {
+          return;
+        }
+        if (window.scrollY > 0) {
+          sessionStorage.setItem('home_scroll_pos', window.scrollY.toString());
+        }
+      }, 150);
     };
 
     // Before navigating away to a case study, capture the exact current scroll position
@@ -95,6 +91,7 @@ export default function HomePage() {
     document.addEventListener('click', handleDocumentClick, { capture: true });
 
     return () => {
+      if (scrollTimer) clearTimeout(scrollTimer);
       if (sessionStorage.getItem('is_restoring_scroll') !== 'true' && window.scrollY > 0) {
         sessionStorage.setItem('home_scroll_pos', window.scrollY.toString());
       }

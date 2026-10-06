@@ -257,11 +257,11 @@ function MacbookScreen({ project, transitionPhase, onOpenLive }: MacbookScreenPr
       onClick={onOpenLive}
       className="absolute overflow-hidden bg-[#0A0A0C] flex items-center justify-center cursor-pointer select-none z-20 group"
       style={{
-        left: '13.80%',
-        top: '4.49%',
-        width: '72.40%',
-        height: '68.94%',
-        borderRadius: '12px 12px 0 0',
+        left: '13.932%',
+        top: '6.738%',
+        width: '72.135%',
+        height: '66.406%',
+        borderRadius: '8px 8px 0 0',
       }}
       title={
         project.hasLivePreview

@@ -400,43 +400,67 @@ const ThumbnailsSection: React.FC = () => {
     navigateTo(nearest - 1);
   }, [navigateTo, progress]);
 
-  const handleCardClick = useCallback(
-    (cardIndex: number, item: YoutubeThumbnail) => {
-      const currentP = progress.get();
-      const offset = getWrappedOffset(cardIndex, currentP, totalThumbnails);
-      if (Math.abs(offset) > 0.3) {
-        navigateTo(currentP + offset);
-      } else {
-        setSelectedThumbnail(item);
-      }
-    },
-    [navigateTo, progress, totalThumbnails]
-  );
-
-  // Drag / Pointer tracking
+  const isPointerDownRef = useRef(false);
+  const hasDraggedRef = useRef(false);
   const isDraggingRef = useRef(false);
   const dragStartXRef = useRef(0);
   const dragStartProgressRef = useRef(0);
+
+  const handleCardClick = useCallback(
+    (_cardIndex: number, item: YoutubeThumbnail) => {
+      if (hasDraggedRef.current) return;
+      setSelectedThumbnail(item);
+    },
+    []
+  );
 
   const handlePointerDown = (e: React.PointerEvent) => {
     if ((e.target as HTMLElement).closest('button')) return;
     if (e.button !== 0 && e.pointerType === 'mouse') return;
 
-    isDraggingRef.current = true;
+    isPointerDownRef.current = true;
+    hasDraggedRef.current = false;
+    isDraggingRef.current = false;
     dragStartXRef.current = e.clientX;
     dragStartProgressRef.current = progress.get();
-    progress.stop();
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isDraggingRef.current) return;
+    if (!isPointerDownRef.current) return;
     const deltaX = e.clientX - dragStartXRef.current;
+
+    if (!isDraggingRef.current) {
+      if (Math.abs(deltaX) > 10) {
+        isDraggingRef.current = true;
+        hasDraggedRef.current = true;
+        progress.stop();
+        if (e.currentTarget.setPointerCapture) {
+          try {
+            e.currentTarget.setPointerCapture(e.pointerId);
+          } catch {
+            // Ignore capture errors
+          }
+        }
+      } else {
+        return;
+      }
+    }
+
     const stepX = screenWidth < 640 ? 110 : 200;
     const progressDelta = -deltaX / stepX;
     progress.set(dragStartProgressRef.current + progressDelta);
   };
 
-  const handlePointerUp = () => {
+  const handlePointerUp = (e: React.PointerEvent) => {
+    isPointerDownRef.current = false;
+    if (e.currentTarget.releasePointerCapture) {
+      try {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      } catch {
+        // Ignore
+      }
+    }
+
     if (!isDraggingRef.current) return;
     isDraggingRef.current = false;
     const currentP = progress.get();

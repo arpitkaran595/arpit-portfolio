@@ -210,6 +210,7 @@ const VideoViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layout
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
+        e.stopPropagation();
         onClose();
       } else if (e.key === 'ArrowLeft' && isVideoMode) {
         e.preventDefault();

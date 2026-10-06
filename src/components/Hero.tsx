@@ -372,7 +372,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
         if (mistBackShellRef.current) {
           gsap.to(mistBackShellRef.current, {
             y: -60 * factor,
-            ...(!isMobile ? { filter: 'blur(5px)', opacity: 0.15 } : {}),
+            opacity: 0.15,
             ease: 'none',
             scrollTrigger: { ...scrollConfig },
           });
@@ -392,7 +392,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
         if (horizonCloudShellRef.current) {
           gsap.to(horizonCloudShellRef.current, {
             y: -70 * factor,
-            ...(!isMobile ? { filter: 'blur(5px)', opacity: 0.25 } : {}),
+            opacity: 0.25,
             ease: 'none',
             scrollTrigger: { ...scrollConfig },
           });
@@ -403,7 +403,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
           gsap.to(cloudLeftBackShellRef.current, {
             y: -100 * factor,
             x: -15 * factor,
-            ...(!isMobile ? { filter: 'blur(5px)', opacity: 0.35 } : {}),
+            opacity: 0.35,
             ease: 'none',
             scrollTrigger: { ...scrollConfig },
           });
@@ -412,7 +412,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
           gsap.to(cloudRightBackShellRef.current, {
             y: -100 * factor,
             x: 15 * factor,
-            ...(!isMobile ? { filter: 'blur(5px)', opacity: 0.35 } : {}),
+            opacity: 0.35,
             ease: 'none',
             scrollTrigger: { ...scrollConfig },
           });
@@ -440,7 +440,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
             y: -130 * factor,
             x: -20 * factor,
             scale: 1.02,
-            ...(!isMobile ? { filter: 'blur(6px)', opacity: 0.35 } : {}),
+            opacity: 0.35,
             ease: 'none',
             scrollTrigger: { ...scrollConfig },
           });
@@ -450,7 +450,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
             y: -130 * factor,
             x: 20 * factor,
             scale: 1.02,
-            ...(!isMobile ? { filter: 'blur(6px)', opacity: 0.35 } : {}),
+            opacity: 0.35,
             ease: 'none',
             scrollTrigger: { ...scrollConfig },
           });
@@ -461,7 +461,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
           gsap.to(centerCloudShellRef.current, {
             y: -140 * factor,
             scale: 1.03,
-            ...(!isMobile ? { filter: 'blur(8px)', opacity: 0.3 } : {}),
+            opacity: 0.3,
             ease: 'none',
             scrollTrigger: { ...scrollConfig },
           });
@@ -471,7 +471,7 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
         if (mistFrontShellRef.current) {
           gsap.to(mistFrontShellRef.current, {
             y: -190 * factor,
-            ...(!isMobile ? { filter: 'blur(8px)', opacity: 0 } : {}),
+            opacity: 0,
             ease: 'none',
             scrollTrigger: { ...scrollConfig },
           });

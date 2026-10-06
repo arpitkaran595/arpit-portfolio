@@ -323,7 +323,7 @@ export const WorkArchiveOverlay: React.FC = () => {
               <div className="flex-1 flex justify-end items-center pt-1">
                 <button
                   type="button"
-                  onClick={closeArchive}
+                  onClick={() => closeArchive()}
                   aria-label="Close Work Archive"
                   className="group inline-flex items-center gap-1 sm:gap-2 text-[11px] sm:text-xs font-sora font-semibold tracking-[0.18em] sm:tracking-[0.2em] uppercase text-[#1A1A1A] hover:text-[#C4943A] transition-colors cursor-pointer py-1 px-1 sm:px-2 rounded-lg"
                 >
@@ -360,14 +360,10 @@ export const WorkArchiveOverlay: React.FC = () => {
 
                       {/* Active Indicator: Thin Gold Underline + Centered Gold Dot (Matching Reference) */}
                       {isActive && (
-                        <motion.div
-                          layoutId="active-category-indicator"
-                          className="absolute bottom-0 inset-x-0 flex flex-col items-center pointer-events-none"
-                          transition={{ type: 'spring', stiffness: 500, damping: 38 }}
-                        >
+                        <div className="absolute bottom-0 inset-x-0 flex flex-col items-center pointer-events-none transition-all duration-200">
                           <div className="w-full h-[2px] bg-[#C4943A]" />
                           <div className="w-1.5 h-1.5 rounded-full bg-[#C4943A] translate-y-[3px]" />
-                        </motion.div>
+                        </div>
                       )}
                     </button>
                   );
@@ -384,7 +380,7 @@ export const WorkArchiveOverlay: React.FC = () => {
               data-lenis-prevent
               className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 md:p-8 lg:p-10 relative z-10 overscroll-contain"
             >
-              <AnimatePresence mode="wait">
+              <AnimatePresence>
                 {/* ─────────────────────────────────────────────────────────────
                     CATEGORY: VIDEOS (All videos in responsive scrollable grid)
                 ───────────────────────────────────────────────────────────── */}
