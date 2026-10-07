@@ -636,40 +636,40 @@ const Footer: React.FC = () => {
             {/* 4A. Phantom Sizing Anchor — Locks container dimensions to exact typography footprint */}
             <div
               aria-hidden="true"
-              className="invisible pointer-events-none font-sora font-extrabold uppercase tracking-tight leading-none text-center select-none whitespace-nowrap"
-              style={{
-                fontSize: 'clamp(2.5rem, 14vw, 15rem)',
-              }}
+              className="footer-name-text invisible pointer-events-none font-sora font-extrabold uppercase tracking-tight leading-none text-center select-none whitespace-nowrap"
             >
-              ARPIT AK
+              <span className="inline md:hidden">AK</span>
+              <span className="hidden md:inline lg:hidden">ARPIT</span>
+              <span className="hidden lg:inline">ARPIT AK</span>
             </div>
 
             {/* 4B. Default English Layer: ARPIT AK (Mask punches hole under cursor) */}
             <div
               ref={englishTextRef}
-              className="absolute inset-0 flex items-center justify-center font-sora font-extrabold uppercase tracking-tight leading-none text-white text-center select-none pointer-events-none whitespace-nowrap"
+              className="footer-name-text absolute inset-0 flex items-center justify-center font-sora font-extrabold uppercase tracking-tight leading-none text-white text-center select-none pointer-events-none whitespace-nowrap"
               style={{
-                fontSize: 'clamp(2.5rem, 14vw, 15rem)',
                 ...typographicDepthStyle,
                 willChange: 'mask-image, -webkit-mask-image',
               }}
             >
-              ARPIT AK
+              <span className="inline md:hidden">AK</span>
+              <span className="hidden md:inline lg:hidden">ARPIT</span>
+              <span className="hidden lg:inline">ARPIT AK</span>
             </div>
 
             {/* 4C. Hindi Layer: अर्पित (Identical geometry, revealed only under cursor mask) */}
             <div
               ref={hindiTextRef}
-              className="absolute inset-0 flex items-center justify-center font-sora font-extrabold tracking-[0.22em] leading-none text-white text-center select-none pointer-events-none whitespace-nowrap"
+              className="footer-name-text absolute inset-0 flex items-center justify-center font-sora font-extrabold tracking-[0.22em] leading-none text-white text-center select-none pointer-events-none whitespace-nowrap"
               style={{
-                fontSize: 'clamp(2.5rem, 14vw, 15rem)',
                 paddingLeft: '0.22em',
                 opacity: 0,
                 ...typographicDepthStyle,
                 willChange: 'mask-image, -webkit-mask-image',
               }}
             >
-              {personalInfo.hindiName || 'अर्पित'}
+              <span className="inline md:hidden">एके</span>
+              <span className="hidden md:inline">{personalInfo.hindiName || 'अर्पित'}</span>
             </div>
           </div>
         </div>

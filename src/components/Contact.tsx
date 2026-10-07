@@ -8,7 +8,6 @@ import {
   ChevronDown,
   PenLine,
   ShieldCheck,
-  CheckCircle,
   Check,
 } from 'lucide-react';
 import { personalInfo, socialLinks } from '../data/portfolio';
@@ -49,7 +48,7 @@ const Contact: React.FC = () => {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [serviceError, setServiceError] = useState(false);
 
   // Close dropdown on outside click or Escape key
   useEffect(() => {
@@ -77,8 +76,10 @@ const Contact: React.FC = () => {
   const handleSelectProjectType = (type: string) => {
     if (type === 'Project Type / Service') {
       setFormData((prev) => ({ ...prev, projectType: '' }));
+      setServiceError(true);
     } else {
       setFormData((prev) => ({ ...prev, projectType: type }));
+      setServiceError(false);
     }
     setIsDropdownOpen(false);
   };
@@ -291,15 +292,44 @@ const Contact: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const service = formData.projectType || 'General Collaboration';
-    const subject = encodeURIComponent(`Project Inquiry: ${service} — ${formData.name}`);
-    const body = encodeURIComponent(
-      `Name: ${formData.name}\nEmail: ${formData.email}\nProject Type: ${service}\n\nProject Details:\n${formData.message}`
-    );
-    setIsSubmitted(true);
-    setTimeout(() => {
-      window.location.href = `mailto:${personalInfo.emails.primary}?subject=${subject}&body=${body}`;
-    }, 400);
+
+    const trimmedName = formData.name.trim();
+    const trimmedEmail = formData.email.trim();
+    const trimmedService = formData.projectType.trim();
+    const trimmedMessage = formData.message.trim();
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!trimmedService || trimmedService === 'Project Type / Service') {
+      setServiceError(true);
+      setIsDropdownOpen(true);
+      return;
+    }
+
+    if (!trimmedName || !trimmedEmail || !emailRegex.test(trimmedEmail) || !trimmedMessage) {
+      return;
+    }
+
+    setServiceError(false);
+
+    const messageText = [
+      'Hi Arpit 👋',
+      '',
+      'I just visited your portfolio and would like to discuss a project with you.',
+      '',
+      '*Client Details*',
+      `Name: ${trimmedName}`,
+      `Email: ${trimmedEmail}`,
+      `Service: ${trimmedService}`,
+      '',
+      '*Project Details*',
+      trimmedMessage,
+      '',
+      'Looking forward to discussing this with you.',
+    ].join('\n');
+
+    const whatsappUrl = `https://wa.me/916377467850?text=${encodeURIComponent(messageText)}`;
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
   };
 
   const handleStartProjectClick = (e: React.MouseEvent) => {
@@ -720,7 +750,9 @@ const Contact: React.FC = () => {
                     onClick={() => setIsDropdownOpen((prev) => !prev)}
                     onKeyDown={handleDropdownKeyDown}
                     className={`w-full rounded-xl pl-10 pr-10 py-3 text-[13px] font-sora text-left flex items-center justify-between transition-all duration-200 cursor-pointer border ${
-                      isDropdownOpen
+                      serviceError
+                        ? 'bg-[#FAF5ED]/85 border-red-400 ring-2 ring-red-400/20'
+                        : isDropdownOpen
                         ? 'bg-[#FFFFFF] border-[#A3772C] ring-2 ring-[#A3772C]/15 shadow-[0_2px_8px_rgba(163,119,44,0.08)]'
                         : 'bg-[#FAF5ED]/85 border-[#DFD3BD]/75 hover:border-[#C8B89E] hover:bg-[#FDF9F2]'
                     }`}
@@ -787,6 +819,13 @@ const Contact: React.FC = () => {
                   </div>
                 </div>
 
+                {/* Service Validation Feedback */}
+                {serviceError && (
+                  <p className="text-[11.5px] text-red-500 font-sora -mt-1 ml-1">
+                    Please select a project type or service.
+                  </p>
+                )}
+
                 {/* Row 3: Message Textarea */}
                 <div className="relative z-0">
                   <span className="absolute left-3.5 top-3.5 text-[#8C8275] pointer-events-none">
@@ -814,14 +853,6 @@ const Contact: React.FC = () => {
                     ↗
                   </span>
                 </button>
-
-                {/* Submission Success Toast Feedback */}
-                {isSubmitted && (
-                  <div className="flex items-center justify-center gap-2 p-3 rounded-lg bg-[#FAF3E8] border border-[#A3772C]/40 text-[#A3772C] text-xs font-sora animate-fade-in">
-                    <CheckCircle className="w-4 h-4" />
-                    <span>Your inquiry has been prepared in your email client!</span>
-                  </div>
-                )}
 
                 {/* Privacy Assurance Statement */}
                 <div className="flex items-center justify-center gap-1.5 mt-1.5 text-[#7A7265] text-xs font-sora">
