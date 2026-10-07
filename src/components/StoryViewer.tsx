@@ -17,9 +17,10 @@ interface StoryViewerProps {
   isOpen: boolean;
   onClose: () => void;
   item: StoryViewerItem | null;
+  onExitComplete?: () => void;
 }
 
-const StoryViewer: React.FC<StoryViewerProps> = ({ isOpen, onClose, item }) => {
+const StoryViewer: React.FC<StoryViewerProps> = ({ isOpen, onClose, item, onExitComplete }) => {
   const storyList = useMemo(() => {
     if (!item) return storyPosters;
     if (item.isArchive) return allStoryPosters;
@@ -98,7 +99,22 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ isOpen, onClose, item }) => {
     }, 340);
   }, [totalStories]);
 
-  // Keyboard navigation & scroll locking
+  // Body scroll & Lenis locking for the full lifetime of the modal (including exit transitions)
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    if ((window as any).lenis) {
+      (window as any).lenis.stop();
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+      if ((window as any).lenis) {
+        (window as any).lenis.start();
+      }
+    };
+  }, []);
+
+  // Keyboard navigation & wheel listeners while actively open
   useEffect(() => {
     if (!isOpen) return;
 
@@ -129,18 +145,10 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ isOpen, onClose, item }) => {
       }
     };
 
-    document.body.style.overflow = 'hidden';
-    if ((window as any).lenis) {
-      (window as any).lenis.stop();
-    }
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('wheel', handleWheel, { passive: true });
 
     return () => {
-      document.body.style.overflow = '';
-      if ((window as any).lenis) {
-        (window as any).lenis.start();
-      }
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('wheel', handleWheel);
     };
@@ -167,12 +175,12 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ isOpen, onClose, item }) => {
     setTouchStartX(null);
   };
 
-  if (!isOpen || !item) return null;
-
   return (
-    <AnimatePresence>
-      {/* 1. Backdrop (Unified Dark Gallery Backdrop with Subtle Blur) */}
-      <motion.div
+    <AnimatePresence onExitComplete={onExitComplete}>
+      {isOpen && item && (
+        <>
+          {/* 1. Backdrop (Unified Dark Gallery Backdrop with Subtle Blur) */}
+          <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -445,7 +453,9 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ isOpen, onClose, item }) => {
           </div>
         </motion.div>
       </div>
-    </AnimatePresence>
+    </>
+  )}
+</AnimatePresence>
   );
 };
 

@@ -25,6 +25,7 @@ interface MobileReelsViewerProps {
   onClose: () => void;
   item: MediaViewerItem | null;
   onActiveVideoChange?: (video: FeaturedVideo) => void;
+  onExitComplete?: () => void;
 }
 
 // Compact Software Badge helper
@@ -104,6 +105,7 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
   onClose,
   item,
   onActiveVideoChange,
+  onExitComplete,
 }) => {
   // Construct videos playlist starting from featuredVideos
   const playlist = useMemo<FeaturedVideo[]>(() => {
@@ -207,20 +209,51 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
     setIsScrubbing(false);
   }, [currentIndex]);
 
-  // Lock body scroll while open
+  // Lock body scroll & Lenis for the full lifetime of the viewer modal (including exit transitions)
   useEffect(() => {
-    if (isOpen) {
-      const originalOverflow = document.body.style.overflow;
-      const originalTouchAction = document.body.style.touchAction;
-      document.body.style.overflow = 'hidden';
-      document.body.style.touchAction = 'none';
+    const originalOverflow = document.body.style.overflow;
+    const originalTouchAction = document.body.style.touchAction;
+    document.body.style.overflow = 'hidden';
+    document.body.style.touchAction = 'none';
+    if ((window as any).lenis) {
+      (window as any).lenis.stop();
+    }
 
-      return () => {
-        document.body.style.overflow = originalOverflow;
-        document.body.style.touchAction = originalTouchAction;
-      };
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.body.style.touchAction = originalTouchAction;
+      if ((window as any).lenis) {
+        (window as any).lenis.start();
+      }
+    };
+  }, []);
+
+  // Pause all playing videos immediately when closing begins to prevent trailing audio
+  useEffect(() => {
+    if (!isOpen) {
+      videoRefs.current.forEach((vid) => {
+        if (vid) {
+          try {
+            vid.pause();
+          } catch {}
+        }
+      });
+      setIsPlaying(false);
     }
   }, [isOpen]);
+
+  // Clean up all video playback upon component unmount
+  useEffect(() => {
+    return () => {
+      videoRefs.current.forEach((vid) => {
+        if (vid) {
+          try {
+            vid.pause();
+          } catch {}
+        }
+      });
+    };
+  }, []);
 
   // Scroll to active index instantly on mount
   useEffect(() => {
@@ -547,16 +580,20 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
     }
   }, [fullscreenVideo, isMuted]);
 
-  if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 z-[99999] w-screen h-[100dvh] bg-black text-[#FAF3E8] select-none overflow-hidden touch-none"
-      style={{
-        width: '100vw',
-        height: '100dvh',
-      }}
-    >
+    <AnimatePresence onExitComplete={onExitComplete}>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+          className="fixed inset-0 z-[99999] w-screen h-[100dvh] bg-black text-[#FAF3E8] select-none overflow-hidden touch-none"
+          style={{
+            width: '100vw',
+            height: '100dvh',
+          }}
+        >
       {/* ════════════════════════════════════════════════════════════════════ */}
       {/* 1. TOP HEADER OVERLAY (Fixed at top, notch & safe-area compliant)   */}
       {/* ════════════════════════════════════════════════════════════════════ */}
@@ -1101,7 +1138,9 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 

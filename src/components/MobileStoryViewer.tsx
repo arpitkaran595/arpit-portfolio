@@ -17,6 +17,7 @@ export interface MobileStoryViewerProps {
   isOpen: boolean;
   onClose: () => void;
   item: StoryViewerItem | null;
+  onExitComplete?: () => void;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -108,6 +109,7 @@ export const MobileStoryViewer: React.FC<MobileStoryViewerProps> = ({
   isOpen,
   onClose,
   item,
+  onExitComplete,
 }) => {
   // Construct playlist fallback
   const playlist = useMemo<StoryPoster[]>(() => {
@@ -192,7 +194,22 @@ export const MobileStoryViewer: React.FC<MobileStoryViewerProps> = ({
     }, 340);
   }, [totalStories]);
 
-  // Keyboard navigation & body scroll locking
+  // Body scroll & Lenis locking for the full lifetime of the modal (including exit transitions)
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    if ((window as any).lenis) {
+      (window as any).lenis.stop();
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+      if ((window as any).lenis) {
+        (window as any).lenis.start();
+      }
+    };
+  }, []);
+
+  // Keyboard navigation while actively open
   useEffect(() => {
     if (!isOpen) return;
 
@@ -208,17 +225,9 @@ export const MobileStoryViewer: React.FC<MobileStoryViewerProps> = ({
       }
     };
 
-    document.body.style.overflow = 'hidden';
-    if ((window as any).lenis) {
-      (window as any).lenis.stop();
-    }
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      document.body.style.overflow = '';
-      if ((window as any).lenis) {
-        (window as any).lenis.start();
-      }
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen, onClose, handlePrevious, handleNext]);
@@ -353,19 +362,18 @@ export const MobileStoryViewer: React.FC<MobileStoryViewerProps> = ({
     return Array.from({ length: maxDots }, (_, i) => start + i);
   }, [currentIndex, totalStories]);
 
-  if (!isOpen || !item) return null;
-
   return (
-    <AnimatePresence>
-      <motion.div
-        id="mobile-story-viewer-modal"
-        role="dialog"
-        aria-label="Story Viewer"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.3 }}
-        className="fixed inset-0 z-[100000] bg-[#070707] flex flex-col justify-between overflow-hidden select-none touch-none"
+    <AnimatePresence onExitComplete={onExitComplete}>
+      {isOpen && item && (
+        <motion.div
+          id="mobile-story-viewer-modal"
+          role="dialog"
+          aria-label="Story Viewer"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+          className="fixed inset-0 z-[100000] bg-[#070707] flex flex-col justify-between overflow-hidden select-none touch-none"
         style={{
           paddingTop: 'max(env(safe-area-inset-top, 0px), 12px)',
           paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 12px)',
@@ -564,7 +572,8 @@ export const MobileStoryViewer: React.FC<MobileStoryViewerProps> = ({
           </p>
         </footer>
       </motion.div>
-    </AnimatePresence>
+    )}
+  </AnimatePresence>
   );
 };
 

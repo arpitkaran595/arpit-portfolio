@@ -554,7 +554,7 @@ const Contact: React.FC = () => {
                       WhatsApp / Phone
                     </div>
                     <div className="font-sora text-[9px] xl:text-[9.5px] 2xl:text-[10px] text-[#7A7265] whitespace-nowrap">
-                      {personalInfo.phone}
+                      Chat on WhatsApp
                     </div>
                   </div>
                 </div>

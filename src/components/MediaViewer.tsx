@@ -56,6 +56,7 @@ interface MediaViewerProps {
   item: MediaViewerItem | null;
   layoutId?: string;
   onActiveVideoChange?: (video: FeaturedVideo) => void;
+  onExitComplete?: () => void;
 }
 
 // Clean duration formatter: "00:52" -> "0:52", "01:00" -> "1:00"
@@ -80,7 +81,14 @@ function parseDurationToSeconds(dur?: string): number {
   return 0;
 }
 
-const VideoViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layoutId, onActiveVideoChange }) => {
+const VideoViewer: React.FC<MediaViewerProps> = ({
+  isOpen,
+  onClose,
+  item,
+  layoutId,
+  onActiveVideoChange,
+  onExitComplete,
+}) => {
   const videoList = useMemo(() => {
     if (!item) return featuredVideos;
     if (item.isArchive) return allFeaturedVideos;
@@ -206,35 +214,11 @@ const VideoViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layout
     }
   }, [isOpen, activeVideo, onActiveVideoChange]);
 
-  // Handle Lenis & Body Scroll lock + Keyboard Shortcuts
+  // Body scroll & Lenis locking for the full lifetime of the modal (including exit transitions)
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.stopPropagation();
-        onClose();
-      } else if (e.key === 'ArrowLeft' && isVideoMode) {
-        e.preventDefault();
-        handlePrevious();
-      } else if (e.key === 'ArrowRight' && isVideoMode) {
-        e.preventDefault();
-        handleNext();
-      } else if (e.key === ' ' && isVideoMode) {
-        e.preventDefault();
-        togglePlay();
-      }
-    };
-
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      if ((window as any).lenis) {
-        (window as any).lenis.stop();
-      }
-      window.addEventListener('keydown', handleKeyDown);
-    } else {
-      document.body.style.overflow = '';
-      if ((window as any).lenis) {
-        (window as any).lenis.start();
-      }
+    document.body.style.overflow = 'hidden';
+    if ((window as any).lenis) {
+      (window as any).lenis.stop();
     }
 
     return () => {
@@ -242,9 +226,31 @@ const VideoViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layout
       if ((window as any).lenis) {
         (window as any).lenis.start();
       }
-      window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen, onClose, isVideoMode, currentIndex]);
+  }, []);
+
+  // Pause active video playback immediately when closing begins to prevent trailing audio
+  useEffect(() => {
+    if (!isOpen) {
+      if (mainVideoRef.current) {
+        try {
+          mainVideoRef.current.pause();
+        } catch {}
+      }
+      setIsPlaying(false);
+    }
+  }, [isOpen]);
+
+  // Clean up media resources upon unmount
+  useEffect(() => {
+    return () => {
+      if (mainVideoRef.current) {
+        try {
+          mainVideoRef.current.pause();
+        } catch {}
+      }
+    };
+  }, []);
 
   // Listen to fullscreen changes
   useEffect(() => {
@@ -365,7 +371,7 @@ const VideoViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layout
 
     const handleLoadedMetadata = () => {
       setDuration(main.duration || 0);
-      if (isPlaying) {
+      if (isPlaying && isOpen) {
         main.play().catch(() => {});
       }
     };
@@ -383,7 +389,7 @@ const VideoViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layout
       main.removeEventListener('loadedmetadata', handleLoadedMetadata);
       main.removeEventListener('ended', handleEnded);
     };
-  }, [isScrubbing, isPlaying]);
+  }, [isScrubbing, isPlaying, isOpen]);
 
   // Controls Auto-hide on inactivity
   const resetControlsTimer = useCallback(() => {
@@ -498,6 +504,12 @@ const VideoViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layout
     e?.stopPropagation();
     if (isTransitioningRef.current) return;
     isTransitioningRef.current = true;
+    if (mainVideoRef.current) {
+      try {
+        mainVideoRef.current.pause();
+        mainVideoRef.current.muted = true;
+      } catch {}
+    }
     setDirection(-1);
     setCurrentIndex(prevIndex);
     setProgress(0);
@@ -507,12 +519,18 @@ const VideoViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layout
     setTimeout(() => {
       isTransitioningRef.current = false;
     }, 340);
-  }, [prevIndex]);
+  }, [prevIndex, resetControlsTimer]);
 
   const handleNext = useCallback((e?: React.MouseEvent) => {
     e?.stopPropagation();
     if (isTransitioningRef.current) return;
     isTransitioningRef.current = true;
+    if (mainVideoRef.current) {
+      try {
+        mainVideoRef.current.pause();
+        mainVideoRef.current.muted = true;
+      } catch {}
+    }
     setDirection(1);
     setCurrentIndex(nextIndex);
     setProgress(0);
@@ -522,12 +540,45 @@ const VideoViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layout
     setTimeout(() => {
       isTransitioningRef.current = false;
     }, 340);
-  }, [nextIndex]);
+  }, [nextIndex, resetControlsTimer]);
+
+  // Keyboard navigation shortcuts active only while open
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onClose();
+      } else if (e.key === 'ArrowLeft' && isVideoMode) {
+        e.preventDefault();
+        handlePrevious();
+      } else if (e.key === 'ArrowRight' && isVideoMode) {
+        e.preventDefault();
+        handleNext();
+      } else if (e.key === ' ' && isVideoMode) {
+        e.preventDefault();
+        const main = mainVideoRef.current;
+        if (!main) return;
+        if (main.paused) {
+          main.play().catch(() => {});
+          setIsPlaying(true);
+        } else {
+          main.pause();
+          setIsPlaying(false);
+        }
+        resetControlsTimer();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose, isVideoMode, handlePrevious, handleNext, resetControlsTimer]);
 
   const effectiveDuration = duration || parseDurationToSeconds(activeVideo?.duration);
 
   return (
-    <AnimatePresence>
+    <AnimatePresence onExitComplete={onExitComplete}>
       {isOpen && item && (
         <>
           {/* 1. Backdrop (Maintains exact darkness, blur treatment & positioning) */}
@@ -982,7 +1033,13 @@ const VideoViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layout
 
 // Top-Level MediaViewer Dispatcher
 // Automatically selects the appropriate visual presentation variant
-const MediaViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layoutId, onActiveVideoChange }) => {
+const MediaViewer: React.FC<MediaViewerProps> = ({
+  isOpen,
+  onClose,
+  item,
+  layoutId,
+  onActiveVideoChange,
+}) => {
   const [windowWidth, setWindowWidth] = useState(() => (typeof window !== 'undefined' ? window.innerWidth : 1200));
 
   useEffect(() => {
@@ -991,7 +1048,56 @@ const MediaViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layout
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  if (!isOpen || !item) return null;
+  // Retain active item during exit transition so child viewers can complete animations
+  const [cachedItem, setCachedItem] = useState<MediaViewerItem | null>(item);
+  const [isClosing, setIsClosing] = useState(false);
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+
+  // Synchronously adjust state during render when isOpen or item props change
+  if (isOpen && !prevIsOpen) {
+    setPrevIsOpen(true);
+    setIsClosing(false);
+    setCachedItem(item);
+  } else if (!isOpen && prevIsOpen) {
+    setPrevIsOpen(false);
+    setIsClosing(true);
+  } else if (isOpen && item && item !== cachedItem) {
+    setCachedItem(item);
+  }
+
+  // Safety fallback timer: if onExitComplete is delayed or skipped (e.g. reduced motion),
+  // ensure the modal unmounts cleanly and never remains stuck
+  useEffect(() => {
+    if (isClosing) {
+      const timer = setTimeout(() => {
+        setIsClosing(false);
+        setCachedItem(null);
+      }, 450);
+      return () => clearTimeout(timer);
+    }
+  }, [isClosing]);
+
+  // Clean up and ensure scroll restoration on unmount
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = '';
+      if ((window as any).lenis) {
+        (window as any).lenis.start();
+      }
+    };
+  }, []);
+
+  const handleExitComplete = useCallback(() => {
+    if (!isOpen) {
+      setIsClosing(false);
+      setCachedItem(null);
+    }
+  }, [isOpen]);
+
+  const activeItem = isOpen ? item : cachedItem;
+
+  // Unmount completely if there is no active item or when both open and closing states are done
+  if (!activeItem || (!isOpen && !isClosing)) return null;
 
   const isMobile = windowWidth < 768;
 
@@ -999,50 +1105,60 @@ const MediaViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layout
 
   // 1. Detect Thumbnail Artwork (Strict 16:9 Landscape Artwork with Centered Layout & Bottom Pill)
   const isThumbnail = Boolean(
-    item.type === 'thumbnail' ||
-    (item.id && item.id.startsWith('yt-')) ||
-    youtubeThumbnails.some((t) => t.id === item.id) ||
-    allYoutubeThumbnails.some((t) => t.id === item.id)
+    activeItem.type === 'thumbnail' ||
+    (activeItem.id && activeItem.id.startsWith('yt-')) ||
+    youtubeThumbnails.some((t) => t.id === activeItem.id) ||
+    allYoutubeThumbnails.some((t) => t.id === activeItem.id)
   );
 
   if (isThumbnail) {
     content = isMobile ? (
-      <MobileThumbnailViewer isOpen={isOpen} onClose={onClose} item={item} />
+      <MobileThumbnailViewer isOpen={isOpen} onClose={onClose} item={activeItem} />
     ) : (
-      <ThumbnailViewer isOpen={isOpen} onClose={onClose} item={item} />
+      <ThumbnailViewer isOpen={isOpen} onClose={onClose} item={activeItem} />
     );
   } else {
     // 2. Detect Story Artwork (Strict 9:16 Portrait)
     const isStory = Boolean(
-      item.type === 'story' ||
-      (item.id && item.id.startsWith('story-')) ||
-      storyPosters.some((s) => s.id === item.id) ||
-      allStoryPosters.some((s) => s.id === item.id)
+      activeItem.type === 'story' ||
+      (activeItem.id && activeItem.id.startsWith('story-')) ||
+      storyPosters.some((s) => s.id === activeItem.id) ||
+      allStoryPosters.some((s) => s.id === activeItem.id)
     );
 
     if (isStory) {
       // On Mobile (< 768px): Render the redesigned 3-card 3D MobileStoryViewer!
       // On Tablet & Desktop (>= 768px): Render the approved existing StoryViewer (100% Unmodified)!
       content = isMobile ? (
-        <MobileStoryViewer isOpen={isOpen} onClose={onClose} item={item} />
+        <MobileStoryViewer
+          isOpen={isOpen}
+          onClose={onClose}
+          item={activeItem}
+          onExitComplete={handleExitComplete}
+        />
       ) : (
-        <StoryViewer isOpen={isOpen} onClose={onClose} item={item} />
+        <StoryViewer
+          isOpen={isOpen}
+          onClose={onClose}
+          item={activeItem}
+          onExitComplete={handleExitComplete}
+        />
       );
     } else {
       // 3. Detect Social Media Post (4:5 / 1:1)
       const isSocialPost = Boolean(
-        item.type === 'post' ||
-        item.type === 'creative' ||
-        (item.id && item.id.startsWith('post-')) ||
-        creativePosts.some((c) => c.id === item.id) ||
-        allCreativePosts.some((c) => c.id === item.id)
+        activeItem.type === 'post' ||
+        activeItem.type === 'creative' ||
+        (activeItem.id && activeItem.id.startsWith('post-')) ||
+        creativePosts.some((c) => c.id === activeItem.id) ||
+        allCreativePosts.some((c) => c.id === activeItem.id)
       );
 
       if (isSocialPost) {
         content = isMobile ? (
-          <MobileSocialPostViewer isOpen={isOpen} onClose={onClose} item={item} />
+          <MobileSocialPostViewer isOpen={isOpen} onClose={onClose} item={activeItem} />
         ) : (
-          <SocialPostViewer isOpen={isOpen} onClose={onClose} item={item} />
+          <SocialPostViewer isOpen={isOpen} onClose={onClose} item={activeItem} />
         );
       } else {
         // 4. Video Viewer:
@@ -1052,16 +1168,18 @@ const MediaViewer: React.FC<MediaViewerProps> = ({ isOpen, onClose, item, layout
           <MobileReelsViewer
             isOpen={isOpen}
             onClose={onClose}
-            item={item}
+            item={activeItem}
             onActiveVideoChange={onActiveVideoChange}
+            onExitComplete={handleExitComplete}
           />
         ) : (
           <VideoViewer
             isOpen={isOpen}
             onClose={onClose}
-            item={item}
+            item={activeItem}
             layoutId={layoutId}
             onActiveVideoChange={onActiveVideoChange}
+            onExitComplete={handleExitComplete}
           />
         );
       }
