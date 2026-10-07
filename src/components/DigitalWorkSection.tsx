@@ -670,9 +670,9 @@ export default function DigitalWorkSection() {
 
                     {/* Editorial Details below card: Left Aligned */}
                     <div className="mt-2 text-left w-full pl-0.5 max-w-[145px] lg:max-w-[155px] xl:max-w-[195px] 2xl:max-w-[245px]">
-                      <h4 className="font-playfair text-[12.5px] lg:text-[13px] xl:text-[15px] font-bold text-charcoal-900 group-hover:text-[#7A1C28] transition-colors leading-tight truncate">
+                      <h3 className="font-playfair text-[12.5px] lg:text-[13px] xl:text-[15px] font-bold text-charcoal-900 group-hover:text-[#7A1C28] transition-colors leading-tight truncate">
                         {prevProject.title}
-                      </h4>
+                      </h3>
                       <span className="text-[8.5px] lg:text-[9px] xl:text-[10px] font-sora font-semibold text-charcoal-400 uppercase tracking-[0.16em] block mt-0.5 truncate">
                         {prevProject.categoryLabel}
                       </span>
@@ -776,9 +776,9 @@ export default function DigitalWorkSection() {
 
                     {/* Editorial Details below card: Right Aligned */}
                     <div className="mt-2 text-right w-full pr-0.5 max-w-[145px] lg:max-w-[155px] xl:max-w-[195px] 2xl:max-w-[245px]">
-                      <h4 className="font-playfair text-[12.5px] lg:text-[13px] xl:text-[15px] font-bold text-charcoal-900 group-hover:text-[#7A1C28] transition-colors leading-tight truncate">
+                      <h3 className="font-playfair text-[12.5px] lg:text-[13px] xl:text-[15px] font-bold text-charcoal-900 group-hover:text-[#7A1C28] transition-colors leading-tight truncate">
                         {nextProject.title}
-                      </h4>
+                      </h3>
                       <span className="text-[8.5px] lg:text-[9px] xl:text-[10px] font-sora font-semibold text-charcoal-400 uppercase tracking-[0.16em] block mt-0.5 truncate">
                         {nextProject.categoryLabel}
                       </span>

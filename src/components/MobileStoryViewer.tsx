@@ -345,10 +345,10 @@ export const MobileStoryViewer: React.FC<MobileStoryViewerProps> = ({
     const lastPart = parts.slice(splitPoint).join(' ');
 
     return (
-      <h1 className="font-playfair text-[1.45rem] sm:text-[1.7rem] font-bold tracking-tight text-center leading-[1.15] drop-shadow-md">
+      <h2 className="font-playfair text-[1.45rem] sm:text-[1.7rem] font-bold tracking-tight text-center leading-[1.15] drop-shadow-md">
         <span className="text-[#FAF3E8]">{firstPart} </span>
         <span className="text-[#C4943A] italic font-playfair font-normal">{lastPart}</span>
-      </h1>
+      </h2>
     );
   };
 

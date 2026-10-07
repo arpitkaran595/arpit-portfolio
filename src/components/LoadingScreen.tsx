@@ -168,10 +168,10 @@ export default function LoadingScreen({ onComplete, onRevealStart }: LoadingScre
           ref={identityRef}
           className="relative z-10 flex flex-col items-center justify-center text-center px-6 opacity-0"
         >
-          <h1 className="font-sora font-semibold text-charcoal-900 text-xl sm:text-2xl md:text-3xl tracking-[0.26em] uppercase leading-none flex items-center justify-center">
+          <span className="font-sora font-semibold text-charcoal-900 text-xl sm:text-2xl md:text-3xl tracking-[0.26em] uppercase leading-none flex items-center justify-center">
             <span>ARPIT</span>
             <span className="text-[#C4943A] ml-2 sm:ml-3">AK</span>
-          </h1>
+          </span>
 
           <p className="font-sora text-[0.65rem] sm:text-xs font-medium tracking-[0.36em] text-charcoal-500 uppercase mt-2.5 sm:mt-3 leading-none">
             GRAPHIC DESIGNER

@@ -113,9 +113,9 @@ export default function PersonalBrandMoment() {
             viewport={{ once: true, amount: 0.3 }}
             className="relative"
           >
-            <h3 className="font-playfair font-bold text-[clamp(3.3rem,8.8vw,6.4rem)] text-[#1A1A1A] leading-[0.94] tracking-[-0.025em] mb-2 sm:mb-3">
+            <h2 className="font-playfair font-bold text-[clamp(3.3rem,8.8vw,6.4rem)] text-[#1A1A1A] leading-[0.94] tracking-[-0.025em] mb-2 sm:mb-3">
               ARPIT AK<span className="text-[#C4943A]">.</span>
-            </h3>
+            </h2>
           </motion.div>
 
           {/* Real Handwritten Signature Asset */}

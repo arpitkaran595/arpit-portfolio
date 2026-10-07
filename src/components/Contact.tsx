@@ -679,6 +679,7 @@ const Contact: React.FC = () => {
                       id="contact-name-input"
                       type="text"
                       name="name"
+                      aria-label="Your Name"
                       placeholder="Your Name"
                       value={formData.name}
                       onChange={handleChange}
@@ -695,6 +696,7 @@ const Contact: React.FC = () => {
                     <input
                       type="email"
                       name="email"
+                      aria-label="Email Address"
                       placeholder="Email Address"
                       value={formData.email}
                       onChange={handleChange}
@@ -792,6 +794,7 @@ const Contact: React.FC = () => {
                   </span>
                   <textarea
                     name="message"
+                    aria-label="Your Message"
                     rows={4}
                     placeholder="Tell me about your project..."
                     value={formData.message}

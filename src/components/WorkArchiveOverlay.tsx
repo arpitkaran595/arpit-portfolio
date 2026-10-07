@@ -313,10 +313,10 @@ export const WorkArchiveOverlay: React.FC = () => {
                 <span className="text-[9.5px] sm:text-[11px] font-sora font-semibold tracking-[0.26em] uppercase text-[#7A7265] mb-0.5 sm:mb-1">
                   SELECTED WORK
                 </span>
-                <h1 className="font-playfair text-xl sm:text-3xl md:text-4xl lg:text-[2.65rem] font-bold text-[#1A1A1A] tracking-[-0.015em] leading-tight">
+                <h2 className="font-playfair text-xl sm:text-3xl md:text-4xl lg:text-[2.65rem] font-bold text-[#1A1A1A] tracking-[-0.015em] leading-tight">
                   <span>Everything I've </span>
                   <span className="font-playfair font-normal italic text-[#C4943A]">made.</span>
-                </h1>
+                </h2>
               </div>
 
               {/* Top-Right: CLOSE × */}

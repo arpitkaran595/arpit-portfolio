@@ -123,27 +123,36 @@ export default function Navbar({ isLoaded, navRef }: NavbarProps) {
       >
         <div className="container mx-auto px-6 md:px-12 flex justify-between items-center">
           {/* Logo */}
-          <div 
+          <a
+            href="#home"
+            aria-label="Arpit AK - Back to top"
             className="cursor-pointer flex items-center"
-            onClick={() => scrollToSection('home')}
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToSection('home');
+            }}
           >
             <span className="font-sora font-semibold tracking-[0.2em] text-charcoal-800 text-lg">ARPIT</span>
             <span className="font-sora font-semibold tracking-[0.2em] text-gold-400 text-lg ml-2">AK</span>
-          </div>
+          </a>
 
           {/* Desktop Links */}
           <div className="hidden md:flex items-center space-x-8">
             {navLinks.map((link) => (
-              <button
+              <a
                 key={link.id}
-                onClick={() => scrollToSection(link.id)}
+                href={`#${link.id}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection(link.id);
+                }}
                 className="relative font-sora text-[0.75rem] font-medium tracking-[0.15em] uppercase text-charcoal-800 hover:text-gold-400 transition-colors"
               >
                 {link.name}
                 {activeSection === link.id && (
                   <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-gold-400" />
                 )}
-              </button>
+              </a>
             ))}
           </div>
 
