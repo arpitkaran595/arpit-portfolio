@@ -202,11 +202,11 @@ html.lenis, html.lenis body {
 
 /* ===== Footer Responsive Name & Mobile Depth ===== */
 .footer-name-lockup {
-  bottom: clamp(48px, 11vw, 62px);
+  bottom: clamp(62px, 15vw, 68px);
 }
 @media (min-width: 640px) {
   .footer-name-lockup {
-    bottom: clamp(60px, 12vw, 85px);
+    bottom: clamp(70px, 12vw, 85px);
   }
 }
 @media (min-width: 768px) {

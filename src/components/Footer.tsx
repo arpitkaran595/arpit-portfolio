@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -250,43 +250,41 @@ const Footer: React.FC = () => {
     }
   }, [updateMask]);
 
-  const touchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const isTouchRevealedRef = useRef(false);
-  const lastTouchTimeRef = useRef(0);
+  const [isToggled, setIsToggled] = useState(false);
+  const isToggledRef = useRef(false);
+  const lastToggleTimeRef = useRef(0);
 
-  const triggerTouchReveal = useCallback((clientX?: number, clientY?: number) => {
+  const toggleReveal = useCallback((clientX?: number, clientY?: number) => {
     const now = performance.now();
-    if (now - lastTouchTimeRef.current < 250) return;
-    lastTouchTimeRef.current = now;
+    if (now - lastToggleTimeRef.current < 180) return;
+    lastToggleTimeRef.current = now;
 
     if (!textStageRef.current) return;
     const rect = textStageRef.current.getBoundingClientRect();
-    const relX = clientX !== undefined ? clientX - rect.left : rect.width / 2;
-    const relY = clientY !== undefined ? clientY - rect.top : rect.height / 2;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
 
-    mousePos.current.x = relX;
-    mousePos.current.y = relY;
-    mousePos.current.targetX = relX;
-    mousePos.current.targetY = relY;
+    const nextState = !isToggledRef.current;
+    isToggledRef.current = nextState;
+    setIsToggled(nextState);
 
-    if (isTouchRevealedRef.current) {
+    if (nextState) {
+      mousePos.current.x = clientX !== undefined ? clientX - rect.left : centerX;
+      mousePos.current.y = clientY !== undefined ? clientY - rect.top : centerY;
+      mousePos.current.targetX = centerX;
+      mousePos.current.targetY = centerY;
+
+      // Generous radius to ensure 100% solid mask coverage across the entire text
+      const halfW = rect.width / 2;
+      const halfH = rect.height / 2;
+      const cornerDist = Math.sqrt(halfW * halfW + halfH * halfH);
+      const targetRadius = Math.max(cornerDist * 2.3, 200);
+
+      maskRadius.current.target = targetRadius;
+      isHovering.current = true;
+    } else {
       maskRadius.current.target = 0;
       isHovering.current = false;
-      isTouchRevealedRef.current = false;
-      if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current);
-    } else {
-      const revealRadius = Math.max(rect.width, rect.height) * 0.85;
-      maskRadius.current.target = Math.max(140, revealRadius);
-      isHovering.current = true;
-      isTouchRevealedRef.current = true;
-
-      if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current);
-      touchTimeoutRef.current = setTimeout(() => {
-        maskRadius.current.target = 0;
-        isHovering.current = false;
-        isTouchRevealedRef.current = false;
-        startAnimation();
-      }, 3500);
     }
 
     startAnimation();
@@ -294,7 +292,7 @@ const Footer: React.FC = () => {
 
   const handlePointerEnter = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.pointerType === 'touch') return;
-    if (isTouchRevealedRef.current) return;
+    if (isToggledRef.current) return;
     if (!textStageRef.current) return;
     const rect = textStageRef.current.getBoundingClientRect();
     const relX = e.clientX - rect.left;
@@ -313,7 +311,7 @@ const Footer: React.FC = () => {
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.pointerType === 'touch') return;
-    if (isTouchRevealedRef.current) return;
+    if (isToggledRef.current) return;
     if (!textStageRef.current) return;
     const rect = textStageRef.current.getBoundingClientRect();
     mousePos.current.targetX = e.clientX - rect.left;
@@ -324,28 +322,20 @@ const Footer: React.FC = () => {
 
   const handlePointerLeave = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.pointerType === 'touch') return;
-    if (isTouchRevealedRef.current) return;
+    if (isToggledRef.current) return;
     maskRadius.current.target = 0;
     isHovering.current = false;
     startAnimation();
   };
 
-  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType === 'touch') {
-      triggerTouchReveal(e.clientX, e.clientY);
-    }
-  };
-
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (window.matchMedia('(pointer: coarse)').matches) {
-      triggerTouchReveal(e.clientX, e.clientY);
-    }
+    toggleReveal(e.clientX, e.clientY);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      triggerTouchReveal();
+      toggleReveal();
     }
   };
 
@@ -353,9 +343,6 @@ const Footer: React.FC = () => {
     return () => {
       if (rafId.current) {
         cancelAnimationFrame(rafId.current);
-      }
-      if (touchTimeoutRef.current) {
-        clearTimeout(touchTimeoutRef.current);
       }
     };
   }, []);
@@ -615,13 +602,13 @@ const Footer: React.FC = () => {
             role="button"
             tabIndex={0}
             aria-label="Toggle bilingual name reveal"
+            aria-pressed={isToggled}
             onPointerEnter={handlePointerEnter}
             onPointerMove={handlePointerMove}
             onPointerLeave={handlePointerLeave}
-            onPointerDown={handlePointerDown}
             onClick={handleClick}
             onKeyDown={handleKeyDown}
-            className="relative inline-block select-none cursor-pointer sm:cursor-default py-2 touch-none whitespace-nowrap focus:outline-none"
+            className="relative inline-block select-none cursor-pointer py-3 px-4 touch-manipulation whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C4943A]/50 rounded-xl"
           >
             {/* Physical Terrain Contact / Grounding Shadow at Letter Base */}
             <div
@@ -646,7 +633,7 @@ const Footer: React.FC = () => {
             {/* 4B. Default English Layer: ARPIT AK (Mask punches hole under cursor) */}
             <div
               ref={englishTextRef}
-              className="footer-name-text absolute inset-0 flex items-center justify-center font-sora font-extrabold uppercase tracking-tight leading-none text-white text-center select-none pointer-events-none whitespace-nowrap"
+              className="footer-name-text absolute -top-12 -bottom-12 inset-x-0 flex items-center justify-center font-sora font-extrabold uppercase tracking-tight leading-none text-white text-center select-none pointer-events-none whitespace-nowrap"
               style={{
                 ...typographicDepthStyle,
                 willChange: 'mask-image, -webkit-mask-image',
@@ -660,7 +647,7 @@ const Footer: React.FC = () => {
             {/* 4C. Hindi Layer: अर्पित (Identical geometry, revealed only under cursor mask) */}
             <div
               ref={hindiTextRef}
-              className="footer-name-text absolute inset-0 flex items-center justify-center font-sora font-extrabold tracking-[0.22em] leading-none text-white text-center select-none pointer-events-none whitespace-nowrap"
+              className="footer-name-text absolute -top-12 -bottom-12 inset-x-0 flex items-center justify-center font-sora font-extrabold tracking-[0.22em] leading-none text-white text-center select-none pointer-events-none whitespace-nowrap"
               style={{
                 paddingLeft: '0.22em',
                 opacity: 0,

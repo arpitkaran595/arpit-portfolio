@@ -59,7 +59,7 @@ export default function HomePage() {
   const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    document.title = 'Arpit AK — Creative Designer & Video Editor';
+    document.title = 'Arpit AK — I Make Pixels Behave (Mostly)';
   }, []);
 
   // Persist homepage scroll position cleanly so returning from Case Studies restores exact view
