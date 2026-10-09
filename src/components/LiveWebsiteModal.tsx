@@ -385,7 +385,9 @@ export default function LiveWebsiteModal({
 
               {hasLivePreview && project.url && (
                 <button
+                  type="button"
                   onClick={handleReload}
+                  aria-label="Reload live view"
                   className="p-1.5 sm:p-2 rounded-full bg-cream-50 hover:bg-cream-200 text-charcoal-700 border border-[#D4A94E]/30 transition-all cursor-pointer"
                   title="Reload Live View"
                 >
@@ -394,7 +396,9 @@ export default function LiveWebsiteModal({
               )}
 
               <button
+                type="button"
                 onClick={onClose}
+                aria-label="Close modal"
                 className="p-1.5 sm:p-2 rounded-full bg-[#7A1C28]/10 hover:bg-[#7A1C28] text-[#7A1C28] hover:text-white border border-[#7A1C28]/30 transition-all cursor-pointer"
                 title="Close (ESC)"
               >

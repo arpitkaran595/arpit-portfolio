@@ -287,9 +287,9 @@ const ThumbnailCard: React.FC<ThumbnailCardProps> = ({
           <span className="text-[9px] sm:text-[10px] font-sora tracking-widest text-gold-400 uppercase font-semibold block">
             #{item.index}
           </span>
-          <h4 className="font-playfair text-xs sm:text-sm md:text-base text-white font-bold truncate drop-shadow">
+          <h3 className="font-playfair text-xs sm:text-sm md:text-base text-white font-bold truncate drop-shadow">
             {item.title}
-          </h4>
+          </h3>
         </div>
       </div>
     </motion.div>

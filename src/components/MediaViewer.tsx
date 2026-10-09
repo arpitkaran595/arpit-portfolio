@@ -818,6 +818,7 @@ const VideoViewer: React.FC<MediaViewerProps> = ({
                       <button
                         onClick={toggleSpeed}
                         type="button"
+                        aria-label={`Playback speed: ${playbackRate}x`}
                         title={`Speed: ${playbackRate}x`}
                         className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/15 hover:bg-white/30 active:scale-95 text-white flex items-center justify-center transition-all shrink-0 cursor-pointer"
                       >
