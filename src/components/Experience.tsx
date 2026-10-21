@@ -542,14 +542,6 @@ const Experience: React.FC = () => {
             ref={introRef}
             className="lg:absolute lg:left-0 lg:top-[12%] xl:top-[14%] w-full lg:w-[320px] xl:w-[360px] z-[7] flex flex-col items-start"
           >
-            {/* Eyebrow & Underline */}
-            <div className="flex flex-col items-start">
-              <span className="text-gold-400 text-[11px] md:text-[12px] font-sora uppercase tracking-[0.18em] font-semibold">
-                EXPERIENCE
-              </span>
-              <div className="w-9 h-[1.5px] bg-gold-400 mt-2 mb-4" />
-            </div>
-
             {/* Main Heading */}
             <h2 className="font-playfair text-[clamp(2.5rem,4.1vw,4.2rem)] font-bold leading-[1.08] text-charcoal-800 tracking-tight">
               My Journey,<br />

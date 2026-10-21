@@ -100,25 +100,10 @@ export default function SelectedCaseStudies() {
         {/* ═══════════════════════════════════════════════════════════
             SECTION HEADER
             ═══════════════════════════════════════════════════════════ */}
-        <div className="flex flex-col items-start mb-14 sm:mb-18 lg:mb-20">
-          {/* Eyebrow & Gold Accent */}
-          <motion.div
-            custom={0}
-            variants={fadeUpVariant}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-            className="flex items-center gap-3 mb-4 sm:mb-5"
-          >
-            <span className="font-sora text-[10.5px] sm:text-[11.5px] uppercase tracking-[0.24em] font-semibold text-[#B8860B]">
-              CURATED PROOF
-            </span>
-            <div className="w-8 sm:w-10 h-[1.5px] bg-[#C4943A]" />
-          </motion.div>
-
+        <div className="flex flex-col items-start mb-12 sm:mb-16 lg:mb-18">
           {/* Section Headline */}
           <motion.h2
-            custom={0.08}
+            custom={0.04}
             variants={fadeUpVariant}
             initial="hidden"
             whileInView="visible"
@@ -131,12 +116,12 @@ export default function SelectedCaseStudies() {
 
           {/* Supporting line */}
           <motion.p
-            custom={0.16}
+            custom={0.12}
             variants={fadeUpVariant}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
-            className="font-sora text-[14px] sm:text-[15px] lg:text-[15.5px] text-[#554A3E] mt-3.5 max-w-[540px] leading-relaxed"
+            className="font-sora text-[14px] sm:text-[15px] lg:text-[15.5px] text-[#3F362E] mt-3.5 max-w-[540px] leading-relaxed"
           >
             A closer look at the ideas, decisions and design behind the work.
           </motion.p>

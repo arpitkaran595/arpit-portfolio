@@ -513,9 +513,9 @@ export default function DigitalWorkSection() {
   return (
     <section
       id="digital-work"
-      className="relative w-full overflow-hidden bg-[#FBF7F0] text-charcoal-900 pt-24 sm:pt-28 lg:pt-32 pb-20 sm:pb-24 lg:pb-28 scroll-mt-24 select-none"
+      className="relative w-full overflow-hidden bg-[#F8F7F4] text-charcoal-900 pt-24 sm:pt-28 lg:pt-32 pb-20 sm:pb-24 lg:pb-28 scroll-mt-24 select-none"
       style={{
-        backgroundImage: `radial-gradient(ellipse 80% 50% at 50% -10%, rgba(246, 215, 178, 0.28) 0%, rgba(251, 247, 240, 0.98) 65%)`,
+        backgroundImage: `radial-gradient(ellipse 80% 50% at 50% -10%, rgba(216, 220, 228, 0.42) 0%, rgba(248, 247, 244, 0.98) 65%)`,
       }}
     >
       {/* ───────────────────────────────────────────────────────────────────── */}
@@ -536,22 +536,15 @@ export default function DigitalWorkSection() {
         {/* 1. SECTION HEADER */}
         {/* ═════════════════════════════════════════════════════════════════ */}
         <div className="flex flex-col items-center text-center max-w-[800px] mb-8 sm:mb-11 relative z-10">
-          {/* Eyebrow with flanking gold hairline dividers */}
-          <div className="flex items-center justify-center gap-3.5 mb-3.5">
-            <div className="h-[1px] w-8 sm:w-14 bg-[#B8860B]/40" />
-            <span className="text-[11px] sm:text-[12px] font-sora font-semibold tracking-[0.25em] text-[#9A7209] uppercase">
-              DIGITAL WORK
-            </span>
-            <div className="h-[1px] w-8 sm:w-14 bg-[#B8860B]/40" />
-          </div>
+
 
           {/* Main Display Heading */}
           <h2 className="font-playfair text-[clamp(2.4rem,4.5vw,4.4rem)] font-bold leading-[1.08] text-charcoal-900 tracking-tight mb-3">
-            Interfaces & <span className="text-[#7A1C28] italic font-playfair font-normal">Websites.</span>
+            Interfaces & <span className="text-[#B8860B] italic font-playfair font-normal">Websites.</span>
           </h2>
 
           {/* Subtitle */}
-          <p className="font-sora text-[14px] sm:text-[15.5px] text-charcoal-500 font-normal leading-relaxed max-w-[560px]">
+          <p className="font-sora text-[14px] sm:text-[15.5px] text-[#524C44] font-normal leading-relaxed max-w-[560px]">
             Digital experiences, interfaces and websites I’ve designed and built.
           </p>
 
@@ -575,7 +568,7 @@ export default function DigitalWorkSection() {
                   {isActive && (
                     <motion.div
                       layoutId="activeCategoryDot"
-                      className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#7A1C28] shadow-sm shadow-[#7A1C28]/40"
+                      className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#B8860B] shadow-sm shadow-[#B8860B]/40"
                       transition={{ type: 'spring', stiffness: 450, damping: 30 }}
                     />
                   )}
@@ -593,7 +586,7 @@ export default function DigitalWorkSection() {
           <button
             onClick={handlePrev}
             aria-label="Previous project"
-            className="lg:hidden absolute left-1 sm:left-3 top-[39%] -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-cream-50/95 hover:bg-white text-charcoal-800 border border-[#D4A94E]/50 hover:border-[#7A1C28] shadow-md flex items-center justify-center transition-all duration-300 active:scale-95 cursor-pointer"
+            className="lg:hidden absolute left-1 sm:left-3 top-[39%] -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-cream-50/95 hover:bg-white text-charcoal-800 border border-[#D4A94E]/50 hover:border-[#B8860B] shadow-md flex items-center justify-center transition-all duration-300 active:scale-95 cursor-pointer"
           >
             <ChevronLeft className="w-5 h-5 text-charcoal-700" />
           </button>
@@ -602,7 +595,7 @@ export default function DigitalWorkSection() {
           <button
             onClick={handleNext}
             aria-label="Next project"
-            className="lg:hidden absolute right-1 sm:right-3 top-[39%] -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-cream-50/95 hover:bg-white text-charcoal-800 border border-[#D4A94E]/50 hover:border-[#7A1C28] shadow-md flex items-center justify-center transition-all duration-300 active:scale-95 cursor-pointer"
+            className="lg:hidden absolute right-1 sm:right-3 top-[39%] -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-cream-50/95 hover:bg-white text-charcoal-800 border border-[#D4A94E]/50 hover:border-[#B8860B] shadow-md flex items-center justify-center transition-all duration-300 active:scale-95 cursor-pointer"
           >
             <ChevronRight className="w-5 h-5 text-charcoal-700" />
           </button>
@@ -617,9 +610,9 @@ export default function DigitalWorkSection() {
                 <button
                   onClick={handlePrev}
                   aria-label="Previous project"
-                  className="w-9 h-9 lg:w-9 lg:h-9 xl:w-10 xl:h-10 2xl:w-11 2xl:h-11 rounded-full bg-cream-50/95 hover:bg-white text-charcoal-800 border border-[#D4A94E]/45 hover:border-[#7A1C28] shadow-md hover:shadow-xl flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 group cursor-pointer flex-shrink-0"
+                  className="w-9 h-9 lg:w-9 lg:h-9 xl:w-10 xl:h-10 2xl:w-11 2xl:h-11 rounded-full bg-cream-50/95 hover:bg-white text-charcoal-800 border border-[#D4A94E]/45 hover:border-[#B8860B] shadow-md hover:shadow-xl flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 group cursor-pointer flex-shrink-0"
                 >
-                  <ChevronLeft className="w-4 h-4 lg:w-4.5 lg:h-4.5 xl:w-5 xl:h-5 group-hover:-translate-x-0.5 transition-transform duration-200 text-charcoal-700 group-hover:text-[#7A1C28]" />
+                  <ChevronLeft className="w-4 h-4 lg:w-4.5 lg:h-4.5 xl:w-5 xl:h-5 group-hover:-translate-x-0.5 transition-transform duration-200 text-charcoal-700 group-hover:text-[#B8860B]" />
                 </button>
 
                 {/* Previous Project Editorial Card with AnimatePresence */}
@@ -646,7 +639,7 @@ export default function DigitalWorkSection() {
                   >
                     {/* Card Surface: Substantial, rounded, preserved vibrant artwork */}
                     <div
-                      className="w-[145px] lg:w-[155px] xl:w-[195px] 2xl:w-[245px] aspect-[16/10] rounded-[13px] xl:rounded-[16px] overflow-hidden bg-[#1E1B18] border border-[#D4A94E]/35 group-hover:border-[#7A1C28]/60 shadow-lg shadow-black/10 group-hover:shadow-2xl transition-all duration-300 relative"
+                      className="w-[145px] lg:w-[155px] xl:w-[195px] 2xl:w-[245px] aspect-[16/10] rounded-[13px] xl:rounded-[16px] overflow-hidden bg-[#1E1B18] border border-[#D4A94E]/35 group-hover:border-[#B8860B]/60 shadow-lg shadow-black/10 group-hover:shadow-2xl transition-all duration-300 relative"
                       style={{
                         transform: 'rotateY(6deg)',
                         transformStyle: 'preserve-3d',
@@ -663,14 +656,14 @@ export default function DigitalWorkSection() {
                       {/* Subtle soft scrim preserving artwork vibrancy */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent opacity-40 group-hover:opacity-10 transition-opacity duration-300" />
                       {/* Refined Index Tag */}
-                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-[#FAF4EC]/90 text-[#7A1C28] text-[9px] font-sora font-semibold backdrop-blur-sm border border-[#B8860B]/30 shadow-sm">
+                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-[#FAF4EC]/90 text-[#B8860B] text-[9px] font-sora font-semibold backdrop-blur-sm border border-[#B8860B]/30 shadow-sm">
                         {prevProject.index}
                       </span>
                     </div>
 
                     {/* Editorial Details below card: Left Aligned */}
                     <div className="mt-2 text-left w-full pl-0.5 max-w-[145px] lg:max-w-[155px] xl:max-w-[195px] 2xl:max-w-[245px]">
-                      <h3 className="font-playfair text-[12.5px] lg:text-[13px] xl:text-[15px] font-bold text-charcoal-900 group-hover:text-[#7A1C28] transition-colors leading-tight truncate">
+                      <h3 className="font-playfair text-[12.5px] lg:text-[13px] xl:text-[15px] font-bold text-charcoal-900 group-hover:text-[#B8860B] transition-colors leading-tight truncate">
                         {prevProject.title}
                       </h3>
                       <span className="text-[8.5px] lg:text-[9px] xl:text-[10px] font-sora font-semibold text-charcoal-400 uppercase tracking-[0.16em] block mt-0.5 truncate">
@@ -752,7 +745,7 @@ export default function DigitalWorkSection() {
                   >
                     {/* Card Surface: Substantial, rounded, preserved vibrant artwork */}
                     <div
-                      className="w-[145px] lg:w-[155px] xl:w-[195px] 2xl:w-[245px] aspect-[16/10] rounded-[13px] xl:rounded-[16px] overflow-hidden bg-[#1E1B18] border border-[#D4A94E]/35 group-hover:border-[#7A1C28]/60 shadow-lg shadow-black/10 group-hover:shadow-2xl transition-all duration-300 relative"
+                      className="w-[145px] lg:w-[155px] xl:w-[195px] 2xl:w-[245px] aspect-[16/10] rounded-[13px] xl:rounded-[16px] overflow-hidden bg-[#1E1B18] border border-[#D4A94E]/35 group-hover:border-[#B8860B]/60 shadow-lg shadow-black/10 group-hover:shadow-2xl transition-all duration-300 relative"
                       style={{
                         transform: 'rotateY(-6deg)',
                         transformStyle: 'preserve-3d',
@@ -769,14 +762,14 @@ export default function DigitalWorkSection() {
                       {/* Subtle soft scrim preserving artwork vibrancy */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent opacity-40 group-hover:opacity-10 transition-opacity duration-300" />
                       {/* Refined Index Tag */}
-                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-[#FAF4EC]/90 text-[#7A1C28] text-[9px] font-sora font-semibold backdrop-blur-sm border border-[#B8860B]/30 shadow-sm">
+                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-[#FAF4EC]/90 text-[#B8860B] text-[9px] font-sora font-semibold backdrop-blur-sm border border-[#B8860B]/30 shadow-sm">
                         {nextProject.index}
                       </span>
                     </div>
 
                     {/* Editorial Details below card: Right Aligned */}
                     <div className="mt-2 text-right w-full pr-0.5 max-w-[145px] lg:max-w-[155px] xl:max-w-[195px] 2xl:max-w-[245px]">
-                      <h3 className="font-playfair text-[12.5px] lg:text-[13px] xl:text-[15px] font-bold text-charcoal-900 group-hover:text-[#7A1C28] transition-colors leading-tight truncate">
+                      <h3 className="font-playfair text-[12.5px] lg:text-[13px] xl:text-[15px] font-bold text-charcoal-900 group-hover:text-[#B8860B] transition-colors leading-tight truncate">
                         {nextProject.title}
                       </h3>
                       <span className="text-[8.5px] lg:text-[9px] xl:text-[10px] font-sora font-semibold text-charcoal-400 uppercase tracking-[0.16em] block mt-0.5 truncate">
@@ -790,9 +783,9 @@ export default function DigitalWorkSection() {
                 <button
                   onClick={handleNext}
                   aria-label="Next project"
-                  className="w-9 h-9 lg:w-9 lg:h-9 xl:w-10 xl:h-10 2xl:w-11 2xl:h-11 rounded-full bg-cream-50/95 hover:bg-white text-charcoal-800 border border-[#D4A94E]/45 hover:border-[#7A1C28] shadow-md hover:shadow-xl flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 group cursor-pointer flex-shrink-0"
+                  className="w-9 h-9 lg:w-9 lg:h-9 xl:w-10 xl:h-10 2xl:w-11 2xl:h-11 rounded-full bg-cream-50/95 hover:bg-white text-charcoal-800 border border-[#D4A94E]/45 hover:border-[#B8860B] shadow-md hover:shadow-xl flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 group cursor-pointer flex-shrink-0"
                 >
-                  <ChevronRight className="w-4 h-4 lg:w-4.5 lg:h-4.5 xl:w-5 xl:h-5 group-hover:translate-x-0.5 transition-transform duration-200 text-charcoal-700 group-hover:text-[#7A1C28]" />
+                  <ChevronRight className="w-4 h-4 lg:w-4.5 lg:h-4.5 xl:w-5 xl:h-5 group-hover:translate-x-0.5 transition-transform duration-200 text-charcoal-700 group-hover:text-[#B8860B]" />
                 </button>
               </div>
             )}
@@ -820,8 +813,8 @@ export default function DigitalWorkSection() {
                   }}
                   className={`flex items-center gap-1.5 sm:gap-2 p-1 sm:p-1.5 rounded-lg transition-all duration-300 text-left cursor-pointer ${
                     isActive
-                      ? 'bg-white/95 border border-[#7A1C28]/45 shadow-md shadow-[#7A1C28]/10 ring-1 ring-[#7A1C28]/20'
-                      : 'bg-cream-50/70 border border-[#D4A94E]/30 hover:border-[#7A1C28]/35 opacity-75 hover:opacity-100'
+                      ? 'bg-white/95 border border-[#B8860B]/45 shadow-md shadow-[#B8860B]/10 ring-1 ring-[#B8860B]/20'
+                      : 'bg-cream-50/70 border border-[#D4A94E]/30 hover:border-[#B8860B]/35 opacity-75 hover:opacity-100'
                   }`}
                   aria-label={`View project ${p.index}: ${p.title}`}
                 >
@@ -838,7 +831,7 @@ export default function DigitalWorkSection() {
                   <div className="pr-1 hidden sm:block">
                     <span
                       className={`text-[8.5px] font-sora block leading-tight ${
-                        isActive ? 'text-[#7A1C28] font-bold' : 'text-charcoal-400 font-medium'
+                        isActive ? 'text-[#B8860B] font-bold' : 'text-charcoal-400 font-medium'
                       }`}
                     >
                       {p.index}
@@ -906,8 +899,8 @@ export default function DigitalWorkSection() {
                         <div
                           className={`h-[2px] rounded-full transition-all duration-300 ${
                             isActive
-                              ? 'w-7 sm:w-8 bg-[#7A1C28]'
-                              : 'w-3.5 sm:w-4 bg-[#D4A94E]/40 group-hover:bg-[#7A1C28]/60'
+                              ? 'w-7 sm:w-8 bg-[#B8860B]'
+                              : 'w-3.5 sm:w-4 bg-[#D4A94E]/40 group-hover:bg-[#B8860B]/60'
                           }`}
                         />
                       </button>
@@ -927,9 +920,9 @@ export default function DigitalWorkSection() {
                   },
                   exit: { opacity: 0, y: -4, transition: { duration: 0.14 } },
                 }}
-                className="flex items-center justify-center gap-2 text-[10.5px] sm:text-[11.5px] font-sora font-semibold tracking-[0.22em] text-[#7A1C28] uppercase mt-2 mb-1"
+                className="flex items-center justify-center gap-2 text-[10.5px] sm:text-[11.5px] font-sora font-semibold tracking-[0.22em] text-[#B8860B] uppercase mt-2 mb-1"
               >
-                <span className="w-1.5 h-1.5 rounded-[2px] bg-[#7A1C28]" />
+                <span className="w-1.5 h-1.5 rounded-[2px] bg-[#B8860B]" />
                 <span>{currentProject.categoryLabel}</span>
               </motion.div>
 
@@ -1042,7 +1035,7 @@ export default function DigitalWorkSection() {
                 {/* 1. Primary CTA: VIEW CASE STUDY (Navigates to dedicated /work/:slug page) */}
                 <Link
                   to={`/work/${currentProject.slug}`}
-                  className="px-6 sm:px-8 py-3 rounded-full bg-[#7A1C28] hover:bg-[#63141F] text-white text-[12px] sm:text-[13px] font-sora font-semibold tracking-[0.12em] uppercase transition-all duration-300 shadow-md shadow-[#7A1C28]/25 hover:shadow-xl hover:shadow-[#7A1C28]/35 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2 cursor-pointer"
+                  className="px-6 sm:px-8 py-3 rounded-full bg-[#B8860B] hover:bg-[#9A7209] text-white text-[12px] sm:text-[13px] font-sora font-semibold tracking-[0.12em] uppercase transition-all duration-300 shadow-md shadow-[#B8860B]/25 hover:shadow-xl hover:shadow-[#B8860B]/35 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2 cursor-pointer"
                 >
                   <span>VIEW CASE STUDY</span>
                   <ArrowRight className="w-3.5 h-3.5 text-[#E5C89C]" />
@@ -1052,7 +1045,7 @@ export default function DigitalWorkSection() {
                 {currentProject.hasLivePreview ? (
                   <button
                     onClick={handleOpenProjectAction}
-                    className="px-5 py-3 rounded-full bg-cream-50/90 hover:bg-cream-100 text-charcoal-800 hover:text-[#7A1C28] border border-[#D4A94E]/50 hover:border-[#7A1C28] text-[11.5px] sm:text-[12.5px] font-sora font-semibold tracking-wider uppercase transition-all duration-300 shadow-2xs hover:shadow-xs flex items-center gap-2 cursor-pointer"
+                    className="px-5 py-3 rounded-full bg-cream-50/90 hover:bg-cream-100 text-charcoal-800 hover:text-[#B8860B] border border-[#D4A94E]/50 hover:border-[#B8860B] text-[11.5px] sm:text-[12.5px] font-sora font-semibold tracking-wider uppercase transition-all duration-300 shadow-2xs hover:shadow-xs flex items-center gap-2 cursor-pointer"
                     title="Explore live website in interactive MacBook preview"
                   >
                     <Play className="w-3.5 h-3.5 text-[#9A7209] fill-[#9A7209]" />
@@ -1064,7 +1057,7 @@ export default function DigitalWorkSection() {
                       href={currentProject.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-5 py-3 rounded-full bg-cream-50/90 hover:bg-cream-100 text-charcoal-700 hover:text-[#7A1C28] border border-[#D4A94E]/50 hover:border-[#7A1C28] text-[11.5px] sm:text-[12.5px] font-sora font-semibold tracking-wider uppercase transition-all duration-300 shadow-2xs hover:shadow-xs flex items-center gap-2 cursor-pointer"
+                      className="px-5 py-3 rounded-full bg-cream-50/90 hover:bg-cream-100 text-charcoal-700 hover:text-[#B8860B] border border-[#D4A94E]/50 hover:border-[#B8860B] text-[11.5px] sm:text-[12.5px] font-sora font-semibold tracking-wider uppercase transition-all duration-300 shadow-2xs hover:shadow-xs flex items-center gap-2 cursor-pointer"
                       title="Open external live application in new tab"
                     >
                       <span>OPEN WEB APP</span>
@@ -1096,17 +1089,17 @@ export default function DigitalWorkSection() {
         {/* ═════════════════════════════════════════════════════════════════ */}
         <div className="w-full max-w-[860px] mx-auto mt-10 sm:mt-14 pt-8 border-t border-[#D4A94E]/25 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
           <div className="flex items-center gap-2.5">
-            <span className="w-2 h-2 rounded-full bg-[#7A1C28] animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-[#B8860B] animate-pulse" />
             <span className="text-[11px] sm:text-[11.5px] font-sora font-semibold tracking-[0.16em] text-[#9A7209] uppercase">
               DOCUMENTARY ARCHIVE • 4 DEDICATED CASE STUDIES
             </span>
           </div>
           <Link
             to={`/work/${currentProject.slug}`}
-            className="inline-flex items-center gap-2 text-[11.5px] sm:text-[12px] font-sora font-bold tracking-[0.12em] text-charcoal-800 hover:text-[#7A1C28] uppercase transition-colors group cursor-pointer"
+            className="inline-flex items-center gap-2 text-[11.5px] sm:text-[12px] font-sora font-bold tracking-[0.12em] text-charcoal-800 hover:text-[#B8860B] uppercase transition-colors group cursor-pointer"
           >
             <span>READ {currentProject.title} CASE STUDY</span>
-            <ArrowRight className="w-3.5 h-3.5 text-[#7A1C28] group-hover:translate-x-1 transition-transform" />
+            <ArrowRight className="w-3.5 h-3.5 text-[#B8860B] group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
       </div>

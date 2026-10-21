@@ -63,13 +63,13 @@ export default function DigitalCaseStudy({
         <div className="relative w-full flex items-center justify-center my-6">
           <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-[#B8860B]/35 to-transparent" />
           <div className="absolute w-3 h-3 rotate-45 bg-[#FAF4EC] border border-[#B8860B]/60 shadow-sm flex items-center justify-center">
-            <div className="w-1 h-1 bg-[#7A1C28]" />
+            <div className="w-1 h-1 bg-[#B8860B]" />
           </div>
         </div>
 
         {/* Documentary Eyebrow Badge */}
         <div className="flex items-center gap-2.5 px-3.5 py-1 rounded-full bg-[#FAF4EC] border border-[#D4A94E]/40 shadow-xs mb-3">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#7A1C28] animate-pulse" />
+          <span className="w-1.5 h-1.5 rounded-full bg-[#B8860B] animate-pulse" />
           <span className="text-[10.5px] sm:text-[11.5px] font-sora font-semibold tracking-[0.24em] text-[#9A7209] uppercase">
             CASE STUDY DOCUMENTARY • ARCHIVE NO. {project.index}
           </span>
@@ -87,7 +87,7 @@ export default function DigitalCaseStudy({
       {/* ───────────────────────────────────────────────────────────────── */}
       <section className="mb-20 sm:mb-28">
         <div className="flex items-center gap-3 mb-4">
-          <span className="text-[11px] sm:text-[12px] font-sora font-bold tracking-[0.2em] text-[#7A1C28] uppercase">
+          <span className="text-[11px] sm:text-[12px] font-sora font-bold tracking-[0.2em] text-[#B8860B] uppercase">
             01 — THE PROJECT
           </span>
           <div className="h-[1px] flex-1 bg-[#D4A94E]/25" />
@@ -109,9 +109,9 @@ export default function DigitalCaseStudy({
               {caseStudy.overview.stats.map((stat, idx) => (
                 <div
                   key={idx}
-                  className="p-4 sm:p-5 rounded-2xl bg-white/80 border border-[#D4A94E]/30 shadow-xs hover:border-[#7A1C28]/40 transition-all duration-300"
+                  className="p-4 sm:p-5 rounded-2xl bg-white/80 border border-[#D4A94E]/30 shadow-xs hover:border-[#B8860B]/40 transition-all duration-300"
                 >
-                  <div className="font-playfair text-[26px] sm:text-[32px] font-bold text-[#7A1C28] leading-none mb-1.5">
+                  <div className="font-playfair text-[26px] sm:text-[32px] font-bold text-[#B8860B] leading-none mb-1.5">
                     {stat.value}
                   </div>
                   <div className="font-sora text-[11px] sm:text-[12px] font-medium tracking-[0.14em] text-charcoal-500 uppercase">
@@ -132,7 +132,7 @@ export default function DigitalCaseStudy({
           {/* THE CHALLENGE CARD */}
           <div className="p-6 sm:p-8 rounded-3xl bg-[#FAF4EC]/90 border border-[#D4A94E]/35 shadow-xs flex flex-col justify-between">
             <div>
-              <div className="flex items-center gap-2 mb-3 text-[#7A1C28]">
+              <div className="flex items-center gap-2 mb-3 text-[#B8860B]">
                 <Target className="w-4 h-4" />
                 <span className="text-[11px] sm:text-[12px] font-sora font-bold tracking-[0.2em] uppercase">
                   02 — THE CHALLENGE
@@ -149,7 +149,7 @@ export default function DigitalCaseStudy({
             <div className="space-y-2.5 pt-4 border-t border-[#D4A94E]/25">
               {caseStudy.challenge.keyPoints.map((point, idx) => (
                 <div key={idx} className="flex items-start gap-2.5 text-[12.5px] sm:text-[13px] font-sora text-charcoal-700">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#7A1C28] mt-2 flex-shrink-0" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#B8860B] mt-2 flex-shrink-0" />
                   <span>{point}</span>
                 </div>
               ))}
@@ -190,7 +190,7 @@ export default function DigitalCaseStudy({
       {/* ───────────────────────────────────────────────────────────────── */}
       <section className="mb-20 sm:mb-28">
         <div className="flex items-center gap-3 mb-4">
-          <span className="text-[11px] sm:text-[12px] font-sora font-bold tracking-[0.2em] text-[#7A1C28] uppercase">
+          <span className="text-[11px] sm:text-[12px] font-sora font-bold tracking-[0.2em] text-[#B8860B] uppercase">
             04 — MY APPROACH
           </span>
           <div className="h-[1px] flex-1 bg-[#D4A94E]/25" />
@@ -209,7 +209,7 @@ export default function DigitalCaseStudy({
           {caseStudy.approach.steps.map((step, idx) => (
             <div
               key={idx}
-              className="p-6 sm:p-7 rounded-2xl bg-white/70 hover:bg-white border border-[#D4A94E]/30 hover:border-[#7A1C28]/40 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between"
+              className="p-6 sm:p-7 rounded-2xl bg-white/70 hover:bg-white border border-[#D4A94E]/30 hover:border-[#B8860B]/40 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between"
             >
               <div>
                 <span className="font-playfair text-[32px] sm:text-[36px] font-bold text-[#D4A94E] leading-none block mb-3">
@@ -231,7 +231,7 @@ export default function DigitalCaseStudy({
       {/* CHAPTER 05 — DESIGN SYSTEM & TOKENS                              */}
       {/* ───────────────────────────────────────────────────────────────── */}
       <section className="mb-20 sm:mb-28 p-6 sm:p-10 rounded-3xl bg-[#FAF4EC]/80 border border-[#D4A94E]/35 shadow-xs">
-        <div className="flex items-center gap-2 mb-3 text-[#7A1C28]">
+        <div className="flex items-center gap-2 mb-3 text-[#B8860B]">
           <Palette className="w-4 h-4" />
           <span className="text-[11px] sm:text-[12px] font-sora font-bold tracking-[0.2em] uppercase">
             05 — DESIGN SYSTEM & TOKENS
@@ -258,7 +258,7 @@ export default function DigitalCaseStudy({
                 <span className="font-playfair text-[20px] sm:text-[22px] font-bold text-charcoal-900">
                   {caseStudy.designSystem.headingFont}
                 </span>
-                <span className="font-sora text-[11px] text-[#7A1C28] font-semibold uppercase tracking-wider">
+                <span className="font-sora text-[11px] text-[#B8860B] font-semibold uppercase tracking-wider">
                   Display Serif
                 </span>
               </div>
@@ -284,7 +284,7 @@ export default function DigitalCaseStudy({
               <button
                 key={idx}
                 onClick={() => handleCopyHex(color.hex)}
-                className="group p-3 sm:p-3.5 rounded-xl bg-white border border-[#D4A94E]/30 hover:border-[#7A1C28]/60 transition-all duration-300 text-left shadow-2xs hover:shadow-xs cursor-pointer flex flex-col justify-between"
+                className="group p-3 sm:p-3.5 rounded-xl bg-white border border-[#D4A94E]/30 hover:border-[#B8860B]/60 transition-all duration-300 text-left shadow-2xs hover:shadow-xs cursor-pointer flex flex-col justify-between"
               >
                 <div
                   className="w-full h-12 sm:h-14 rounded-lg mb-2.5 border border-black/10 transition-transform group-hover:scale-[1.02] flex items-center justify-center"
@@ -318,7 +318,7 @@ export default function DigitalCaseStudy({
       {/* ───────────────────────────────────────────────────────────────── */}
       <section className="mb-20 sm:mb-28">
         <div className="flex items-center gap-3 mb-4">
-          <span className="text-[11px] sm:text-[12px] font-sora font-bold tracking-[0.2em] text-[#7A1C28] uppercase">
+          <span className="text-[11px] sm:text-[12px] font-sora font-bold tracking-[0.2em] text-[#B8860B] uppercase">
             06 — KEY SCREENS & CURATED FLOWS
           </span>
           <div className="h-[1px] flex-1 bg-[#D4A94E]/25" />
@@ -385,7 +385,7 @@ export default function DigitalCaseStudy({
       {/* ───────────────────────────────────────────────────────────────── */}
       <section className="mb-20 sm:mb-28">
         <div className="flex items-center gap-3 mb-4">
-          <span className="text-[11px] sm:text-[12px] font-sora font-bold tracking-[0.2em] text-[#7A1C28] uppercase">
+          <span className="text-[11px] sm:text-[12px] font-sora font-bold tracking-[0.2em] text-[#B8860B] uppercase">
             07 — INTERACTION & EXPERIENCE
           </span>
           <div className="h-[1px] flex-1 bg-[#D4A94E]/25" />
@@ -404,7 +404,7 @@ export default function DigitalCaseStudy({
             {project.hasLivePreview && onOpenLiveModal && (
               <button
                 onClick={onOpenLiveModal}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#7A1C28] hover:bg-[#63141F] text-white text-[12px] font-sora font-semibold tracking-wider uppercase transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer active:scale-95"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#B8860B] hover:bg-[#9A7209] text-white text-[12px] font-sora font-semibold tracking-wider uppercase transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer active:scale-95"
               >
                 <span>OPEN LIVE INTERACTIVE PREVIEW</span>
                 <Monitor className="w-3.5 h-3.5 text-[#E5C89C]" />
@@ -416,7 +416,7 @@ export default function DigitalCaseStudy({
             {caseStudy.interactions.features.map((feat, idx) => (
               <div
                 key={idx}
-                className="p-5 rounded-2xl bg-white/80 border border-[#D4A94E]/30 hover:border-[#7A1C28]/40 transition-all duration-300"
+                className="p-5 rounded-2xl bg-white/80 border border-[#D4A94E]/30 hover:border-[#B8860B]/40 transition-all duration-300"
               >
                 <div className="flex items-center gap-2 mb-1.5 text-charcoal-900">
                   <Sparkles className="w-4 h-4 text-[#9A7209]" />
@@ -436,7 +436,7 @@ export default function DigitalCaseStudy({
       {/* ───────────────────────────────────────────────────────────────── */}
       <section className="mb-20 sm:mb-28">
         <div className="flex items-center gap-3 mb-4">
-          <span className="text-[11px] sm:text-[12px] font-sora font-bold tracking-[0.2em] text-[#7A1C28] uppercase">
+          <span className="text-[11px] sm:text-[12px] font-sora font-bold tracking-[0.2em] text-[#B8860B] uppercase">
             08 — FINAL EXPERIENCE
           </span>
           <div className="h-[1px] flex-1 bg-[#D4A94E]/25" />
@@ -469,7 +469,7 @@ export default function DigitalCaseStudy({
                 href={project.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-semibold text-[#7A1C28] hover:text-[#9A7209] flex items-center gap-1 transition-colors"
+                className="font-semibold text-[#B8860B] hover:text-[#9A7209] flex items-center gap-1 transition-colors"
               >
                 <span>Launch Live URL</span>
                 <ExternalLink className="w-3 h-3" />
@@ -483,7 +483,7 @@ export default function DigitalCaseStudy({
       {/* CHAPTER 09 — TECHNOLOGY / TOOLS                                   */}
       {/* ───────────────────────────────────────────────────────────────── */}
       <section className="mb-20 sm:mb-28 p-6 sm:p-8 rounded-3xl bg-[#FAF4EC]/80 border border-[#D4A94E]/35 shadow-xs">
-        <div className="flex items-center gap-2 mb-4 text-[#7A1C28]">
+        <div className="flex items-center gap-2 mb-4 text-[#B8860B]">
           <Cpu className="w-4 h-4" />
           <span className="text-[11px] sm:text-[12px] font-sora font-bold tracking-[0.2em] uppercase">
             09 — TECHNOLOGY & INFRASTRUCTURE
@@ -504,9 +504,9 @@ export default function DigitalCaseStudy({
             {project.tools?.map((tool, idx) => (
               <span
                 key={idx}
-                className="px-3.5 py-1.5 rounded-full bg-white border border-[#D4A94E]/40 text-charcoal-800 font-sora text-[12px] font-semibold tracking-wide flex items-center gap-2 shadow-2xs hover:border-[#7A1C28] transition-colors"
+                className="px-3.5 py-1.5 rounded-full bg-white border border-[#D4A94E]/40 text-charcoal-800 font-sora text-[12px] font-semibold tracking-wide flex items-center gap-2 shadow-2xs hover:border-[#B8860B] transition-colors"
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-[#7A1C28]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#B8860B]" />
                 <span>{tool}</span>
               </span>
             ))}
@@ -537,7 +537,7 @@ export default function DigitalCaseStudy({
               href={project.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-7 py-3.5 rounded-full bg-[#7A1C28] hover:bg-[#63141F] text-white text-[12.5px] font-sora font-semibold tracking-[0.12em] uppercase transition-all duration-300 shadow-md shadow-[#7A1C28]/25 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] inline-flex items-center gap-2.5 cursor-pointer"
+              className="px-7 py-3.5 rounded-full bg-[#B8860B] hover:bg-[#9A7209] text-white text-[12.5px] font-sora font-semibold tracking-[0.12em] uppercase transition-all duration-300 shadow-md shadow-[#B8860B]/25 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] inline-flex items-center gap-2.5 cursor-pointer"
             >
               <span>EXPLORE LIVE {project.type === 'webapp' ? 'APPLICATION' : 'WEBSITE'}</span>
               <ExternalLink className="w-4 h-4 text-[#E5C89C]" />
@@ -557,7 +557,7 @@ export default function DigitalCaseStudy({
           <button
             type="button"
             onClick={handleBackToWork}
-            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white/80 hover:bg-white border border-[#D4A94E]/40 text-[#7A1C28] font-sora text-[11px] font-semibold tracking-wider uppercase transition-all shadow-2xs hover:shadow-xs cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white/80 hover:bg-white border border-[#D4A94E]/40 text-[#B8860B] font-sora text-[11px] font-semibold tracking-wider uppercase transition-all shadow-2xs hover:shadow-xs cursor-pointer"
           >
             ← BACK TO ALL WORK
           </button>
@@ -570,7 +570,7 @@ export default function DigitalCaseStudy({
           {/* PREVIOUS PROJECT CARD */}
           <Link
             to={`/work/${prevProject.slug}`}
-            className="group p-4 sm:p-5 rounded-2xl bg-[#FAF4EC]/80 hover:bg-white border border-[#D4A94E]/30 hover:border-[#7A1C28]/50 transition-all duration-300 text-left flex items-center gap-4 cursor-pointer shadow-2xs hover:shadow-md"
+            className="group p-4 sm:p-5 rounded-2xl bg-[#FAF4EC]/80 hover:bg-white border border-[#D4A94E]/30 hover:border-[#B8860B]/50 transition-all duration-300 text-left flex items-center gap-4 cursor-pointer shadow-2xs hover:shadow-md"
           >
             <div className="w-16 h-12 rounded-lg overflow-hidden bg-black/10 flex-shrink-0 border border-black/10">
               <img
@@ -584,7 +584,7 @@ export default function DigitalCaseStudy({
                 <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
                 <span>PREVIOUS CASE STUDY</span>
               </div>
-              <div className="font-playfair text-[16px] sm:text-[18px] font-bold text-charcoal-900 group-hover:text-[#7A1C28] transition-colors truncate">
+              <div className="font-playfair text-[16px] sm:text-[18px] font-bold text-charcoal-900 group-hover:text-[#B8860B] transition-colors truncate">
                 {prevProject.title}
               </div>
               <div className="text-[10.5px] font-sora text-charcoal-500 truncate">
@@ -596,14 +596,14 @@ export default function DigitalCaseStudy({
           {/* NEXT PROJECT CARD */}
           <Link
             to={`/work/${nextProject.slug}`}
-            className="group p-4 sm:p-5 rounded-2xl bg-[#FAF4EC]/80 hover:bg-white border border-[#D4A94E]/30 hover:border-[#7A1C28]/50 transition-all duration-300 text-right flex items-center justify-end gap-4 cursor-pointer shadow-2xs hover:shadow-md"
+            className="group p-4 sm:p-5 rounded-2xl bg-[#FAF4EC]/80 hover:bg-white border border-[#D4A94E]/30 hover:border-[#B8860B]/50 transition-all duration-300 text-right flex items-center justify-end gap-4 cursor-pointer shadow-2xs hover:shadow-md"
           >
             <div className="min-w-0 flex-1">
               <div className="flex items-center justify-end gap-1.5 text-[10px] font-sora font-bold tracking-[0.16em] text-charcoal-400 uppercase mb-0.5">
                 <span>NEXT CASE STUDY</span>
                 <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
               </div>
-              <div className="font-playfair text-[16px] sm:text-[18px] font-bold text-charcoal-900 group-hover:text-[#7A1C28] transition-colors truncate">
+              <div className="font-playfair text-[16px] sm:text-[18px] font-bold text-charcoal-900 group-hover:text-[#B8860B] transition-colors truncate">
                 {nextProject.title}
               </div>
               <div className="text-[10.5px] font-sora text-charcoal-500 truncate">

@@ -33,3 +33,11 @@ Arpit_AK_Portfolio_Audit_Report.pdf
 Thumbs.db
 .vscode/
 .idea/
+
+# AI Agent harnesses & local skill caches
+.codex/
+.cursor/
+.gemini/
+.github/agents/
+.github/hooks/
+.github/skills/

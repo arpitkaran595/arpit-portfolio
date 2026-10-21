@@ -1040,7 +1040,12 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
             <span className="text-[10px] font-sora font-semibold tracking-[0.25em] text-[#FAF3E8]/85 uppercase px-3 py-1 rounded-full bg-black/50 backdrop-blur-md border border-white/10 shadow-sm animate-pulse">
               SWIPE TO EXPLORE
             </span>
-            <ChevronDown className="w-4 h-4 text-[#C4943A] animate-bounce" />
+            <motion.div
+              animate={{ y: [0, 4, 0] }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <ChevronDown className="w-4 h-4 text-[#C4943A]" />
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

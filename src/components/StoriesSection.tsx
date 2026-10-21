@@ -499,10 +499,10 @@ const StoriesSection: React.FC = () => {
     <section
       id="stories"
       ref={sectionRef}
-      className="relative w-full min-h-[100svh] lg:h-[100svh] pt-20 sm:pt-24 lg:pt-16 pb-8 sm:pb-10 lg:pb-10 overflow-hidden bg-[#FAF3E8] z-[10] select-none flex flex-col justify-between"
+      className="relative w-full min-h-[100svh] lg:h-[100svh] pt-20 sm:pt-24 lg:pt-16 pb-8 sm:pb-10 lg:pb-10 overflow-hidden bg-[#F6F2EB] z-[10] select-none flex flex-col justify-between"
       style={{
         background:
-          'linear-gradient(to bottom, #FAF3E8 0%, #FAF3E8 15%, #FAF5EE 45%, #FAF3E8 80%, #FAF3E8 100%)',
+          'linear-gradient(to bottom, #F6F2EB 0%, #FAF7F2 45%, #F6F2EB 100%)',
       }}
     >
       {/* ───────────────────────────────────────────────────────────────────── */}
@@ -524,7 +524,7 @@ const StoriesSection: React.FC = () => {
         className="absolute bottom-0 inset-x-0 h-36 sm:h-48 md:h-60 pointer-events-none z-[5]"
         style={{
           background:
-            'linear-gradient(to bottom, transparent 0%, rgba(250, 243, 232, 0.3) 30%, rgba(250, 243, 232, 0.8) 70%, #FAF3E8 100%)',
+            'linear-gradient(to bottom, transparent 0%, rgba(246, 242, 235, 0.4) 30%, rgba(246, 242, 235, 0.85) 70%, #F6F2EB 100%)',
         }}
       />
 
@@ -538,14 +538,6 @@ const StoriesSection: React.FC = () => {
           {/* LEFT: EDITORIAL COPY ZONE */}
           {/* ═══════════════════════════════════════════════════════════════════ */}
           <div className="lg:col-span-4 xl:col-span-4 flex flex-col justify-center select-text z-20 story-fade-el lg:-mt-12 xl:-mt-14">
-            {/* Eyebrow */}
-            <span className="text-gold-400 text-xs sm:text-[13px] tracking-[0.22em] font-sora font-semibold uppercase mb-2 block">
-              {storySectionData.eyebrow}
-            </span>
-
-            {/* Small Gold Divider Line */}
-            <div className="w-10 sm:w-12 h-[2px] bg-gold-400 mb-4 sm:mb-5 rounded-full" />
-
             {/* Editorial Serif Heading */}
             <h2 className="font-playfair text-[clamp(2.2rem,3.4vw,3.6rem)] text-charcoal-800 leading-[1.02] tracking-tight mb-3.5 sm:mb-4.5 font-bold">
               {storySectionData.headingLine1}

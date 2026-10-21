@@ -207,7 +207,7 @@ const SoftwareBadge: React.FC<{ icon: string }> = ({ icon }) => {
           title="Creative Cloud"
           className="w-5 h-5 sm:w-[22px] sm:h-[22px] rounded-[5px] bg-[#222] border border-[#D4C3A3]/40 flex items-center justify-center shadow-xs flex-shrink-0 select-none"
         >
-          <span className="text-[#C4943A] text-[9.5px] sm:text-[10px] font-sora font-bold leading-none">CC</span>
+          <span className="text-[#D4A94E] text-[9.5px] sm:text-[10px] font-sora font-bold leading-none">CC</span>
         </div>
       );
   }
@@ -344,7 +344,7 @@ const PermanentOrbitCard: React.FC<PermanentOrbitCardProps> = ({
         }
       }}
     >
-      {/* 
+      {/*
         FLUID 700ms PORTRAIT <-> LANDSCAPE SHELL MORPH
         All dimensions, radius, shadows, and borders morph together in 700ms
       */}
@@ -530,7 +530,7 @@ const LiquidGlassProjectPill: React.FC<LiquidGlassProjectPillProps> = ({
           WebkitBackdropFilter: 'blur(20px) saturate(125%)',
           boxShadow: 'inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.75), 0 10px 30px -8px rgba(45, 38, 30, 0.09)',
         }}
-        className="relative overflow-hidden border border-white/60 flex items-center justify-center"
+        className="relative overflow-hidden border border-white/10 flex items-center justify-center"
       >
         {/* LIQUID GLASS INTERNAL LIGHT REFLECTION ACCENT */}
         <div
@@ -576,7 +576,7 @@ const LiquidGlassProjectPill: React.FC<LiquidGlassProjectPillProps> = ({
             onClick={() => onOpenFullscreen?.(activeVideo)}
             className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-1 overflow-hidden cursor-pointer hover:opacity-85 transition-opacity"
           >
-            <div className="relative w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-full bg-[#FAF0E4]/90 border border-[#E5C89C]/50 flex items-center justify-center text-[#C4943A] flex-shrink-0 shadow-inner">
+            <div className="relative w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-full bg-[#282B36] border border-[#3D4150] flex items-center justify-center text-[#D4A94E] flex-shrink-0 shadow-inner">
               <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 translate-x-0.5" viewBox="0 0 24 24" fill="currentColor">
                 <polygon points="5 3 19 12 5 21 5 3" />
               </svg>
@@ -597,7 +597,7 @@ const LiquidGlassProjectPill: React.FC<LiquidGlassProjectPillProps> = ({
                   initial="initial"
                   animate="animate"
                   exit="exit"
-                  className="absolute inset-x-0 font-playfair font-bold text-[14px] sm:text-[16px] text-[#1A1A1A] tracking-[-0.01em] truncate select-none leading-normal"
+                  className="absolute inset-x-0 font-playfair font-bold text-[14px] sm:text-[16px] text-[#FAF7F2] tracking-[-0.01em] truncate select-none leading-normal"
                 >
                   {activeVideo.title}
                 </motion.span>
@@ -947,40 +947,33 @@ const VideoSection: React.FC = () => {
     <section
       id="work"
       ref={sectionRef}
-      className="relative w-full h-[100svh] min-h-[760px] max-h-[1080px] pt-12 sm:pt-14 lg:pt-14 pb-8 sm:pb-9 lg:pb-9 overflow-hidden bg-[#FAF3E8] z-[10] select-none flex flex-col justify-between"
+      className="relative w-full h-[100svh] min-h-[760px] max-h-[1080px] pt-20 sm:pt-24 lg:pt-24 pb-8 sm:pb-9 lg:pb-9 overflow-hidden bg-[#0D0E11] text-[#FAF7F2] z-[10] select-none flex flex-col justify-between"
     >
       {/* Background Subtle Warm Gradient */}
-      <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-[#FAF3E8] via-[#FAF0E4]/30 to-[#FAF3E8]" />
+      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 50%, rgba(32, 35, 45, 0.45) 0%, rgba(13, 14, 17, 0.98) 75%)" }} />
 
       {/* Main Composition Container */}
       <div className="max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-12 relative z-10 flex flex-col justify-between h-full flex-grow">
-        
+
         {/* ═══════════════════════════════════════════════════════════════ */}
         {/* 1. TOP ZONE: Editorial Heading (Left) + Mode Toggle (Right) */}
         {/* ═══════════════════════════════════════════════════════════════ */}
         <div className="w-full flex items-start justify-between video-header-elem">
           {/* Left Column Editorial Header */}
           <div className="max-w-[360px] sm:max-w-[390px] lg:max-w-[420px] z-30">
-            <div className="inline-flex items-center gap-2 mb-1 sm:mb-1.5">
-              <span className="text-[#B8860B] text-[0.72rem] sm:text-[0.78rem] font-sora font-semibold tracking-[0.2em] uppercase">
-                {videoSectionData.eyebrow}
-              </span>
-              <span className="w-8 h-[1px] bg-[#C4943A]/60" />
-            </div>
-
-            <h2 className="font-playfair text-[clamp(1.85rem,2.8vw,2.75rem)] text-[#1A1A1A] font-bold leading-[1.08] mb-1.5 sm:mb-2">
+            <h2 className="font-playfair text-[clamp(1.85rem,2.8vw,2.75rem)] text-[#FAF7F2] font-bold leading-[1.08] mb-1.5 sm:mb-2">
               {videoSectionData.heading.replace('.', '')}
               <span className="text-[#C4943A]">.</span>
             </h2>
 
-            <p className="text-[#555555] text-xs font-sora leading-relaxed max-w-[360px] mb-2 sm:mb-2.5">
+            <p className="text-[#A8A196] text-xs font-sora leading-relaxed max-w-[360px] mb-2 sm:mb-2.5">
               {videoSectionData.description}
             </p>
 
             <button
               type="button"
               onClick={() => openArchive('VIDEOS')}
-              className="inline-flex items-center gap-2 text-[11px] sm:text-xs font-sora font-semibold tracking-[0.16em] uppercase text-[#1A1A1A] hover:text-[#C4943A] transition-colors group pb-0.5 border-b border-[#1A1A1A]/80 hover:border-[#C4943A] cursor-pointer"
+              className="inline-flex items-center gap-2 text-[11px] sm:text-xs font-sora font-semibold tracking-[0.16em] uppercase text-[#FAF7F2] hover:text-[#D4A94E] transition-colors group pb-0.5 border-b border-[#FAF7F2]/60 hover:border-[#D4A94E] cursor-pointer"
             >
               <span>{videoSectionData.exploreLink}</span>
             </button>
@@ -988,11 +981,11 @@ const VideoSection: React.FC = () => {
 
           {/* Right Area: Mode Toggle Pill */}
           <div className="flex justify-end z-30 pt-0.5">
-            <div className="relative flex items-center p-1 bg-white/60 backdrop-blur-md rounded-full border border-[#D4C3A3]/50 shadow-sm">
+            <div className="relative flex items-center p-1 bg-[#181A22]/90 backdrop-blur-md rounded-full border border-[#2B2D38] shadow-md">
               <button
                 onClick={() => setOrientation('landscape')}
                 className={`relative z-10 px-3.5 sm:px-4.5 py-1 sm:py-1.5 text-[10.5px] sm:text-xs font-sora font-semibold tracking-[0.12em] rounded-full transition-colors duration-300 ${
-                  orientation === 'landscape' ? 'text-white' : 'text-[#6B6B6B] hover:text-[#1A1A1A]'
+                  orientation === 'landscape' ? 'text-white' : 'text-[#8E92A0] hover:text-white'
                 }`}
               >
                 LANDSCAPE
@@ -1071,12 +1064,12 @@ const VideoSection: React.FC = () => {
           {/* Active in landscape mode so side cards dissolve softly near buttons */}
           {/* ═══════════════════════════════════════════════════════════════ */}
           <div
-            className={`absolute left-0 inset-y-0 w-12 sm:w-36 md:w-48 lg:w-60 bg-gradient-to-r from-[#FAF3E8] via-[#FAF3E8]/85 to-transparent pointer-events-none z-40 transition-opacity duration-700 ${
+            className={`absolute left-0 inset-y-0 w-12 sm:w-36 md:w-48 lg:w-60 bg-gradient-to-r from-[#0D0E11] via-[#0D0E11]/85 to-transparent pointer-events-none z-40 transition-opacity duration-700 ${
               orientation === 'landscape' ? 'opacity-100' : 'opacity-0'
             }`}
           />
           <div
-            className={`absolute right-0 inset-y-0 w-12 sm:w-36 md:w-48 lg:w-60 bg-gradient-to-l from-[#FAF3E8] via-[#FAF3E8]/85 to-transparent pointer-events-none z-40 transition-opacity duration-700 ${
+            className={`absolute right-0 inset-y-0 w-12 sm:w-36 md:w-48 lg:w-60 bg-gradient-to-l from-[#0D0E11] via-[#0D0E11]/85 to-transparent pointer-events-none z-40 transition-opacity duration-700 ${
               orientation === 'landscape' ? 'opacity-100' : 'opacity-0'
             }`}
           />
@@ -1088,7 +1081,7 @@ const VideoSection: React.FC = () => {
             onClick={goPrevious}
             type="button"
             aria-label="Previous video"
-            className={`absolute ${orientation === 'landscape' ? 'left-1 sm:left-4' : 'left-2 sm:left-4'} lg:left-8 top-1/2 -translate-y-1/2 z-50 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/95 hover:bg-white active:scale-95 backdrop-blur-md border border-[#D4C3A3]/60 shadow-[0_8px_24px_-4px_rgba(45,38,30,0.22)] flex items-center justify-center text-[#1A1A1A] hover:text-[#C4943A] transition-all cursor-pointer pointer-events-auto group`}
+            className={`absolute ${orientation === 'landscape' ? 'left-1 sm:left-4' : 'left-2 sm:left-4'} lg:left-8 top-1/2 -translate-y-1/2 z-50 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#181A22]/90 hover:bg-[#252834] active:scale-95 backdrop-blur-md border border-[#2F3240] shadow-[0_8px_24px_-4px_rgba(0,0,0,0.5)] flex items-center justify-center text-[#FAF7F2] hover:text-[#D4A94E] transition-all cursor-pointer pointer-events-auto group`}
           >
             <svg className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:-translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M19 12H5M12 19l-7-7 7-7" />
@@ -1099,7 +1092,7 @@ const VideoSection: React.FC = () => {
             onClick={goNext}
             type="button"
             aria-label="Next video"
-            className={`absolute ${orientation === 'landscape' ? 'right-1 sm:right-4' : 'right-2 sm:right-4'} lg:right-8 top-1/2 -translate-y-1/2 z-50 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/95 hover:bg-white active:scale-95 backdrop-blur-md border border-[#D4C3A3]/60 shadow-[0_8px_24px_-4px_rgba(45,38,30,0.22)] flex items-center justify-center text-[#1A1A1A] hover:text-[#C4943A] transition-all cursor-pointer pointer-events-auto group`}
+            className={`absolute ${orientation === 'landscape' ? 'right-1 sm:right-4' : 'right-2 sm:right-4'} lg:right-8 top-1/2 -translate-y-1/2 z-50 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#181A22]/90 hover:bg-[#252834] active:scale-95 backdrop-blur-md border border-[#2F3240] shadow-[0_8px_24px_-4px_rgba(0,0,0,0.5)] flex items-center justify-center text-[#FAF7F2] hover:text-[#D4A94E] transition-all cursor-pointer pointer-events-auto group`}
           >
             <svg className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M5 12h14M12 5l7 7-7 7" />

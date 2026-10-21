@@ -504,10 +504,10 @@ const ThumbnailsSection: React.FC = () => {
     <section
       id="thumbnails"
       ref={sectionRef}
-      className="relative w-full min-h-[100svh] lg:h-[100svh] scroll-mt-16 pt-16 sm:pt-20 lg:pt-14 pb-8 sm:pb-10 lg:pb-8 overflow-hidden bg-[#FAF3E8] z-[10] select-none flex flex-col justify-between"
+      className="relative w-full min-h-[100svh] lg:h-[100svh] scroll-mt-16 pt-20 sm:pt-24 lg:pt-20 pb-8 sm:pb-10 lg:pb-8 overflow-hidden bg-[#161514] text-[#FAF7F2] z-[10] select-none flex flex-col justify-between"
       style={{
         background:
-          'linear-gradient(to bottom, #FAF3E8 0%, #FAF5EE 40%, #FAF3E8 80%, #FAF3E8 100%)',
+          'linear-gradient(to bottom, #161514 0%, #1A1917 40%, #161514 100%)',
       }}
     >
       {/* ───────────────────────────────────────────────────────────────────── */}
@@ -517,7 +517,7 @@ const ThumbnailsSection: React.FC = () => {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            'radial-gradient(ellipse at 50% 48%, rgba(246, 215, 178, 0.18) 0%, rgba(250, 243, 232, 0.05) 55%, transparent 75%)',
+            'radial-gradient(ellipse at 50% 48%, rgba(212, 169, 78, 0.12) 0%, rgba(22, 21, 20, 0.6) 55%, transparent 75%)',
         }}
       />
 
@@ -528,27 +528,21 @@ const ThumbnailsSection: React.FC = () => {
       <div className="max-w-[1480px] w-full mx-auto px-4 sm:px-8 lg:px-12 flex-1 flex flex-col justify-between relative z-10">
         {/* EDITORIAL HEADER */}
         <div className="w-full flex flex-col items-center text-center select-text z-20 thumb-fade-el pt-1 sm:pt-2">
-          <span className="text-gold-400 text-xs sm:text-[13px] tracking-[0.22em] font-sora font-semibold uppercase block">
-            {thumbnailSectionData.eyebrow}
-          </span>
-
-          <div className="w-10 sm:w-12 h-[2px] bg-gold-400 mt-2 mb-2 sm:mb-2.5 rounded-full" />
-
-          <h2 className="font-playfair text-[clamp(2.1rem,3.4vw,3.4rem)] text-charcoal-800 leading-[1.05] tracking-tight font-bold">
+          <h2 className="font-playfair text-[clamp(2.1rem,3.4vw,3.4rem)] text-[#FAF7F2] leading-[1.05] tracking-tight font-bold">
             {thumbnailSectionData.headingLine1}{' '}
             <span className="text-gold-400 font-playfair font-bold">
               {thumbnailSectionData.headingHighlight}
             </span>
           </h2>
 
-          <p className="text-charcoal-400 font-sora text-xs sm:text-sm leading-relaxed max-w-[500px] mx-auto mt-1.5 text-balance">
+          <p className="text-[#A8A196] font-sora text-xs sm:text-sm leading-relaxed max-w-[500px] mx-auto mt-1.5 text-balance">
             {thumbnailSectionData.description}
           </p>
 
           <button
             type="button"
             onClick={() => openArchive('THUMBNAILS')}
-            className="inline-flex items-center gap-2 text-xs sm:text-[13px] font-sora font-semibold tracking-[0.16em] uppercase text-charcoal-800 hover:text-gold-400 group transition-colors relative pb-0.5 mt-2.5 mx-auto border-b border-charcoal-800/80 hover:border-gold-400 cursor-pointer"
+            className="inline-flex items-center gap-2 text-xs sm:text-[13px] font-sora font-semibold tracking-[0.16em] uppercase text-[#FAF7F2] hover:text-[#D4A94E] group transition-colors relative pb-0.5 mt-2.5 mx-auto border-b border-[#FAF7F2]/60 hover:border-[#D4A94E] cursor-pointer"
           >
             <span>VIEW ALL THUMBNAILS</span>
             <span className="transform transition-transform duration-300 group-hover:translate-x-1.5 text-gold-400 text-sm font-bold">
@@ -595,7 +589,7 @@ const ThumbnailsSection: React.FC = () => {
               type="button"
               onClick={handlePrev}
               aria-label="Previous YouTube Thumbnail"
-              className="pointer-events-auto w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/90 hover:bg-white backdrop-blur-md border border-[#E5D7C3] hover:border-gold-400 shadow-[0_4px_14px_rgba(45,38,30,0.08)] hover:shadow-[0_6px_18px_rgba(196,148,58,0.22)] flex items-center justify-center text-charcoal-700 hover:text-gold-500 transition-all duration-300 active:scale-90 group cursor-pointer"
+              className="pointer-events-auto w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#1F1D1B]/95 hover:bg-[#2A2724] backdrop-blur-md border border-[#38332E] hover:border-[#D4A94E] shadow-[0_4px_14px_rgba(0,0,0,0.5)] hover:shadow-[0_6px_18px_rgba(212,169,78,0.3)] flex items-center justify-center text-[#FAF7F2] hover:text-[#D4A94E] transition-all duration-300 active:scale-90 group cursor-pointer"
             >
               <ChevronLeft className="w-5 h-5 transform transition-transform group-hover:-translate-x-0.5" />
             </button>
@@ -604,7 +598,7 @@ const ThumbnailsSection: React.FC = () => {
               type="button"
               onClick={handleNext}
               aria-label="Next YouTube Thumbnail"
-              className="pointer-events-auto w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/90 hover:bg-white backdrop-blur-md border border-[#E5D7C3] hover:border-gold-400 shadow-[0_4px_14px_rgba(45,38,30,0.08)] hover:shadow-[0_6px_18px_rgba(196,148,58,0.22)] flex items-center justify-center text-charcoal-700 hover:text-gold-500 transition-all duration-300 active:scale-90 group cursor-pointer"
+              className="pointer-events-auto w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#1F1D1B]/95 hover:bg-[#2A2724] backdrop-blur-md border border-[#38332E] hover:border-[#D4A94E] shadow-[0_4px_14px_rgba(0,0,0,0.5)] hover:shadow-[0_6px_18px_rgba(212,169,78,0.3)] flex items-center justify-center text-[#FAF7F2] hover:text-[#D4A94E] transition-all duration-300 active:scale-90 group cursor-pointer"
             >
               <ChevronRight className="w-5 h-5 transform transition-transform group-hover:translate-x-0.5" />
             </button>
@@ -621,7 +615,7 @@ const ThumbnailsSection: React.FC = () => {
                 className={`h-1.5 rounded-full transition-all duration-300 ${
                   activeDot === dotIndex
                     ? 'w-6 bg-gold-400'
-                    : 'w-2 bg-charcoal-800/20 hover:bg-charcoal-800/40'
+                    : 'w-2 bg-white/20 hover:bg-white/40'
                 }`}
               />
             ))}
@@ -632,16 +626,16 @@ const ThumbnailsSection: React.FC = () => {
             {thumbnailSectionData.stats.map((stat) => (
               <div
                 key={stat.id}
-                className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-white/75 backdrop-blur-sm border border-[#E5D7C3] shadow-xs"
+                className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-[#1F1D1B]/90 backdrop-blur-sm border border-[#38332E] hover:border-[#D4A94E]/40 shadow-xs"
               >
                 <div className="w-7 h-7 rounded-lg bg-gold-400/10 flex items-center justify-center shrink-0">
                   {getStatIcon(stat.icon)}
                 </div>
                 <div className="flex flex-col min-w-0">
-                  <span className="font-playfair text-sm sm:text-base font-bold text-charcoal-800 leading-none truncate">
+                  <span className="font-playfair text-sm sm:text-base font-bold text-[#FAF7F2] leading-none truncate">
                     {stat.value}
                   </span>
-                  <span className="font-sora text-[9px] font-semibold text-charcoal-500 uppercase tracking-wider mt-0.5 truncate">
+                  <span className="font-sora text-[9px] font-semibold text-[#A8A196] uppercase tracking-wider mt-0.5 truncate">
                     {stat.label}
                   </span>
                 </div>
@@ -649,7 +643,7 @@ const ThumbnailsSection: React.FC = () => {
             ))}
           </div>
 
-          <span className="text-[10px] font-sora font-medium uppercase tracking-[0.22em] text-charcoal-400">
+          <span className="text-[10px] font-sora font-medium uppercase tracking-[0.22em] text-[#8A8276]">
             DRAG OR USE ARROWS TO EXPLORE • CLICK TO VIEW ARTWORK
           </span>
         </div>

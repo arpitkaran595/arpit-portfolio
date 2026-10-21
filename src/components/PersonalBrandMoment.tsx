@@ -27,28 +27,46 @@ export default function PersonalBrandMoment() {
     <section
       id="personal-brand"
       aria-label="One Last Thing — Personal Signature"
-      className="relative w-full bg-[#FAF3E8] py-20 sm:py-24 lg:py-28 xl:py-32 overflow-hidden select-none scroll-mt-24"
+      className="relative w-full bg-[#0F0E10] text-[#FAF7F2] py-28 sm:py-32 lg:py-36 xl:py-40 overflow-hidden select-none scroll-mt-24"
     >
       {/* ─────────────────────────────────────────────────────────────
-          1. BACKGROUND ATMOSPHERE (Clean paper with soft ambient warmth)
+          1. TOP & BOTTOM ATMOSPHERIC TRANSITION FEATHERING
           ───────────────────────────────────────────────────────────── */}
-      {/* Central soft golden-peach ambient glow */}
+      {/* Top feathering from Experience (dawn clouds) into Velvet Noir */}
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[540px] sm:w-[720px] h-[340px] sm:h-[420px] rounded-full pointer-events-none opacity-20"
+        className="absolute top-0 inset-x-0 h-28 sm:h-36 pointer-events-none z-[1]"
         style={{
           background:
-            'radial-gradient(ellipse at center, rgba(246, 215, 178, 0.5) 0%, rgba(250, 243, 232, 0.08) 55%, transparent 75%)',
-          filter: 'blur(70px)',
+            'linear-gradient(to bottom, #FBF5EB 0%, rgba(15, 14, 16, 0.75) 60%, transparent 100%)',
+        }}
+      />
+
+      {/* Central soft golden ambient glow */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[540px] sm:w-[720px] h-[340px] sm:h-[420px] rounded-full pointer-events-none opacity-15"
+        style={{
+          background:
+            'radial-gradient(ellipse at center, rgba(212, 169, 78, 0.45) 0%, rgba(15, 14, 16, 0.05) 60%, transparent 80%)',
+          filter: 'blur(75px)',
         }}
       />
 
       {/* Subtle tactile paper texture */}
       <div
-        className="absolute inset-0 pointer-events-none opacity-[0.035] mix-blend-multiply"
+        className="absolute inset-0 pointer-events-none opacity-[0.025] mix-blend-overlay"
         style={{
           backgroundImage: 'url(/assets/paper-texture.webp)',
           backgroundRepeat: 'repeat',
           backgroundSize: '400px 400px',
+        }}
+      />
+
+      {/* Bottom feathering from Velvet Noir into Contact (warm terracotta sand) */}
+      <div
+        className="absolute bottom-0 inset-x-0 h-28 sm:h-36 pointer-events-none z-[1]"
+        style={{
+          background:
+            'linear-gradient(to top, #F6EFE9 0%, rgba(15, 14, 16, 0.75) 60%, transparent 100%)',
         }}
       />
 
@@ -57,32 +75,16 @@ export default function PersonalBrandMoment() {
           ───────────────────────────────────────────────────────────── */}
       <div className="relative z-10 max-w-[980px] mx-auto px-5 sm:px-8 text-center flex flex-col items-center">
         
-        {/* Eyebrow with flanking gold hairline rules */}
-        <motion.div
-          custom={0}
-          variants={fadeUpVariant}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          className="flex items-center justify-center gap-3 mb-6 sm:mb-8"
-        >
-          <div className="w-6 sm:w-10 h-[1.5px] bg-[#C4943A]/50" />
-          <span className="font-sora text-[10.5px] sm:text-[11.5px] uppercase tracking-[0.24em] font-semibold text-[#B8860B]">
-            ONE LAST THING.
-          </span>
-          <div className="w-6 sm:w-10 h-[1.5px] bg-[#C4943A]/50" />
-        </motion.div>
-
         {/* Core Manifesto Reflection */}
         <motion.h2
-          custom={0.10}
+          custom={0.06}
           variants={fadeUpVariant}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
-          className="font-playfair text-[clamp(1.65rem,3.4vw,2.55rem)] font-normal italic text-[#2D241B] leading-[1.25] tracking-tight max-w-[620px] mb-8 sm:mb-10 lg:mb-12"
+          className="font-playfair text-[clamp(1.9rem,4vw,3rem)] font-normal italic text-[#FAF7F2] leading-[1.25] tracking-tight max-w-[640px] mb-8 sm:mb-10 lg:mb-12"
         >
-          “You saw my work.<br className="hidden xs:inline" />
+          “You saw my work. <br className="hidden xs:inline" />
           Now you know how I think.”
         </motion.h2>
 
@@ -95,9 +97,9 @@ export default function PersonalBrandMoment() {
           viewport={{ once: true, amount: 0.3 }}
           className="flex items-center justify-center gap-3 mb-8 sm:mb-10 lg:mb-12"
         >
-          <div className="w-12 sm:w-16 h-[1px] bg-gradient-to-r from-transparent to-[#D6C2A5]/70" />
-          <span className="text-[#B8860B] text-xs select-none">✦</span>
-          <div className="w-12 sm:w-16 h-[1px] bg-gradient-to-l from-transparent to-[#D6C2A5]/70" />
+          <div className="w-12 sm:w-16 h-[1px] bg-gradient-to-r from-transparent to-[#D4A94E]/60" />
+          <span className="text-[#D4A94E] text-xs select-none">✦</span>
+          <div className="w-12 sm:w-16 h-[1px] bg-gradient-to-l from-transparent to-[#D4A94E]/60" />
         </motion.div>
 
         {/* ═══════════════════════════════════════════════════════════
@@ -113,8 +115,8 @@ export default function PersonalBrandMoment() {
             viewport={{ once: true, amount: 0.3 }}
             className="relative"
           >
-            <h2 className="font-playfair font-bold text-[clamp(3.3rem,8.8vw,6.4rem)] text-[#1A1A1A] leading-[0.94] tracking-[-0.025em] mb-2 sm:mb-3">
-              ARPIT AK<span className="text-[#C4943A]">.</span>
+            <h2 className="font-playfair font-bold text-[clamp(3.3rem,8.8vw,6.4rem)] text-[#FAF7F2] leading-[0.94] tracking-[-0.025em] mb-2 sm:mb-3">
+              ARPIT AK<span className="text-[#D4A94E]">.</span>
             </h2>
           </motion.div>
 
@@ -132,7 +134,7 @@ export default function PersonalBrandMoment() {
               alt="Arpit AK Signature"
               loading="lazy"
               decoding="async"
-              className="h-10 sm:h-12 lg:h-14 w-auto object-contain drop-shadow-[0_2px_6px_rgba(45,30,20,0.06)]"
+              className="h-10 sm:h-12 lg:h-14 w-auto object-contain filter brightness-[1.9] contrast-[1.1] drop-shadow-[0_0_16px_rgba(212,169,78,0.3)]"
               draggable={false}
             />
           </motion.div>
@@ -146,65 +148,43 @@ export default function PersonalBrandMoment() {
             viewport={{ once: true, amount: 0.3 }}
             className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-center mt-3 mb-4"
           >
-            <span className="font-sora text-[11px] sm:text-[12px] uppercase tracking-[0.24em] font-semibold text-[#6E6152]">
+            <span className="font-sora text-[11px] sm:text-[12px] uppercase tracking-[0.24em] font-semibold text-[#A89F94]">
               GRAPHIC DESIGNER
             </span>
-            <span className="text-[#C4943A]/60 text-[10px] select-none">•</span>
-            <span className="font-sora text-[11px] sm:text-[12px] uppercase tracking-[0.24em] font-semibold text-[#6E6152]">
+            <span className="text-[#D4A94E]/60 text-[10px] select-none">•</span>
+            <span className="font-sora text-[11px] sm:text-[12px] uppercase tracking-[0.24em] font-semibold text-[#A89F94]">
               VISUAL STORYTELLER
             </span>
           </motion.div>
 
-          {/* Optional small supporting line */}
+          {/* Closing Philosophy Tagline */}
           <motion.p
-            custom={0.48}
+            custom={0.50}
             variants={fadeUpVariant}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
-            className="font-sora text-[12.5px] sm:text-[13.5px] text-[#827566] italic leading-relaxed max-w-[420px]"
+            className="font-playfair italic text-xs sm:text-sm text-[#D4A94E]/90 tracking-wide max-w-[420px] mx-auto text-balance"
           >
             “Turning ideas into visuals worth remembering.”
           </motion.p>
         </div>
 
-        {/* Delicate continuation cue toward Contact */}
+        {/* ═══════════════════════════════════════════════════════════
+            SEAMLESS SCROLL BRIDGE TO CONTACT
+            ═══════════════════════════════════════════════════════════ */}
         <motion.div
-          custom={0.54}
+          custom={0.58}
           variants={fadeUpVariant}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
-          className="mt-12 sm:mt-14 lg:mt-16"
+          className="mt-12 sm:mt-14 lg:mt-16 flex flex-col items-center gap-2"
         >
-          <a
-            href="#contact"
-            onClick={(e) => {
-              const target = document.getElementById('contact');
-              if (target && (window as any).lenis) {
-                e.preventDefault();
-                (window as any).lenis.scrollTo(target, { offset: -75, duration: 1.2 });
-              }
-            }}
-            className="inline-flex flex-col items-center gap-1.5 text-[#A3927D] hover:text-[#B8860B] transition-colors duration-300 group cursor-pointer"
-            aria-label="Continue to Contact"
-          >
-            <span className="font-sora text-[9.5px] sm:text-[10px] uppercase tracking-[0.22em] font-semibold">
-              LET’S CONNECT
-            </span>
-            <svg
-              className="w-3.5 h-3.5 transform group-hover:translate-y-1 transition-transform duration-300"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <polyline points="19 12 12 19 5 12" />
-            </svg>
-          </a>
+          <span className="font-sora text-[9.5px] uppercase tracking-[0.28em] font-medium text-[#7A7268]">
+            LET’S CONNECT
+          </span>
+          <span className="text-[#D4A94E] text-xs">↓</span>
         </motion.div>
 
       </div>

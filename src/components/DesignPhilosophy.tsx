@@ -56,31 +56,48 @@ export default function DesignPhilosophy() {
     <section
       id="philosophy"
       aria-label="Design Philosophy"
-      className="relative w-full bg-[#FAF3E8] pt-24 sm:pt-26 lg:pt-28 xl:pt-32 pb-20 sm:pb-24 lg:pb-28 xl:pb-32 overflow-hidden select-none scroll-mt-24"
+      className="relative w-full bg-[#141312] text-[#FAF7F2] pt-28 sm:pt-32 lg:pt-36 pb-28 sm:pb-32 lg:pb-36 overflow-hidden select-none scroll-mt-24"
     >
       {/* ─────────────────────────────────────────────────────────────
-          1. BACKGROUND ATMOSPHERE (Ultra-subtle, preserves breathing room)
+          1. TOP & BOTTOM ATMOSPHERIC TRANSITION FEATHERING
           ───────────────────────────────────────────────────────────── */}
-      {/* Faint ambient golden warmth in upper-right */}
+      {/* Top feathering from About (warm cream) into dark chamber */}
       <div
-        className="absolute -top-24 right-[-5%] w-[480px] lg:w-[620px] h-[480px] lg:h-[620px] rounded-full pointer-events-none opacity-30"
+        className="absolute top-0 inset-x-0 h-28 sm:h-36 pointer-events-none z-[1]"
         style={{
           background:
-            'radial-gradient(circle, rgba(246, 215, 178, 0.45) 0%, rgba(250, 243, 232, 0.08) 50%, transparent 70%)',
-          filter: 'blur(60px)',
+            'linear-gradient(to bottom, #FAF3E8 0%, rgba(20, 19, 18, 0.75) 60%, transparent 100%)',
         }}
       />
 
-      {/* Faint ambient warmth in lower-left */}
+      {/* Ambient warm amber/terracotta chamber glow in upper-left */}
       <div
-        className="absolute -bottom-24 left-[-6%] w-[420px] lg:w-[540px] h-[420px] lg:h-[540px] rounded-full pointer-events-none opacity-25"
+        className="absolute top-1/4 left-[-10%] w-[540px] lg:w-[680px] h-[540px] lg:h-[680px] rounded-full pointer-events-none opacity-20"
         style={{
           background:
-            'radial-gradient(circle, rgba(246, 215, 178, 0.38) 0%, rgba(250, 243, 232, 0.05) 50%, transparent 70%)',
-          filter: 'blur(55px)',
+            'radial-gradient(circle, rgba(212, 115, 67, 0.4) 0%, rgba(184, 134, 11, 0.12) 45%, transparent 70%)',
+          filter: 'blur(80px)',
         }}
       />
 
+      {/* Ambient warm amber glow in lower-right */}
+      <div
+        className="absolute bottom-1/4 right-[-8%] w-[480px] lg:w-[600px] h-[480px] lg:h-[600px] rounded-full pointer-events-none opacity-15"
+        style={{
+          background:
+            'radial-gradient(circle, rgba(184, 134, 11, 0.35) 0%, rgba(20, 19, 18, 0.10) 50%, transparent 70%)',
+          filter: 'blur(75px)',
+        }}
+      />
+
+      {/* Bottom feathering from dark chamber into Case Studies (warm monograph) */}
+      <div
+        className="absolute bottom-0 inset-x-0 h-28 sm:h-36 pointer-events-none z-[1]"
+        style={{
+          background:
+            'linear-gradient(to top, #FAF6F0 0%, rgba(20, 19, 18, 0.75) 60%, transparent 100%)',
+        }}
+      />
 
       {/* ─────────────────────────────────────────────────────────────
           2. MAIN EDITORIAL COMPOSITION
@@ -89,126 +106,76 @@ export default function DesignPhilosophy() {
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-12 lg:gap-16 xl:gap-20">
           
           {/* ═══════════════════════════════════════════════════════════
-              LEFT COLUMN: Eyebrow + Headline + Core Manifesto Statement
+              LEFT COLUMN: Editorial Headline & Manifesto
               ═══════════════════════════════════════════════════════════ */}
           <div className="w-full lg:w-[42%] xl:w-[38%] shrink-0 flex flex-col items-start">
-            
-            {/* Eyebrow & Gold Accent Rule */}
-            <motion.div
-              custom={0}
-              variants={fadeUpVariant}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
-              className="flex items-center gap-3 mb-4 sm:mb-5"
-            >
-              <span className="font-sora text-[10.5px] sm:text-[11.5px] uppercase tracking-[0.24em] font-semibold text-[#B8860B]">
-                DESIGN PHILOSOPHY
-              </span>
-              <div className="w-8 sm:w-10 h-[1.5px] bg-[#C4943A]" />
-            </motion.div>
-
             {/* Section Headline */}
             <motion.h2
-              custom={0.08}
+              custom={0.04}
               variants={fadeUpVariant}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.3 }}
-              className="font-playfair text-[clamp(2.5rem,5.6vw,4.5rem)] font-bold text-[#1A1A1A] leading-[0.98] tracking-tight mb-6 sm:mb-8"
+              className="font-playfair text-[clamp(2.85rem,6vw,5rem)] font-bold text-[#FAF7F2] leading-[0.94] tracking-tight mb-8 sm:mb-10"
             >
               HOW<br />
-              I THINK<span className="text-[#C4943A]">.</span>
+              I THINK<span className="text-[#D4A94E]">.</span>
             </motion.h2>
 
             {/* Core Visual Statement Quote */}
-            <motion.div
-              custom={0.16}
-              variants={fadeUpVariant}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
-              className="relative pl-5 sm:pl-6 border-l-[1.5px] border-[#C4943A]/50 max-w-[440px]"
-            >
-              <blockquote className="font-playfair italic text-[clamp(1.15rem,1.75vw,1.42rem)] text-[#2A241E] leading-[1.42] font-normal">
-                &ldquo;I don't just make things look good.
-                <span className="block mt-1.5 font-semibold text-[#1A1A1A] not-italic">
-                  I make them feel impossible to ignore.&rdquo;
-                </span>
-              </blockquote>
-              <div className="mt-3.5 flex items-center gap-2.5">
-                <span className="w-4 h-[1px] bg-[#C4943A]/50" />
-                <span className="font-sora text-[10px] sm:text-[10.5px] uppercase tracking-[0.2em] text-[#8C7E70] font-medium">
-                  Core Manifesto
-                </span>
-              </div>
-            </motion.div>
-          </div>
-
-          {/* ═══════════════════════════════════════════════════════════
-              RIGHT COLUMN: Four Editorial Principles
-              - Desktop (lg+): Refined 2x2 editorial grid
-              - Tablet (sm/md): Balanced 2-column grid
-              - Mobile (<sm): Vertical editorial stack
-              ═══════════════════════════════════════════════════════════ */}
-          <div className="w-full lg:w-[58%] xl:w-[62%] flex-1">
-            
-            {/* Subtle editorial column header */}
             <motion.div
               custom={0.12}
               variants={fadeUpVariant}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.3 }}
-              className="hidden sm:flex items-center justify-between pb-3.5 mb-2"
+              className="relative pl-5 sm:pl-6 border-l-2 border-[#D4A94E] max-w-[440px]"
             >
-              <span className="font-sora text-[10.5px] uppercase tracking-[0.22em] font-semibold text-[#7E7062]">
-                GUIDING PILLARS
-              </span>
-              <span className="font-sora text-[10px] uppercase tracking-[0.18em] text-[#A69787]">
-                01 &mdash; 04 / PROCESS
-              </span>
+              <blockquote className="font-playfair italic text-[clamp(1.22rem,1.9vw,1.55rem)] text-[#C7BEB2] leading-[1.45] font-normal">
+                &ldquo;I don't just make things look good.
+                <span className="block mt-2.5 font-semibold text-[#FAF7F2] not-italic">
+                  I make them feel impossible to ignore.&rdquo;
+                </span>
+              </blockquote>
             </motion.div>
+          </div>
 
-            {/* Principles Container */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-7 sm:gap-y-10 sm:gap-x-10 lg:gap-x-12 xl:gap-x-14">
+          {/* ═══════════════════════════════════════════════════════════
+              RIGHT COLUMN: Four Editorial Principles
+              ═══════════════════════════════════════════════════════════ */}
+          <div className="w-full lg:w-[58%] xl:w-[62%] flex-1 pt-2 lg:pt-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-9 sm:gap-y-12 sm:gap-x-10 lg:gap-x-12 xl:gap-x-14">
               {principles.map((principle, index) => (
                 <motion.div
                   key={principle.number}
-                  custom={0.18 + index * 0.08}
+                  custom={0.14 + index * 0.08}
                   variants={fadeUpVariant}
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true, amount: 0.25 }}
-                  className="group relative flex flex-col pt-5 sm:pt-6 pb-2 border-t border-[#E3D6C5]"
+                  className="group relative flex flex-col pt-6 sm:pt-7 pb-2 border-t border-[#2C2824]"
                 >
                   {/* Subtle gold indicator on hover */}
-                  <div className="absolute top-0 left-0 w-8 h-[1.5px] bg-transparent group-hover:bg-[#C4943A] transition-colors duration-400" />
+                  <div className="absolute top-0 left-0 w-8 h-[2px] bg-transparent group-hover:bg-[#D4A94E] transition-colors duration-300" />
 
-                  {/* Header: Number & Tiny Section Numbering */}
-                  <div className="flex items-center justify-between gap-2 mb-2.5">
-                    <div className="flex items-baseline gap-2">
-                      <span className="font-sora text-[12px] sm:text-[12.5px] font-semibold text-[#B8860B] tracking-[0.16em]">
-                        {principle.number}
-                      </span>
-                      <span className="text-[#C4943A]/50 text-[11px] select-none">—</span>
-                      <h3 className="font-sora text-[14.5px] sm:text-[15.5px] lg:text-[16px] font-bold uppercase tracking-[0.08em] text-[#1A1A1A] group-hover:text-[#B8860B] transition-colors duration-300">
-                        {principle.title}
-                      </h3>
-                    </div>
-                    <span className="font-sora text-[9.5px] uppercase tracking-[0.16em] text-[#A69787]">
-                      [{principle.fraction}]
+                  {/* Header: Clean Number & Title */}
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="font-sora text-xs font-bold text-[#D4A94E] tracking-[0.2em]">
+                      {principle.number}
                     </span>
+                    <span className="text-[#D4A94E]/40 text-xs select-none">—</span>
+                    <h3 className="font-sora text-[15px] sm:text-[16px] font-bold uppercase tracking-[0.1em] text-[#FAF7F2] group-hover:text-[#D4A94E] transition-colors duration-300">
+                      {principle.title}
+                    </h3>
                   </div>
 
                   {/* Principle Description */}
-                  <p className="font-sora text-[13px] sm:text-[13.5px] lg:text-[14px] leading-[1.68] text-[#554A3E]">
+                  <p className="font-sora text-[13.5px] sm:text-[14px] leading-[1.7] text-[#A89F94]">
                     {principle.description}
                   </p>
                 </motion.div>
               ))}
             </div>
-
           </div>
 
         </div>

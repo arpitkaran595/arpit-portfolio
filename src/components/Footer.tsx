@@ -399,7 +399,7 @@ const Footer: React.FC = () => {
       className="relative w-full min-h-screen min-h-[100svh] overflow-hidden flex flex-col justify-between text-[#1A1A1A] select-none"
       style={{
         background:
-          'linear-gradient(180deg, #FDF8F3 0%, #FAF4EC 12%, #FAF2EA 20%, #F0F2EB 28%, #D8ECF7 38%, #79C3EC 52%, #52B4E6 68%, #82D8F6 82%, #D8F1FD 94%, #F0F8FE 100%)',
+          'linear-gradient(180deg, #ECE0D0 0%, #F5ECE3 8%, #FAF2EA 16%, #F0F2EB 26%, #D8ECF7 38%, #79C3EC 52%, #52B4E6 68%, #82D8F6 82%, #D8F1FD 94%, #F0F8FE 100%)',
       }}
     >
       {/* Soft atmospheric horizon glow bridging the upper CTA zone and open sky */}
@@ -433,20 +433,14 @@ const Footer: React.FC = () => {
       {/* ───────────────────────────────────────────────────────────────────── */}
       <div className="relative w-full max-w-4xl mx-auto px-5 sm:px-8 lg:px-12 pt-14 sm:pt-18 md:pt-22 pb-8 sm:pb-10 z-10 flex flex-col items-center text-center">
 
-        {/* 1. Small Gold Eyebrow */}
-        <div className="footer-cta-eyebrow flex items-center justify-center gap-3 mb-4 sm:mb-5">
-          <div className="w-6 sm:w-10 h-[1.5px] bg-[#C4943A]/50" />
-          <span className="font-sora text-[10px] sm:text-[11px] uppercase tracking-[0.24em] font-semibold text-[#B8860B]">
-            THE FINAL SCENE
-          </span>
-          <div className="w-6 sm:w-10 h-[1.5px] bg-[#C4943A]/50" />
-        </div>
+        {/* 1. GSAP Anchor spacer (replaces redundant eyebrow) */}
+        <div className="footer-cta-eyebrow h-2 w-0 opacity-0 pointer-events-none select-none" />
 
         {/* 2. Dominant Editorial Headline */}
         <h2 className="footer-cta-headline font-playfair font-bold text-[clamp(2.3rem,5.6vw,4.4rem)] text-[#1A1A1A] leading-[1.04] tracking-tight max-w-[680px] mb-5 sm:mb-7">
           LET’S MAKE<br />
           SOMETHING<br />
-          WORTH SEEING<span className="text-[#C4943A]">.</span>
+          WORTH SEEING<span className="text-[#BD5D38]">.</span>
         </h2>
 
         {/* 3. Personal Sign-off */}
@@ -470,15 +464,15 @@ const Footer: React.FC = () => {
           <a
             href="#contact"
             onClick={handleScrollToContact}
-            className="group inline-flex items-center gap-3 px-8 sm:px-9 py-3.5 sm:py-4 rounded-full bg-[#1A1A1A] hover:bg-[#B8860B] text-[#FAF3E8] text-[11.5px] sm:text-[12px] font-sora font-semibold tracking-[0.16em] uppercase transition-all duration-300 shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+            className="group inline-flex items-center gap-3 px-8 sm:px-9 py-3.5 sm:py-4 rounded-full bg-[#141312] hover:bg-[#BD5D38] text-[#FAF7F2] text-[11.5px] sm:text-[12px] font-sora font-semibold tracking-[0.16em] uppercase transition-all duration-300 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
           >
             <span>LET’S WORK TOGETHER</span>
-            <span className="text-[#E5C89C] transition-transform duration-300 group-hover:translate-x-1">→</span>
+            <span className="text-[#BD5D38] group-hover:text-white transition-all duration-300 group-hover:translate-x-1">→</span>
           </a>
         </div>
 
-        {/* 5. Delicate Editorial Hairline Divider */}
-        <div className="w-full max-w-lg h-[1px] bg-[#D8C7B2]/50 mb-6 sm:mb-7" />
+        {/* 5. Organic breathing space */}
+        <div className="mb-4 sm:mb-5" />
 
         {/* 6. Curated Secondary Navigation & Social Links */}
         <nav

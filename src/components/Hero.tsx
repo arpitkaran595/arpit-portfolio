@@ -942,39 +942,39 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
       >
         <div ref={uiDepthRef} className="w-full max-w-[1040px] px-5 sm:px-6 md:px-8 will-change-transform">
           <div className="w-full flex flex-col md:flex-row justify-between items-center gap-2.5 md:gap-0">
-            {/* HIRE ME */}
+            {/* HIRE ME (PRIMARY STUDIO CALL-TO-ACTION) */}
             <a
               ref={btnLeftRef}
               href={personalInfo.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="hero-cta-card opacity-0 pointer-events-auto group"
+              className="hero-cta-card hero-cta-primary opacity-0 pointer-events-auto group"
             >
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#1A1A1A] flex items-center justify-center text-white shrink-0 group-hover:scale-105 transition-transform duration-300">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#242220] border border-[#D4A94E]/40 flex items-center justify-center text-[#E5C89C] shrink-0 group-hover:scale-105 group-hover:border-[#D4A94E] transition-all duration-300">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.125-.397-.18-1.229-.453-2.339-1.45-1.09-1.004-1.814-2.228-2.025-2.587-.208-.358-.223-.55-.114-.735.093-.158.201-.274.301-.392.1-.118.132-.198.2-.332.066-.134.033-.25-.015-.348-.05-.097-.42-1.011-.576-1.385-.15-.362-.303-.313-.418-.318l-.358-.005c-.122 0-.323.045-.492.23-.17.184-.645.631-.645 1.542 0 .911.66 1.792.752 1.916.09.124 1.306 1.993 3.163 2.795.441.19.785.304 1.054.389.443.14.846.12 1.164.073.359-.053 1.099-.45 1.253-.884.155-.434.155-.806.109-.884-.047-.078-.17-.124-.366-.222z" />
                 </svg>
               </div>
               <div className="flex-1 min-w-0 pr-1 flex flex-col justify-center">
-                <div className="font-sora font-bold text-charcoal-800 text-[13px] sm:text-sm tracking-wide leading-tight">
+                <div className="font-sora font-bold text-[#FAF7F2] text-[13px] sm:text-sm tracking-wide leading-tight">
                   HIRE ME
                 </div>
-                <div className="font-sora text-charcoal-500 text-[11px] sm:text-xs mt-0.5 leading-tight truncate">
+                <div className="font-sora text-[#B8AF9F] text-[11px] sm:text-xs mt-0.5 leading-tight truncate">
                   Let&apos;s work together
                 </div>
               </div>
-              <span className="text-charcoal-600 text-lg leading-none shrink-0 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300">
+              <span className="text-[#D4A94E] text-lg leading-none shrink-0 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300">
                 ↗
               </span>
             </a>
 
-            {/* RESUME CTA */}
+            {/* RESUME CTA (SECONDARY CALL-TO-ACTION) */}
             {personalInfo.hasResumeFile ? (
               <a
                 ref={btnRightRef}
                 href={personalInfo.resumePath}
                 download="Arpit_Karan_Resume.pdf"
-                className="hero-cta-card opacity-0 pointer-events-auto group"
+                className="hero-cta-card hero-cta-secondary opacity-0 pointer-events-auto group"
               >
                 <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#1A1A1A] flex items-center justify-center text-white shrink-0 group-hover:scale-105 transition-transform duration-300">
                   <svg

@@ -303,7 +303,7 @@ export default function LiveWebsiteModal({
           <div className="w-full px-4 sm:px-8 py-3.5 sm:py-4 border-b border-[#D4A94E]/25 flex items-center justify-between relative z-10 bg-[#FAF6F0]/90 backdrop-blur-sm gap-2">
             {/* Project Title & Category */}
             <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#7A1C28]/10 border border-[#7A1C28]/25 flex items-center justify-center text-[#7A1C28] shrink-0">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#B8860B]/10 border border-[#B8860B]/25 flex items-center justify-center text-[#B8860B] shrink-0">
                 <Monitor className="w-4 h-4" />
               </div>
               <div className="min-w-0">
@@ -328,7 +328,7 @@ export default function LiveWebsiteModal({
                 onClick={() => setDeviceMode('desktop')}
                 className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-sora font-semibold transition-all cursor-pointer ${
                   deviceMode === 'desktop'
-                    ? 'bg-[#7A1C28] text-white shadow-sm'
+                    ? 'bg-[#B8860B] text-white shadow-sm'
                     : 'text-charcoal-700 hover:text-charcoal-900 hover:bg-cream-100/60'
                 }`}
                 title="Desktop / MacBook View (1280x800)"
@@ -343,7 +343,7 @@ export default function LiveWebsiteModal({
                 onClick={() => setDeviceMode('tablet')}
                 className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-sora font-semibold transition-all cursor-pointer ${
                   deviceMode === 'tablet'
-                    ? 'bg-[#7A1C28] text-white shadow-sm'
+                    ? 'bg-[#B8860B] text-white shadow-sm'
                     : 'text-charcoal-700 hover:text-charcoal-900 hover:bg-cream-100/60'
                 }`}
                 title="Tablet View (1024x768)"
@@ -357,7 +357,7 @@ export default function LiveWebsiteModal({
                 onClick={() => setDeviceMode('mobile')}
                 className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-sora font-semibold transition-all cursor-pointer ${
                   deviceMode === 'mobile'
-                    ? 'bg-[#7A1C28] text-white shadow-sm'
+                    ? 'bg-[#B8860B] text-white shadow-sm'
                     : 'text-charcoal-700 hover:text-charcoal-900 hover:bg-cream-100/60'
                 }`}
                 title="Mobile View (390x844)"
@@ -374,7 +374,7 @@ export default function LiveWebsiteModal({
                   href={project.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-full bg-[#7A1C28] hover:bg-[#63141F] text-white border border-[#7A1C28]/40 text-[11px] sm:text-[12px] font-sora font-medium transition-all shadow-sm"
+                  className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-full bg-[#B8860B] hover:bg-[#9A7209] text-white border border-[#B8860B]/40 text-[11px] sm:text-[12px] font-sora font-medium transition-all shadow-sm"
                   title="Open live site in new tab"
                 >
                   <span className="hidden sm:inline">Launch Live</span>
@@ -399,7 +399,7 @@ export default function LiveWebsiteModal({
                 type="button"
                 onClick={onClose}
                 aria-label="Close modal"
-                className="p-1.5 sm:p-2 rounded-full bg-[#7A1C28]/10 hover:bg-[#7A1C28] text-[#7A1C28] hover:text-white border border-[#7A1C28]/30 transition-all cursor-pointer"
+                className="p-1.5 sm:p-2 rounded-full bg-[#B8860B]/10 hover:bg-[#B8860B] text-[#B8860B] hover:text-white border border-[#B8860B]/30 transition-all cursor-pointer"
                 title="Close (ESC)"
               >
                 <X className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
@@ -482,7 +482,7 @@ export default function LiveWebsiteModal({
                           href={project.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="pointer-events-auto px-4 py-2 rounded-full bg-[#7A1C28] hover:bg-[#63141F] text-white text-[11px] font-sora font-semibold shadow-2xl flex items-center gap-1.5 transform hover:scale-105 transition-transform border border-white/20"
+                          className="pointer-events-auto px-4 py-2 rounded-full bg-[#B8860B] hover:bg-[#9A7209] text-white text-[11px] font-sora font-semibold shadow-2xl flex items-center gap-1.5 transform hover:scale-105 transition-transform border border-white/20"
                         >
                           <span>Open Active Web App</span>
                           <ExternalLink className="w-3 h-3" />
@@ -537,7 +537,7 @@ export default function LiveWebsiteModal({
             <div className="flex items-center gap-2 text-[11px] sm:text-[12px] font-sora text-charcoal-600 min-w-0">
               <Sparkles className="w-3.5 h-3.5 text-[#B8860B] shrink-0" />
               <span className="truncate max-w-[340px] sm:max-w-none">
-                {project.description} — <span className="text-[#7A1C28] font-semibold">{currentConfig.name}</span> preview ({currentConfig.virtualWidth}×{currentConfig.virtualHeight})
+                {project.description} — <span className="text-[#B8860B] font-semibold">{currentConfig.name}</span> preview ({currentConfig.virtualWidth}×{currentConfig.virtualHeight})
               </span>
             </div>
 

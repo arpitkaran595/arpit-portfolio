@@ -480,10 +480,10 @@ const CreativesSection: React.FC = () => {
     <section
       id="creatives"
       ref={sectionRef}
-      className="relative w-full min-h-[100svh] lg:h-[100svh] pt-20 sm:pt-24 lg:pt-16 pb-8 sm:pb-10 lg:pb-10 bg-[#FAF3E8] z-[10] select-none flex flex-col justify-between"
+      className="relative w-full min-h-[100svh] lg:h-[100svh] pt-20 sm:pt-24 lg:pt-16 pb-8 sm:pb-10 lg:pb-10 bg-[#ECEFEA] text-[#1C241F] z-[10] select-none flex flex-col justify-between"
       style={{
         background:
-          'linear-gradient(to bottom, #FAF3E8 0%, #FAF3E8 15%, #FAF5EE 45%, #FAF3E8 80%, #FAF3E8 100%)',
+          'linear-gradient(to bottom, #ECEFEA 0%, #F1F4EE 45%, #ECEFEA 100%)',
       }}
     >
       {/* ───────────────────────────────────────────────────────────────────── */}
@@ -495,7 +495,7 @@ const CreativesSection: React.FC = () => {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            'radial-gradient(ellipse at 56% 46%, rgba(246, 215, 178, 0.16) 0%, rgba(250, 243, 232, 0.05) 55%, transparent 75%)',
+            'radial-gradient(ellipse at 56% 46%, rgba(184, 196, 182, 0.35) 0%, rgba(236, 239, 234, 0.05) 60%, transparent 80%)',
         }}
       />
 
@@ -510,27 +510,19 @@ const CreativesSection: React.FC = () => {
           {/* LEFT: EDITORIAL COPY ZONE */}
           {/* ═══════════════════════════════════════════════════════════════════ */}
           <div className="lg:col-span-4 xl:col-span-4 flex flex-col justify-center select-text z-20 creative-fade-el lg:-mt-10 xl:-mt-12 pr-2 sm:pr-4">
-            {/* Eyebrow */}
-            <span className="text-gold-400 text-xs sm:text-[13px] tracking-[0.22em] font-sora font-semibold uppercase mb-2 block">
-              {creativesSectionData.eyebrow}
-            </span>
-
-            {/* Thin Gold Underline Divider */}
-            <div className="w-10 sm:w-12 h-[2px] bg-gold-400 mb-4 sm:mb-5 rounded-full" />
-
             {/* Main Editorial Heading */}
-            <h2 className="font-playfair text-[clamp(2.2rem,3.4vw,3.6rem)] text-charcoal-800 leading-[1.02] tracking-tight mb-3.5 sm:mb-4.5 font-bold">
+            <h2 className="font-playfair text-[clamp(2.4rem,3.8vw,4rem)] text-[#1C241F] leading-[0.98] tracking-tight mb-4 sm:mb-5 font-bold">
               {creativesSectionData.headingLine1}
               <br />
               {creativesSectionData.headingLine2}
               <br />
-              <span className="text-gold-400 font-playfair font-bold">
+              <span className="text-[#3E4A3D] italic font-playfair font-normal">
                 {creativesSectionData.headingHighlight}
               </span>
             </h2>
 
             {/* Supporting Description Body */}
-            <p className="text-charcoal-400 font-sora text-xs sm:text-sm leading-relaxed max-w-[320px] mb-5 sm:mb-7 text-balance">
+            <p className="text-[#48534B] font-sora text-xs sm:text-sm leading-relaxed max-w-[320px] mb-5 sm:mb-7 text-balance">
               {creativesSectionData.description}
             </p>
 
@@ -538,10 +530,10 @@ const CreativesSection: React.FC = () => {
             <button
               type="button"
               onClick={() => openArchive('SOCIAL MEDIA')}
-              className="inline-flex items-center gap-2.5 text-xs sm:text-[13px] font-sora font-semibold tracking-[0.16em] uppercase text-charcoal-800 hover:text-gold-400 group transition-colors relative pb-1 self-start border-b border-charcoal-800/80 hover:border-gold-400 cursor-pointer"
+              className="inline-flex items-center gap-2.5 text-xs sm:text-[13px] font-sora font-semibold tracking-[0.16em] uppercase text-[#1C241F] hover:text-[#BD5D38] group transition-colors relative pb-1 self-start border-b border-[#1C241F]/80 hover:border-[#BD5D38] cursor-pointer"
             >
               <span>{creativesSectionData.ctaText}</span>
-              <span className="transform transition-transform duration-300 group-hover:translate-x-1.5 text-gold-400 text-sm font-bold">
+              <span className="transform transition-transform duration-300 group-hover:translate-x-1.5 text-[#BD5D38] text-sm font-bold">
                 →
               </span>
             </button>
@@ -556,7 +548,7 @@ const CreativesSection: React.FC = () => {
               className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 lg:w-32 pointer-events-none z-30"
               style={{
                 background:
-                  'linear-gradient(to right, #FAF3E8 0%, rgba(250, 243, 232, 0.90) 30%, rgba(250, 243, 232, 0.40) 70%, transparent 100%)',
+                  'linear-gradient(to right, #ECEFEA 0%, rgba(236, 239, 234, 0.90) 30%, rgba(236, 239, 234, 0.40) 70%, transparent 100%)',
               }}
             />
 
@@ -565,7 +557,7 @@ const CreativesSection: React.FC = () => {
               className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 lg:w-32 pointer-events-none z-30"
               style={{
                 background:
-                  'linear-gradient(to left, #FAF3E8 0%, rgba(250, 243, 232, 0.90) 30%, rgba(250, 243, 232, 0.40) 70%, transparent 100%)',
+                  'linear-gradient(to left, #ECEFEA 0%, rgba(236, 239, 234, 0.90) 30%, rgba(236, 239, 234, 0.40) 70%, transparent 100%)',
               }}
             />
 

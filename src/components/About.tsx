@@ -890,13 +890,8 @@ export default function About() {
         <div className="w-full md:w-[54%] md:max-w-[420px] lg:w-[50%] lg:max-w-[490px] xl:w-[48%] xl:max-w-[620px] flex flex-col pr-0 md:pr-4 lg:pr-6 mx-auto md:mx-0">
           <div ref={contentDepthRef} className="w-full will-change-transform flex flex-col">
             
-            {/* 1. Small Gold Eyebrow */}
-            <div ref={eyebrowInnerRef} className="flex flex-col items-start opacity-0 mb-2 sm:mb-2.5">
-              <span className="text-[#B8860B] text-[0.74rem] sm:text-[0.76rem] md:text-[0.80rem] font-sora uppercase tracking-[0.24em] font-semibold">
-                ABOUT ME
-              </span>
-              <div className="w-8 h-[1.8px] bg-[#C4943A] mt-1" />
-            </div>
+            {/* 1. Spacer maintaining GSAP ref binding */}
+            <div ref={eyebrowInnerRef} className="h-0 w-0 opacity-0 pointer-events-none select-none" />
 
             {/* 2. Large Editorial Serif Heading with writing/clip-path reveal */}
             <h2
@@ -1103,81 +1098,44 @@ export default function About() {
               />
             </div>
 
-            {/* 6. Services / Expertise Row (4 editorial categories) */}
+            {/* 6. Disciplines Row (4 clear creative capabilities) */}
             <div
               ref={servicesRowInnerRef}
-              className="grid grid-cols-2 xl:grid-cols-4 gap-0 py-2 sm:py-2.5 xl:py-2 border-y border-[#E2D5C3]/80 mb-3 sm:mb-3.5 xl:mb-2.5 w-full"
+              className="grid grid-cols-2 xl:grid-cols-4 gap-0 py-2.5 sm:py-3 xl:py-2.5 border-y border-[#E2D5C3] mb-3.5 sm:mb-4 xl:mb-3 w-full"
             >
-              {/* 1. Creative Design */}
-              <div className="flex flex-col pr-3 sm:pr-4 xl:pr-2 border-r border-b xl:border-b-0 border-[#E2D5C3]/70 pb-2.5 xl:pb-0">
-                <div className="text-[#B8860B] mb-0.5">
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="m12 19 7-7 3 3-7 7-3-3z"/>
-                    <path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
-                    <path d="m2 2 7.586 7.586"/>
-                    <circle cx="11" cy="11" r="2"/>
-                  </svg>
-                </div>
-                <h3 className="font-sora font-semibold text-[0.76rem] sm:text-[0.78rem] text-[#1A1A1A]">
-                  Creative Design
+              <div className="flex flex-col pr-3 sm:pr-4 xl:pr-3 border-r border-b xl:border-b-0 border-[#E2D5C3]/70 pb-2.5 xl:pb-0">
+                <h3 className="font-sora font-bold text-xs sm:text-[13px] text-[#1A1A1A]">
+                  Graphic Design
                 </h3>
-                <p className="text-[#6E6458] text-[0.64rem] sm:text-[0.66rem] leading-snug mt-0.5 font-sora">
-                  Crafting clean, modern and meaningful designs that stand out.
+                <p className="text-[#4A4036] text-[11px] sm:text-xs leading-relaxed mt-0.5 font-sora">
+                  Brand identity, visual systems, and editorial print design.
                 </p>
               </div>
 
-              {/* 2. Video Editing */}
-              <div className="flex flex-col pl-3 sm:pl-4 xl:px-2 border-b xl:border-b-0 xl:border-r border-[#E2D5C3]/70 pb-2.5 xl:pb-0">
-                <div className="text-[#B8860B] mb-0.5">
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    <rect width="18" height="18" x="3" y="3" rx="2"/>
-                    <path d="M7 3v18"/>
-                    <path d="M3 7.5h4"/>
-                    <path d="M3 12h18"/>
-                    <path d="M3 16.5h4"/>
-                    <path d="M17 3v18"/>
-                    <path d="M17 7.5h4"/>
-                    <path d="M17 16.5h4"/>
-                  </svg>
-                </div>
-                <h3 className="font-sora font-semibold text-[0.76rem] sm:text-[0.78rem] text-[#1A1A1A]">
+              <div className="flex flex-col pl-3 sm:pl-4 xl:px-3 border-b xl:border-b-0 xl:border-r border-[#E2D5C3]/70 pb-2.5 xl:pb-0">
+                <h3 className="font-sora font-bold text-xs sm:text-[13px] text-[#1A1A1A]">
                   Video Editing
                 </h3>
-                <p className="text-[#6E6458] text-[0.64rem] sm:text-[0.66rem] leading-snug mt-0.5 font-sora">
-                  Editing videos that tell stories and deliver real impact.
+                <p className="text-[#4A4036] text-[11px] sm:text-xs leading-relaxed mt-0.5 font-sora">
+                  High-retention narrative pacing and sound design for video.
                 </p>
               </div>
 
-              {/* 3. Motion Design */}
-              <div className="flex flex-col pr-3 sm:pr-4 xl:px-2 border-r xl:border-r border-[#E2D5C3]/70 pt-2.5 xl:pt-0">
-                <div className="text-[#B8860B] mb-0.5">
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="10"/>
-                    <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" fillOpacity="0.2"/>
-                  </svg>
-                </div>
-                <h3 className="font-sora font-semibold text-[0.76rem] sm:text-[0.78rem] text-[#1A1A1A]">
+              <div className="flex flex-col pr-3 sm:pr-4 xl:px-3 border-r xl:border-r border-[#E2D5C3]/70 pt-2.5 xl:pt-0">
+                <h3 className="font-sora font-bold text-xs sm:text-[13px] text-[#1A1A1A]">
                   Motion Design
                 </h3>
-                <p className="text-[#6E6458] text-[0.64rem] sm:text-[0.66rem] leading-snug mt-0.5 font-sora">
-                  Bringing visuals to life with smooth motion and rhythm.
+                <p className="text-[#4A4036] text-[11px] sm:text-xs leading-relaxed mt-0.5 font-sora">
+                  Kinetic typography, animated brand assets, and visual rhythm.
                 </p>
               </div>
 
-              {/* 4. Problem Solver */}
-              <div className="flex flex-col pl-3 sm:pl-4 xl:pl-2 pt-2.5 xl:pt-0">
-                <div className="text-[#B8860B] mb-0.5">
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5 .7 .7 1.3 1.5 1.5 2.5"/>
-                    <path d="M9 18h6"/>
-                    <path d="M10 22h4"/>
-                  </svg>
-                </div>
-                <h3 className="font-sora font-semibold text-[0.76rem] sm:text-[0.78rem] text-[#1A1A1A]">
-                  Problem Solver
+              <div className="flex flex-col pl-3 sm:pl-4 xl:pl-3 pt-2.5 xl:pt-0">
+                <h3 className="font-sora font-bold text-xs sm:text-[13px] text-[#1A1A1A]">
+                  Digital & Web
                 </h3>
-                <p className="text-[#6E6458] text-[0.64rem] sm:text-[0.66rem] leading-snug mt-0.5 font-sora">
-                  I love solving problems with creativity and smart ideas.
+                <p className="text-[#4A4036] text-[11px] sm:text-xs leading-relaxed mt-0.5 font-sora">
+                  Responsive product interfaces and interactive web craft.
                 </p>
               </div>
             </div>
@@ -1188,13 +1146,9 @@ export default function About() {
                 ref={softwarePanelInnerRef}
                 className="rounded-xl py-2 px-2.5 sm:px-4 opacity-0 w-full transition-all duration-300"
                 style={{
-                  background:
-                    'linear-gradient(135deg, rgba(255, 255, 255, 0.36) 0%, rgba(255, 248, 240, 0.22) 100%)',
-                  backdropFilter: 'blur(16px) saturate(115%)',
-                  WebkitBackdropFilter: 'blur(16px) saturate(115%)',
-                  border: '1px solid rgba(255, 255, 255, 0.60)',
-                  boxShadow:
-                    '0 8px 24px -4px rgba(140, 115, 85, 0.07), 0 1px 3px 0 rgba(0, 0, 0, 0.02), inset 0 1px 1px 0 rgba(255, 255, 255, 0.85)',
+                  backgroundColor: '#FDF8F3',
+                  border: '1px solid #E3D6C5',
+                  boxShadow: '0 4px 16px -2px rgba(100, 75, 45, 0.06)',
                 }}
               >
                 <div className="flex items-center justify-center gap-2 mb-1.5">
