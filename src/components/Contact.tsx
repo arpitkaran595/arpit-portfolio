@@ -491,7 +491,7 @@ const Contact: React.FC = () => {
       {/* ───────────────────────────────────────────────────────────────────── */}
       <div className="max-w-[1340px] w-full mx-auto px-6 sm:px-8 md:px-10 lg:px-12 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-14 items-start">
-          
+
           {/* ═════════════════════════════════════════════════════════════════ */}
           {/* LEFT SIDE: EDITORIAL HEADLINE, COPY, CTA, ARROW & CONTACT CARDS */}
           {/* ═════════════════════════════════════════════════════════════════ */}
@@ -503,7 +503,7 @@ const Contact: React.FC = () => {
             <h2 className="reveal-item font-playfair text-[clamp(2.8rem,5.3vw,4.45rem)] font-bold text-[#141414] leading-[1.06] tracking-[-0.015em]">
               <span className="block">Let’s Create</span>
               <span className="block">Something</span>
-              <span className="block text-[#BD5D38]">Worth Seeing.</span>
+              <span className="block text-[#A3772C]">Worth Seeing.</span>
             </h2>
 
             {/* Supporting Copy */}
@@ -517,7 +517,7 @@ const Contact: React.FC = () => {
               <button
                 type="button"
                 onClick={handleStartProjectClick}
-                className="bg-[#141312] hover:bg-[#25221F] active:scale-[0.98] text-[#FAF7F2] border border-[#BD5D38]/30 px-7 py-3.5 rounded-full font-sora text-xs sm:text-[12.5px] font-semibold tracking-[0.14em] flex items-center gap-3 transition-all duration-300 shadow-[0_4px_16px_rgba(20,19,18,0.18)] hover:shadow-[0_6px_22px_rgba(20,19,18,0.26)] hover:-translate-y-0.5 group shrink-0 cursor-pointer"
+                className="bg-[#171717] hover:bg-[#262626] active:scale-[0.98] text-[#D8B062] px-7 py-3.5 rounded-full font-sora text-xs sm:text-[12.5px] font-semibold tracking-[0.14em] flex items-center gap-3 transition-all duration-300 shadow-[0_4px_16px_rgba(0,0,0,0.12)] hover:shadow-[0_6px_22px_rgba(0,0,0,0.18)] hover:-translate-y-0.5 group shrink-0 cursor-pointer"
               >
                 <span>START A PROJECT</span>
                 <span className="text-base leading-none group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform duration-300">
@@ -549,16 +549,16 @@ const Contact: React.FC = () => {
 
             {/* 3 Compact Contact Method Cards */}
             <div className="reveal-item mt-10 sm:mt-11 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3 gap-2.5 sm:gap-3 w-full max-w-[680px]">
-              
+
               {/* Card 1: WhatsApp */}
               <a
                 href={personalInfo.whatsappUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-[16px] px-3 py-3 xl:px-3.5 xl:py-3.5 bg-[#FAF7F2]/90 backdrop-blur-sm border border-[#E5DACB] flex items-center justify-between gap-2 shadow-[0_4px_14px_-4px_rgba(100,70,30,0.04)] hover:border-[#BD5D38]/60 hover:shadow-[0_8px_20px_-4px_rgba(189,93,56,0.12)] hover:-translate-y-0.5 transition-all duration-300 group"
+                className="rounded-[16px] px-3 py-3 xl:px-3.5 xl:py-3.5 bg-[#FAF7F2]/90 backdrop-blur-sm border border-[#E5DACB] flex items-center justify-between gap-2 shadow-[0_4px_14px_-4px_rgba(100,70,30,0.04)] hover:border-[#C4943A]/60 hover:shadow-[0_8px_20px_-4px_rgba(100,70,30,0.1)] hover:-translate-y-0.5 transition-all duration-300 group"
               >
                 <div className="flex items-center gap-2 min-w-0">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-[10px] border border-[#BD5D38]/30 bg-[#FFFDF8] flex items-center justify-center text-[#BD5D38] group-hover:border-[#BD5D38] group-hover:bg-[#FBECE6] shrink-0 transition-colors duration-300">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-[10px] border border-[#D4AF67]/70 bg-[#FFFDF8] flex items-center justify-center text-[#A3772C] group-hover:border-[#C4943A] group-hover:bg-[#FAF3E8] shrink-0 transition-colors duration-300">
                     <svg
                       className="w-3.5 h-3.5"
                       viewBox="0 0 24 24"
@@ -575,14 +575,14 @@ const Contact: React.FC = () => {
                     <div className="font-sora text-[11px] lg:text-[11.5px] font-bold text-[#1F1F1F]">
                       WhatsApp / Phone
                     </div>
-                    <div className="font-sora text-[9px] xl:text-[9.5px] 2xl:text-[10px] text-[#4F463B] whitespace-nowrap">
+                    <div className="font-sora text-[9px] xl:text-[9.5px] 2xl:text-[10px] text-[#7A7265] whitespace-nowrap">
                       Chat on WhatsApp
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
                   <span className="w-[1px] h-3 bg-[#E5DACE]/80" />
-                  <span className="text-[11px] text-[#8A8275] group-hover:text-[#BD5D38] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200">
+                  <span className="text-[11px] text-[#8A8275] group-hover:text-[#A3772C] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200">
                     ↗
                   </span>
                 </div>
@@ -591,10 +591,10 @@ const Contact: React.FC = () => {
               {/* Card 2: Email */}
               <a
                 href={`mailto:${personalInfo.emails.primary}`}
-                className="rounded-[16px] px-3 py-3 xl:px-3.5 xl:py-3.5 bg-[#FAF7F2]/90 backdrop-blur-sm border border-[#E5DACB] flex items-center justify-between gap-2 shadow-[0_4px_14px_-4px_rgba(100,70,30,0.04)] hover:border-[#BD5D38]/60 hover:shadow-[0_8px_20px_-4px_rgba(189,93,56,0.12)] hover:-translate-y-0.5 transition-all duration-300 group"
+                className="rounded-[16px] px-3 py-3 xl:px-3.5 xl:py-3.5 bg-[#FAF7F2]/90 backdrop-blur-sm border border-[#E5DACB] flex items-center justify-between gap-2 shadow-[0_4px_14px_-4px_rgba(100,70,30,0.04)] hover:border-[#C4943A]/60 hover:shadow-[0_8px_20px_-4px_rgba(100,70,30,0.1)] hover:-translate-y-0.5 transition-all duration-300 group"
               >
                 <div className="flex items-center gap-2 min-w-0">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-[10px] border border-[#BD5D38]/30 bg-[#FFFDF8] flex items-center justify-center text-[#BD5D38] group-hover:border-[#BD5D38] group-hover:bg-[#FBECE6] shrink-0 transition-colors duration-300">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-[10px] border border-[#D4AF67]/70 bg-[#FFFDF8] flex items-center justify-center text-[#A3772C] group-hover:border-[#C4943A] group-hover:bg-[#FAF3E8] shrink-0 transition-colors duration-300">
                     <Mail className="w-3.5 h-3.5 stroke-[1.8]" />
                   </div>
                   <div className="min-w-0">
@@ -602,7 +602,7 @@ const Contact: React.FC = () => {
                       Email
                     </div>
                     <div
-                      className="font-sora text-[9px] xl:text-[9.5px] 2xl:text-[10px] text-[#4F463B] whitespace-nowrap"
+                      className="font-sora text-[9px] xl:text-[9.5px] 2xl:text-[10px] text-[#7A7265] whitespace-nowrap"
                       title={personalInfo.emails.primary}
                     >
                       {personalInfo.emails.primary}
@@ -619,7 +619,7 @@ const Contact: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
                   <span className="w-[1px] h-3 bg-[#E5DACE]/80" />
-                  <span className="text-[11px] text-[#8A8275] group-hover:text-[#BD5D38] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200">
+                  <span className="text-[11px] text-[#8A8275] group-hover:text-[#A3772C] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200">
                     ↗
                   </span>
                 </div>
@@ -630,10 +630,10 @@ const Contact: React.FC = () => {
                 href={instagramLink}
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-[16px] px-3 py-3 xl:px-3.5 xl:py-3.5 bg-[#FAF7F2]/90 backdrop-blur-sm border border-[#E5DACB] flex items-center justify-between gap-2 shadow-[0_4px_14px_-4px_rgba(100,70,30,0.04)] hover:border-[#BD5D38]/60 hover:shadow-[0_8px_20px_-4px_rgba(189,93,56,0.12)] hover:-translate-y-0.5 transition-all duration-300 group"
+                className="rounded-[16px] px-3 py-3 xl:px-3.5 xl:py-3.5 bg-[#FAF7F2]/90 backdrop-blur-sm border border-[#E5DACB] flex items-center justify-between gap-2 shadow-[0_4px_14px_-4px_rgba(100,70,30,0.04)] hover:border-[#C4943A]/60 hover:shadow-[0_8px_20px_-4px_rgba(100,70,30,0.1)] hover:-translate-y-0.5 transition-all duration-300 group"
               >
                 <div className="flex items-center gap-2 min-w-0">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-[10px] border border-[#BD5D38]/30 bg-[#FFFDF8] flex items-center justify-center text-[#BD5D38] group-hover:border-[#BD5D38] group-hover:bg-[#FBECE6] shrink-0 transition-colors duration-300">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-[10px] border border-[#D4AF67]/70 bg-[#FFFDF8] flex items-center justify-center text-[#A3772C] group-hover:border-[#C4943A] group-hover:bg-[#FAF3E8] shrink-0 transition-colors duration-300">
                     <svg
                       className="w-3.5 h-3.5"
                       viewBox="0 0 24 24"
@@ -652,14 +652,14 @@ const Contact: React.FC = () => {
                     <div className="font-sora text-[11px] lg:text-[11.5px] font-bold text-[#1F1F1F]">
                       Instagram
                     </div>
-                    <div className="font-sora text-[9px] xl:text-[9.5px] 2xl:text-[10px] text-[#4F463B] whitespace-nowrap">
+                    <div className="font-sora text-[9px] xl:text-[9.5px] 2xl:text-[10px] text-[#7A7265] whitespace-nowrap">
                       @i_am__arpittt
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
                   <span className="w-[1px] h-3 bg-[#E5DACE]/80" />
-                  <span className="text-[11px] text-[#8A8275] group-hover:text-[#BD5D38] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200">
+                  <span className="text-[11px] text-[#8A8275] group-hover:text-[#A3772C] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200">
                     ↗
                   </span>
                 </div>
@@ -678,7 +678,7 @@ const Contact: React.FC = () => {
             >
               {/* Form Header */}
               <div className="flex items-center gap-2 mb-1">
-                <span className="w-2 h-2 rounded-full bg-[#BD5D38] shrink-0 inline-block" />
+                <span className="w-2 h-2 rounded-full bg-[#A3772C] shrink-0 inline-block" />
                 <h3 className="font-playfair text-[22px] sm:text-[25px] font-bold text-[#1F1F1F] leading-tight">
                   Send Me a Message
                 </h3>
@@ -689,12 +689,12 @@ const Contact: React.FC = () => {
 
               {/* Form Element */}
               <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
-                
+
                 {/* Row 1: Two Columns (Name & Email) */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-3.5">
                   {/* Name Input */}
                   <div className="relative">
-                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#5C5245] pointer-events-none">
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8C8275] pointer-events-none">
                       <User className="w-4 h-4 stroke-[1.8]" />
                     </span>
                     <input
@@ -706,13 +706,13 @@ const Contact: React.FC = () => {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full bg-[#FAF5ED]/85 border border-[#DFD3BD]/75 rounded-xl pl-10 pr-4 py-3 text-[13px] font-sora text-charcoal-800 placeholder:text-[#5C5245]/70 focus:bg-white focus:border-[#BD5D38] focus:ring-2 focus:ring-[#BD5D38]/20 focus:outline-none transition-all duration-200"
+                      className="w-full bg-[#FAF5ED]/85 border border-[#DFD3BD]/75 rounded-xl pl-10 pr-4 py-3 text-[13px] font-sora text-charcoal-800 placeholder:text-[#8C8275]/70 focus:bg-white focus:border-[#A3772C] focus:ring-2 focus:ring-[#A3772C]/15 focus:outline-none transition-all duration-200"
                     />
                   </div>
 
                   {/* Email Input */}
                   <div className="relative">
-                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#5C5245] pointer-events-none">
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8C8275] pointer-events-none">
                       <Mail className="w-4 h-4 stroke-[1.8]" />
                     </span>
                     <input
@@ -723,17 +723,17 @@ const Contact: React.FC = () => {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full bg-[#FAF5ED]/85 border border-[#DFD3BD]/75 rounded-xl pl-10 pr-4 py-3 text-[13px] font-sora text-charcoal-800 placeholder:text-[#5C5245]/70 focus:bg-white focus:border-[#BD5D38] focus:ring-2 focus:ring-[#BD5D38]/20 focus:outline-none transition-all duration-200"
+                      className="w-full bg-[#FAF5ED]/85 border border-[#DFD3BD]/75 rounded-xl pl-10 pr-4 py-3 text-[13px] font-sora text-charcoal-800 placeholder:text-[#8C8275]/70 focus:bg-white focus:border-[#A3772C] focus:ring-2 focus:ring-[#A3772C]/15 focus:outline-none transition-all duration-200"
                     />
                   </div>
                 </div>
 
                 {/* Row 2: Custom Project Type / Service Dropdown */}
                 <div className={`relative ${isDropdownOpen ? 'z-40' : 'z-10'}`} ref={dropdownRef}>
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#5C5245] pointer-events-none z-10">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8C8275] pointer-events-none z-10">
                     <LayoutGrid className="w-4 h-4 stroke-[1.8]" />
                   </span>
-                  
+
                   <button
                     type="button"
                     id="project-type-dropdown-trigger"
@@ -745,7 +745,7 @@ const Contact: React.FC = () => {
                       serviceError
                         ? 'bg-[#FAF5ED]/85 border-red-400 ring-2 ring-red-400/20'
                         : isDropdownOpen
-                        ? 'bg-[#FFFFFF] border-[#BD5D38] ring-2 ring-[#BD5D38]/20 shadow-[0_2px_8px_rgba(189,93,56,0.08)]'
+                        ? 'bg-[#FFFFFF] border-[#A3772C] ring-2 ring-[#A3772C]/20 shadow-[0_2px_8px_rgba(163,119,44,0.08)]'
                         : 'bg-[#FAF5ED]/85 border-[#DFD3BD]/75 hover:border-[#C8B89E] hover:bg-[#FDF9F2]'
                     }`}
                   >
@@ -754,7 +754,7 @@ const Contact: React.FC = () => {
                     </span>
                     <ChevronDown
                       className={`w-4 h-4 stroke-[2] transition-transform duration-200 ${
-                        isDropdownOpen ? 'rotate-180 text-[#BD5D38]' : 'text-[#5C5245]'
+                        isDropdownOpen ? 'rotate-180 text-[#A3772C]' : 'text-[#5C5245]'
                       }`}
                     />
                   </button>
@@ -802,7 +802,7 @@ const Contact: React.FC = () => {
                               {type}
                             </span>
                             {isSelected && (
-                              <Check className="w-3.5 h-3.5 text-[#BD5D38] stroke-[2.5]" />
+                              <Check className="w-3.5 h-3.5 text-[#A3772C] stroke-[2.5]" />
                             )}
                           </button>
                         );
@@ -820,7 +820,7 @@ const Contact: React.FC = () => {
 
                 {/* Row 3: Message Textarea */}
                 <div className="relative z-0">
-                  <span className="absolute left-3.5 top-3.5 text-[#5C5245] pointer-events-none">
+                  <span className="absolute left-3.5 top-3.5 text-[#8C8275] pointer-events-none">
                     <PenLine className="w-4 h-4 stroke-[1.8]" />
                   </span>
                   <textarea
@@ -831,14 +831,14 @@ const Contact: React.FC = () => {
                     value={formData.message}
                     onChange={handleChange}
                     required
-                    className="w-full bg-[#FAF5ED]/85 border border-[#DFD3BD]/75 rounded-xl pl-10 pr-4 py-3 text-[13px] font-sora text-charcoal-800 placeholder:text-[#5C5245]/70 focus:bg-white focus:border-[#BD5D38] focus:ring-2 focus:ring-[#BD5D38]/20 focus:outline-none transition-all duration-200 resize-none min-h-[110px]"
+                    className="w-full bg-[#FAF5ED]/85 border border-[#DFD3BD]/75 rounded-xl pl-10 pr-4 py-3 text-[13px] font-sora text-charcoal-800 placeholder:text-[#8C8275]/70 focus:bg-white focus:border-[#A3772C] focus:ring-2 focus:ring-[#A3772C]/15 focus:outline-none transition-all duration-200 resize-none min-h-[110px]"
                   />
                 </div>
 
                 {/* Submit Button: Warm Gold */}
                 <button
                   type="submit"
-                  className="w-full bg-[#BD5D38] hover:bg-[#A64F2E] active:scale-[0.99] text-white py-3.5 sm:py-4 rounded-xl font-sora text-xs sm:text-[12.5px] tracking-[0.15em] font-semibold flex items-center justify-center gap-2 shadow-[0_4px_16px_rgba(189,93,56,0.28)] hover:shadow-[0_6px_22px_rgba(189,93,56,0.38)] transition-all duration-300 group mt-1 cursor-pointer"
+                  className="w-full bg-[#A2762C] hover:bg-[#8F6623] active:scale-[0.99] text-white py-3.5 sm:py-4 rounded-xl font-sora text-xs sm:text-[12.5px] tracking-[0.15em] font-semibold flex items-center justify-center gap-2 shadow-[0_4px_16px_rgba(158,116,44,0.25)] hover:shadow-[0_6px_22px_rgba(158,116,44,0.35)] transition-all duration-300 group mt-1 cursor-pointer"
                 >
                   <span>SEND MESSAGE</span>
                   <span className="text-base leading-none group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform duration-300">
@@ -848,7 +848,7 @@ const Contact: React.FC = () => {
 
                 {/* Privacy Assurance Statement */}
                 <div className="flex items-center justify-center gap-1.5 mt-1.5 text-[#4F463B] text-xs font-sora">
-                  <ShieldCheck className="w-3.5 h-3.5 text-[#BD5D38]" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#A2762C]" />
                   <span>Your information is safe with me.</span>
                 </div>
 
@@ -881,7 +881,7 @@ const Contact: React.FC = () => {
               {/* Large subtle gold quotation mark */}
               <span
                 ref={quoteMarkRef}
-                className="font-playfair text-[38px] sm:text-[46px] lg:text-[52px] text-[#BD5D38] font-bold leading-none select-none shrink-0 sm:-mt-2 drop-shadow-[0_1px_1px_rgba(189,93,56,0.15)]"
+                className="font-playfair text-[38px] sm:text-[46px] lg:text-[52px] text-[#A3772C] font-bold leading-none select-none shrink-0 sm:-mt-2 drop-shadow-[0_1px_1px_rgba(189,93,56,0.15)]"
                 aria-hidden="true"
               >
                 “
@@ -900,11 +900,11 @@ const Contact: React.FC = () => {
             {/* DIVIDER: Subtle vertical line on desktop/tablet, horizontal on mobile */}
             <div
               ref={quoteDividerRef}
-              className="hidden sm:block w-[1px] h-[48px] lg:h-[54px] bg-gradient-to-b from-transparent via-[#BD5D38]/40 to-transparent shrink-0"
+              className="hidden sm:block w-[1px] h-[48px] lg:h-[54px] bg-gradient-to-b from-transparent via-[#A3772C]/40 to-transparent shrink-0"
               aria-hidden="true"
             />
             <div
-              className="sm:hidden w-12 h-[1px] bg-gradient-to-r from-transparent via-[#BD5D38]/40 to-transparent my-0.5"
+              className="sm:hidden w-12 h-[1px] bg-gradient-to-r from-transparent via-[#A3772C]/40 to-transparent my-0.5"
               aria-hidden="true"
             />
 

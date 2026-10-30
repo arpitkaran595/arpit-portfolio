@@ -34,7 +34,7 @@ A living, interactive personal creative portfolio that showcases Arpit Ak's mult
 ## Brand Commitments
 
 - **Identity**: Arpit Ak (अर्पित). Creative Designer & Video Editor.
-- **Palette**: Multi-chapter art-directed palette featuring warm ivory & studio linen (`#FAF3E8`, `#FAF7F2`, `#F4F1EA`), deep inky espresso (`#141312`, `#0D0E11`, `#161514`), muted botanical sage (`#ECEFEA`, `#3E4A3D`), warm terracotta & clay (`#BD5D38`, `#F6EFE9`), and restrained antique gold (`#D4A94E`, `#C4943A`).
+- **Palette**: Warm Paper Style featuring warm cream foundations (`#FAF3E8`, `#FAF7F2`, `#FEFCF9`, `#FBF7F0`), deep charcoal typography (`#1A1A1A`, `#2B2621`, `#3F362E`), and restrained antique gold accents (`#D4A94E`, `#C4943A`, `#B8860B`, `#E3D6C5`).
 - **Texture & Atmosphere**: Multi-layered cloud horizons, ambient warm mist, subtle paper texture, and micro noise grain overlays.
 - **Voice**: Confident, witty, authentic, craft-focused ("turning concepts into visuals that connect, communicate and leave a lasting impact").
 - **Direct Contacts**: WhatsApp (`+91 6377467850`), Email (`arpitkaran595@gmail.com`, `work.with.arpittt@gmail.com`), Resume download (`/assets/resume.pdf`).

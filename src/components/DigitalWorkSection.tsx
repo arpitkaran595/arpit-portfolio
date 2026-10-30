@@ -409,7 +409,7 @@ export default function DigitalWorkSection() {
 
   // Filter projects based on active category (curating primary client & product deliverables)
   const filteredProjects = useMemo(() => {
-    const list = digitalProjects.filter((p) => p.slug !== 'arpit-designs');
+    const list = digitalProjects;
     if (selectedCategory === 'ALL') return list;
     if (selectedCategory === 'UI/UX')
       return list.filter((p) => p.type === 'ui' || p.type === 'webapp');
@@ -513,9 +513,9 @@ export default function DigitalWorkSection() {
   return (
     <section
       id="digital-work"
-      className="relative w-full overflow-hidden bg-[#F8F7F4] text-charcoal-900 pt-24 sm:pt-28 lg:pt-32 pb-20 sm:pb-24 lg:pb-28 scroll-mt-24 select-none"
+      className="relative w-full overflow-hidden bg-[#FBF7F0] text-charcoal-900 pt-24 sm:pt-28 lg:pt-32 pb-20 sm:pb-24 lg:pb-28 scroll-mt-24 select-none"
       style={{
-        backgroundImage: `radial-gradient(ellipse 80% 50% at 50% -10%, rgba(216, 220, 228, 0.42) 0%, rgba(248, 247, 244, 0.98) 65%)`,
+        backgroundImage: `radial-gradient(ellipse 80% 50% at 50% -10%, rgba(246, 215, 178, 0.28) 0%, rgba(251, 247, 240, 0.98) 65%)`,
       }}
     >
       {/* ───────────────────────────────────────────────────────────────────── */}
@@ -544,7 +544,7 @@ export default function DigitalWorkSection() {
           </h2>
 
           {/* Subtitle */}
-          <p className="font-sora text-[14px] sm:text-[15.5px] text-[#524C44] font-normal leading-relaxed max-w-[560px]">
+          <p className="font-sora text-[14px] sm:text-[15.5px] text-charcoal-500 font-normal leading-relaxed max-w-[560px]">
             Digital experiences, interfaces and websites I’ve designed and built.
           </p>
 

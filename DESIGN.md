@@ -1,33 +1,24 @@
 ---
-name: Arpit AK Portfolio Design System — Impeccable 2.0
-description: Expressive editorial portfolio meets modern independent creative studio with dynamic dark and light chapters.
+name: Arpit AK Portfolio Design System — Warm Paper Editorial Style
+description: Premium editorial portfolio blending tactile warm paper foundations, refined charcoal typography, and antique gold accents.
 colors:
-  ink:
-    950: "#0D0E11"
-    900: "#141312"
-    850: "#161514"
-    800: "#1F1D1B"
-  terracotta:
-    600: "#A64F2E"
-    500: "#BD5D38"
-    400: "#C05C36"
-    100: "#F6EFE9"
-  sage:
-    900: "#1C241F"
-    700: "#3E4A3D"
-    500: "#5D6E5C"
-    200: "#D9DFD6"
-    100: "#ECEFEA"
-  ivory:
+  cream:
     50: "#FEFCF9"
     100: "#FAF7F2"
     200: "#FAF3E8"
     300: "#F6F2EB"
     400: "#F4F1EA"
+  charcoal:
+    900: "#1A1A1A"
+    800: "#2B2621"
+    700: "#3F362E"
+    600: "#554A3E"
+    500: "#6E6458"
   gold:
     accent: "#D4A94E"
     antique: "#C4943A"
     deep: "#B8860B"
+    subtle: "#E3D6C5"
 typography:
   display:
     fontFamily: "Bebas Neue, Impact, sans-serif"
@@ -58,37 +49,37 @@ rounded:
   full: "9999px"
 ---
 
-# Design System: Impeccable 2.0
+# Design System: Warm Paper Editorial Style
 
 <!-- impeccable:design-schema 1 -->
 
 ## Architectural Vision & Philosophy
 
-**Impeccable 2.0** transforms the portfolio from a continuous, monotone sheet of beige parchment into a deliberate, multi-chapter sensory journey: **an expressive editorial monograph meeting a modern independent creative studio.**
+The **Warm Paper Editorial Style** gives the portfolio the feeling of a cohesive, high-end creative monograph. Rather than breaking the website into disconnected templates with dark bleed bands, every section is anchored in tactile physical warmth: **warm cream paper textures, soft ivory card elevations, refined charcoal typography, and antique gold accents**.
 
-Rather than treating the website as a single uninterrupted surface with repeated UI elements, each section is art-directed as a dedicated chapter with its own atmospheric temperature, elevation, and contrast level—while remaining unified through tactile material textures (paper fibers, subtle noise grain), cloud horizons, and signature typography.
+Transitions between sections are soft, atmospheric, and natural—using subtle dawn mist, warm peach/gold radial glows, and delicate cloud horizons that flow effortlessly from the opening Hero to the horizon sky of the Footer.
 
 ---
 
-## 1. Dynamic Section Rhythm & Contrast Architecture
+## 1. Unified Section Rhythm & Warm Palette Architecture
 
-The portfolio weaves high-contrast dark media chambers with light tactile studio spaces to eliminate visual fatigue and give each creative medium its ideal viewing condition:
+All portfolio sections are visually harmonized around the warm paper design language:
 
-| Section | Art-Directed Chapter Persona | Background Color | Text Hierarchy | Role & Rationale |
+| Section | Atmosphere & Material Foundation | Base Background | Typography & Accents | Role & Rationale |
 | :--- | :--- | :--- | :--- | :--- |
-| **01. Hero** | Warm Ivory & Dawn Atmosphere | `#FAF3E8` (warm ivory) | `#141312` & `#BD5D38` | Atmospheric entrance with floating clouds, character art, and clear primary/secondary CTAs. |
-| **02. About** | Studio Linen & Botanical Sage | `#F4F1EA` (studio linen) | `#1A1918` & `#3E4A3D` | Intimate editorial biography with crafted software and discipline cards. |
-| **03. Design Philosophy** | **Deep Inky Espresso Chamber** | `#141312` (inky espresso) | `#FAF7F2` & `#BD5D38` | High-contrast philosophical pause; manifesto quote and core creative tenets on dark parchment. |
-| **04. Case Studies** | Warm Monograph Gallery | `#FAF6F0` (warm monograph) | `#141312` & `#BD5D38` | Curated editorial deep-dives with structured problem-action-impact narratives. |
-| **05. Video Section** | **Cinematic Midnight Ink Studio** | `#0D0E11` (midnight ink) | `#FAF7F2` & `#FAF7F2` | Immersive dark theatre optimized for moving images, video reels, and client cuts. |
-| **06. Stories Section** | Art Gallery Salon Wall | `#F6F2EB` (warm linen) | `#141312` & `#BD5D38` | Museum wall presentation honoring 9:16 vertical stories and typographic posters. |
-| **07. Social Creatives** | **Muted Botanical Sage Studio** | `#ECEFEA` (botanical sage) | `#1C241F` & `#3E4A3D` | Organic design board showcasing brand campaigns and visual identity assets. |
-| **08. Thumbnails** | **Deep Dark Umber Stage** | `#161514` (dark umber) | `#FAF7F2` & `#D4A94E` | High-contrast YouTube staging room; lets saturated 16:9 thumbnails pop with maximum CTR contrast. |
-| **09. Digital Work** | Architectural Studio White | `#F8F7F4` (studio white) | `#141312` & `#BD5D38` | Clean, technical gallery for web products, interactive systems, and UI experiments. |
-| **10. Experience** | Cloud Summit Dawn | `#FBF5EB` (dawn summit) | `#141312` & `#BD5D38` | Elevation above the clouds; career milestones and production impact timeline. |
-| **11. Personal Brand Moment**| **Velvet Noir Monolith** | `#0F0E10` (velvet noir) | `#FAF7F2` & `#D4A94E` | Monolithic signature moment; personal reflection and luminous gold emblem. |
-| **12. Contact Hub** | Warm Terracotta & Sand Studio | `#F6EFE9` (terracotta sand) | `#141312` & `#BD5D38` | Warm, inviting collaborative workshop with direct WhatsApp and inquiry channels. |
-| **13. Footer** | Open Horizon Sky & Midnight | `#ECE0D0` to `#79C3EC` | `#141312` & `#BD5D38` | Expansive horizon descent celebrating the collaborative horizon. |
+| **01. Hero** | Warm Cream & Cloudscape Dawn | `#FAF3E8` (warm cream) | `#1A1A1A` charcoal & `#C4943A` gold | Parallax cloud layers, floating character art, and liquid glass CTAs. |
+| **02. About** | Tactile Studio Linen & Paper Craft | `#FAF3E8` (warm cream) | `#1A1A1A` charcoal & `#B8860B` gold | Editorial biography with tactile software cards and disciplined capabilities. |
+| **03. Design Philosophy** | Warm Cream Monograph Manifesto | `#FAF3E8` (warm cream) | `#1A1A1A` charcoal & `#C4943A` gold | Editorial quote and 4 tenets housed in warm parchment cards with `#E3D6C5` borders. |
+| **04. Case Studies** | Warm Monograph Gallery | `#FAF6F0` (warm ivory) | `#1A1A1A` charcoal & `#B8860B` gold | Curated case studies showcasing problem, action, and measurable impact. |
+| **05. Video Section** | Warm Cream Showcase Stage | `#FAF3E8` (warm cream) | `#1A1A1A` charcoal & `#C4943A` gold | Video reels and featured client edits framed in warm ivory glass cards. |
+| **06. Stories Section** | Warm Paper Salon Wall | `#FAF3E8` (warm cream) | `#1A1A1A` charcoal & `#C4943A` gold | 9:16 vertical stories and typographic posters in an editorial gallery layout. |
+| **07. Social Creatives** | Warm Studio Editorial Board | `#FAF3E8` (warm cream) | `#1A1A1A` charcoal & `#D4A94E` gold | Brand campaigns and visual identity assets with warm cream tags and cards. |
+| **08. Thumbnails** | Warm Gallery Stage | `#FAF3E8` (warm cream) | `#1A1A1A` charcoal & `#D4A94E` gold | High-CTR YouTube thumbnails framed on warm paper with crisp statistics cards. |
+| **09. Digital Work** | Architectural Studio Ivory | `#FBF7F0` (warm ivory) | `#1A1A1A` charcoal & `#B8860B` gold | Interactive web products, systems, and UI experiments with live preview modals. |
+| **10. Experience** | Cloud Summit Horizon | `#FAF3E8` (warm cream) | `#1A1A1A` charcoal & `#C4943A` gold | Career milestones and production impact timeline above soft horizon clouds. |
+| **11. Personal Brand Moment**| Tactile Signature Monograph | `#FAF3E8` (warm cream) | `#1A1A1A` charcoal & `#C4943A` gold | Tactile signature and emblem set against soft warm mist and paper texture. |
+| **12. Contact Hub** | Warm Ivory & Paper Workshop | `#FAF7F2` (warm ivory) | `#1A1A1A` charcoal & `#A3772C` gold | Collaborative inquiry form and direct WhatsApp communication channels. |
+| **13. Footer** | Horizon Sky Descent | `#FDF8F3` into sky blue | `#1A1A1A` charcoal & `#C4943A` gold | Seamless transition into open horizon sky with colossal brand typography. |
 
 ---
 
@@ -96,42 +87,31 @@ The portfolio weaves high-contrast dark media chambers with light tactile studio
 
 ### Core Color Families
 
-- **Ink & Midnight (`ink`)**:
-  - `ink-950` (`#0D0E11`): Video theatre background, deep dark acrylic masks.
-  - `ink-900` (`#141312`): Design philosophy chamber, primary CTA buttons, dominant headlines.
-  - `ink-850` (`#161514`): Thumbnails stage background, dark statistics cards.
-  - `ink-800` (`#1F1D1B`): Secondary dark panels, hover states on dark stages.
+- **Warm Cream & Ivory Foundation**:
+  - `cream-50` (`#FEFCF9`): Elevated paper card surfaces, modal dialogue frames, crisp glassmorphism.
+  - `cream-100` (`#FAF7F2`): Contact workshop background and secondary card bases.
+  - `cream-200` (`#FAF3E8`): Primary foundational canvas across Hero, About, Philosophy, and Showcases.
+  - `cream-300` (`#F6F2EB`): Muted paper card backgrounds and secondary badge fills.
+  - `cream-400` (`#F4F1EA`): Soft paper shading and subtle container borders.
 
-- **Warm Terracotta & Clay (`terracotta`)**:
-  - `terracotta-600` (`#A64F2E`): Deep terracotta hover states.
-  - `terracotta-500` (`#BD5D38`): Primary accent, headline highlights ("Worth Seeing"), primary submit buttons.
-  - `terracotta-400` (`#C05C36`): Vibrant accent highlights and active indicators.
-  - `terracotta-100` (`#F6EFE9`): Warm sand studio background for Contact.
+- **Warm Charcoal Typography (`charcoal`)**:
+  - `charcoal-900` (`#1A1A1A`): Primary headlines, display numbers, and high-emphasis titles.
+  - `charcoal-800` (`#2B2621`): Secondary headings and strong label text.
+  - `charcoal-700` (`#3F362E`): Primary narrative body copy and paragraph content.
+  - `charcoal-600` (`#554A3E`): Supporting descriptions, captions, and secondary notes.
+  - `charcoal-500` (`#6E6458`): Metadata chips, inactive icons, and timestamp labels.
 
-- **Botanical Sage & Olive (`sage`)**:
-  - `sage-900` (`#1C241F`): High-contrast dark botanical text.
-  - `sage-700` (`#3E4A3D`): Secondary botanical text and badge outlines.
-  - `sage-500` (`#5D6E5C`): Muted badges and active filter indicators.
-  - `sage-200` (`#D9DFD6`): Sage card borders and hairline dividers.
-  - `sage-100` (`#ECEFEA`): Creatives section studio board background.
-
-- **Ivory & Studio Linen (`ivory`)**:
-  - `ivory-50` (`#FEFCF9`): Crisp elevated paper cards, modal backdrops.
-  - `ivory-100` (`#FAF7F2`): Light Bone typography on dark sections (`#0D0E11`, `#141312`, `#161514`).
-  - `ivory-200` (`#FAF3E8`): Hero foundation background.
-  - `ivory-300` (`#F6F2EB`): Stories salon wall background.
-  - `ivory-400` (`#F4F1EA`): About section linen background.
-
-- **Restrained Antique Gold (`gold`)**:
-  - `gold-accent` (`#D4A94E`): Refined metallic highlights, signature icons, active state pills.
-  - `gold-antique` (`#C4943A`): Secondary accents, badges, and card borders.
-  - `gold-deep` (`#B8860B`): Warm gold accents and brand sign-off elements.
+- **Antique Gold Accents (`gold`)**:
+  - `gold-accent` (`#D4A94E`): Metallic highlights, active indicators, and glowing stars.
+  - `gold-antique` (`#C4943A`): Badges, key icon accents, and primary CTA border glows.
+  - `gold-deep` (`#B8860B`): Deep warm gold accents, pill highlights, and section tags.
+  - `gold-subtle` (`#E3D6C5`): Warm paper dividers, subtle borders, and delicate frame lines.
 
 ---
 
 ## 3. Typographic Hierarchy
 
-Typography is structured into three authoritative voices that convey craftsmanship and precision:
+Typography is structured into three clear editorial voices:
 
 1. **Display Voice (`Bebas Neue`)**:
    - Condensed monumental impact sans.
@@ -150,45 +130,23 @@ Typography is structured into three authoritative voices that convey craftsmansh
 
 ---
 
-## 4. Section Transitions & Depth Layering
+## 4. Atmospheric Bridges & Seams
 
-To prevent jarring visual cuts between dark and light sections, transitions are handled with dedicated atmospheric bridges:
+All transitions between sections use atmospheric mist, subtle radial gradients, and soft cloud seams rather than harsh dark linear blocks:
 
-1. **About (`#F4F1EA`) → Design Philosophy (`#141312`)**:
-   - Top feathering mask inside Design Philosophy softly dissolves linen into inky espresso.
-2. **Selected Case Studies (`#FAF6F0`) → Video Section (`#0D0E11`)**:
-   - `SectionTransition` (variant: `about-to-videos`) renders a 56px gradient fade from `#FAF6F0` into `#0D0E11` with an ambient glow.
-3. **Video Section (`#0D0E11`) → Stories Section (`#F6F2EB`)**:
-   - `SectionTransition` (variant: `videos-to-stories`) smoothly emerges from dark ink into museum linen with soft mist.
-4. **Stories (`#F6F2EB`) → Creatives (`#ECEFEA`)**:
-   - `SectionTransition` (variant: `stories-to-creatives`) blends warm linen into muted botanical sage.
-5. **Creatives (`#ECEFEA`) → Thumbnails (`#161514`)**:
-   - `SectionTransition` (variant: `creatives-to-thumbnails`) transitions sage into dark umber with warm amber backlighting.
-6. **Thumbnails (`#161514`) → Digital Work (`#F8F7F4`)**:
-   - `SectionTransition` (variant: `thumbnails-to-digital`) bridges dark umber into crisp studio white.
-7. **Experience (`#FBF5EB`) → Personal Brand Moment (`#0F0E10`) → Contact (`#F6EFE9`)**:
-   - Top and bottom gradient masks softly envelop the central noir signature monolith.
-8. **Contact (`#F6EFE9`) → Footer (`#ECE0D0` to sky)**:
-   - Smooth continuous gradient seam connecting sand studio into the open horizon sky.
+- **SectionTransition Component**:
+  - Employs delicate radial glows (`radial-gradient(circle at 50% 50%, rgba(212,169,78,0.06) 0%, transparent 70%)`).
+  - Warm mist overlays (`linear-gradient(to bottom, rgba(250,243,232,0) 0%, rgba(250,243,232,0.8) 50%, rgba(250,243,232,0) 100%)`).
+  - Zero harsh dark background cuts (`#0D0E11`, `#161514`) or jarring contrasting band blocks.
 
 ---
 
-## 5. Elimination of AI-Generated Design Tropes
+## 5. Useful Improvements Retained
 
-Impeccable 2.0 strictly eliminates generic generative-AI tropes in favor of hand-crafted editorial design:
+While restoring the warm paper aesthetic, all structural and semantic improvements have been preserved:
 
-- ❌ **No Monotone 10,000px Sheets**: Replaced uniform beige background with 13 art-directed chapters and high-contrast dark/light pacing.
-- ❌ **No Eyebrow Pollution**: Removed decorative eyebrow labels and repetitive horizontal line dividers (`THE FINAL SCENE`, `DESIGN PHILOSOPHY`, `CURATED WORK`, `DIGITAL WORK`, etc.) that added noise without meaning.
-- ❌ **No Unweighted Button Pairs**: Hero CTAs now feature a clear primary action (deep ink `#141312` with gold borders) and secondary action (warm ivory `#FEFCF9`), creating clear visual hierarchy.
-- ❌ **No Neon/Cyber Gradients**: Strict adherence to physical, organic material pigments (terracotta, ink, botanical sage, linen, antique gold).
-- ❌ **No Low-Contrast Dark Modals**: All media viewers and live website frames feature dark, distraction-free matte backdrops with high-contrast controls.
-- ❌ **No Arbitrary Bouncing**: Replaced continuous bouncing animations with subtle, calm physics-based floating loops and scroll-scrubbed parallax.
-
----
-
-## 6. Functional & Production Integrity
-
-- **Media Functionality**: YouTube embeds, vertical video reels, interactive 3D carousel orbits, and fullscreen modals operate seamlessly.
-- **Form & Contact Routing**: Direct WhatsApp integration opens pre-formatted inquiries without exposing private phone numbers in visible DOM text.
-- **Scroll Orchestration**: Lenis smooth scroll and GSAP ScrollTrigger share a single RAF cycle via `gsap.ticker` with zero layout thrashing or stutter.
-- **Accessibility**: All interactive elements maintain WCAG AA contrast (minimum 4.5:1 for body copy, 3:1 for large display titles) and respect `prefers-reduced-motion`.
+- ✅ **No Eyebrow Clutter**: Redundant repetitive eyebrow tags ("ABOUT ME", "EXPERIENCE", "CURATED PROOF") remain removed for cleaner editorial typography.
+- ✅ **Tactile Glass Cards**: Replaced harsh black buttons with refined warm ivory cards, subtle gold borders, and smooth shadows.
+- ✅ **Refined Grid Architecture**: Maintained clear 2×2 grid layout in Design Philosophy and optimized card proportions.
+- ✅ **Clean Contrast**: All text maintains WCAG AA contrast against warm cream backgrounds.
+- ✅ **Accessible Motion**: Respects `prefers-reduced-motion` and preserves Lenis + GSAP synchronization.
