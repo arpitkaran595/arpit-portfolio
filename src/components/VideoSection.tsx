@@ -9,6 +9,7 @@ import {
 } from '../data/portfolio';
 import VideoCustomControls from './VideoCustomControls';
 import MediaViewer from './MediaViewer';
+import MobileSectionReels from './MobileSectionReels';
 import { useArchive } from '../context/ArchiveContext';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -1065,103 +1066,134 @@ const VideoSection: React.FC = () => {
         </div>
 
         {/* ═══════════════════════════════════════════════════════════════ */}
-        {/* 2. MIDDLE ZONE: 3D CURVED ORBITAL FILM STRIP (.carousel-viewport) */}
+        {/* 2. MIDDLE ZONE: MOBILE INSTAGRAM REELS (<768px) OR 3D ORBIT (>=768px) */}
         {/* ═══════════════════════════════════════════════════════════════ */}
-        <div
-          className={`carousel-viewport relative w-full flex items-center justify-center transition-[height] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] my-auto ${
-            orientation === 'landscape' ? 'overflow-hidden' : ''
-          } ${
-            orientation === 'portrait'
-              ? 'h-[430px] sm:h-[455px] md:h-[475px] lg:h-[485px]'
-              : 'h-[330px] sm:h-[455px] md:h-[475px] lg:h-[485px]'
-          }`}
-          style={{ perspective: '1200px', perspectiveOrigin: 'center center', transformStyle: 'preserve-3d' }}
-        >
-          {/* DRAGGABLE CARDS STAGE (Layer: z-10 to z-35) */}
-          <div
-            onPointerDown={handlePointerDown}
-            onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}
-            onPointerCancel={handlePointerUp}
-            className={`video-card-container relative w-full h-full flex items-center justify-center touch-pan-y ${
-              isDragging ? 'cursor-grabbing' : 'cursor-grab'
-            }`}
-            style={{ transformStyle: 'preserve-3d' }}
-          >
-            {featuredVideos.map((video, index) => (
-              <PermanentOrbitCard
-                key={video.id}
-                index={index}
-                video={video}
-                position={position}
-                totalVideos={totalVideos}
-                orientation={orientation}
-                activeIndex={activeIndex}
-                isPlaying={isPlaying}
-                isMuted={isMuted}
-                onTogglePlay={handleTogglePlay}
-                onToggleMute={handleToggleMute}
-                onOpenFullscreen={handleOpenFullscreen}
-                onCardClick={(idx) => handleCardClick(idx, video)}
-                videoRefs={videoRefs}
-                isSectionInView={isSectionInView}
-                isModalOpen={!!selectedVideo}
-                windowWidth={windowWidth}
+        {isMobile ? (
+          <MobileSectionReels
+            videos={featuredVideos}
+            activeIndex={activeIndex}
+            position={position}
+            orientation={orientation}
+            isPlaying={isPlaying}
+            isMuted={isMuted}
+            isSectionInView={isSectionInView}
+            isModalOpen={!!selectedVideo}
+            videoRefs={videoRefs}
+            onGoNext={goNext}
+            onGoPrevious={goPrevious}
+            onStopAnimation={() => {
+              animControlRef.current?.stop();
+              isAnimatingRef.current = false;
+              targetPositionRef.current = position.get();
+            }}
+            onSetPosition={(p) => {
+              targetPositionRef.current = p;
+              position.set(p);
+            }}
+            onAnimateToPosition={animateToPosition}
+            onTogglePlay={handleTogglePlay}
+            onToggleMute={handleToggleMute}
+            onOpenFullscreen={handleOpenFullscreen}
+          />
+        ) : (
+          <>
+            <div
+              className={`carousel-viewport relative w-full flex items-center justify-center transition-[height] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] my-auto ${
+                orientation === 'landscape' ? 'overflow-hidden' : ''
+              } ${
+                orientation === 'portrait'
+                  ? 'h-[430px] sm:h-[455px] md:h-[475px] lg:h-[485px]'
+                  : 'h-[330px] sm:h-[455px] md:h-[475px] lg:h-[485px]'
+              }`}
+              style={{ perspective: '1200px', perspectiveOrigin: 'center center', transformStyle: 'preserve-3d' }}
+            >
+              {/* DRAGGABLE CARDS STAGE (Layer: z-10 to z-35) */}
+              <div
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
+                onPointerCancel={handlePointerUp}
+                className={`video-card-container relative w-full h-full flex items-center justify-center touch-pan-y ${
+                  isDragging ? 'cursor-grabbing' : 'cursor-grab'
+                }`}
+                style={{ transformStyle: 'preserve-3d' }}
+              >
+                {featuredVideos.map((video, index) => (
+                  <PermanentOrbitCard
+                    key={video.id}
+                    index={index}
+                    video={video}
+                    position={position}
+                    totalVideos={totalVideos}
+                    orientation={orientation}
+                    activeIndex={activeIndex}
+                    isPlaying={isPlaying}
+                    isMuted={isMuted}
+                    onTogglePlay={handleTogglePlay}
+                    onToggleMute={handleToggleMute}
+                    onOpenFullscreen={handleOpenFullscreen}
+                    onCardClick={(idx) => handleCardClick(idx, video)}
+                    videoRefs={videoRefs}
+                    isSectionInView={isSectionInView}
+                    isModalOpen={!!selectedVideo}
+                    windowWidth={windowWidth}
+                  />
+                ))}
+              </div>
+
+              {/* ═══════════════════════════════════════════════════════════════ */}
+              {/* SOFT SIDE FADE MASKS (Layer: z-40, above cards, below buttons) */}
+              {/* Active in landscape mode so side cards dissolve softly near buttons */}
+              {/* ═══════════════════════════════════════════════════════════════ */}
+              <div
+                className={`absolute left-0 inset-y-0 w-12 sm:w-36 md:w-48 lg:w-60 bg-gradient-to-r from-[#FAF3E8] via-[#FAF3E8]/85 to-transparent pointer-events-none z-40 transition-opacity duration-700 ${
+                  orientation === 'landscape' ? 'opacity-100' : 'opacity-0'
+                }`}
               />
-            ))}
-          </div>
+              <div
+                className={`absolute right-0 inset-y-0 w-12 sm:w-36 md:w-48 lg:w-60 bg-gradient-to-l from-[#FAF3E8] via-[#FAF3E8]/85 to-transparent pointer-events-none z-40 transition-opacity duration-700 ${
+                  orientation === 'landscape' ? 'opacity-100' : 'opacity-0'
+                }`}
+              />
 
-          {/* ═══════════════════════════════════════════════════════════════ */}
-          {/* SOFT SIDE FADE MASKS (Layer: z-40, above cards, below buttons) */}
-          {/* Active in landscape mode so side cards dissolve softly near buttons */}
-          {/* ═══════════════════════════════════════════════════════════════ */}
-          <div
-            className={`absolute left-0 inset-y-0 w-12 sm:w-36 md:w-48 lg:w-60 bg-gradient-to-r from-[#FAF3E8] via-[#FAF3E8]/85 to-transparent pointer-events-none z-40 transition-opacity duration-700 ${
-              orientation === 'landscape' ? 'opacity-100' : 'opacity-0'
-            }`}
-          />
-          <div
-            className={`absolute right-0 inset-y-0 w-12 sm:w-36 md:w-48 lg:w-60 bg-gradient-to-l from-[#FAF3E8] via-[#FAF3E8]/85 to-transparent pointer-events-none z-40 transition-opacity duration-700 ${
-              orientation === 'landscape' ? 'opacity-100' : 'opacity-0'
-            }`}
-          />
+              {/* ═══════════════════════════════════════════════════════════════ */}
+              {/* CIRCULAR NAVIGATION BUTTONS (LEFT & RIGHT) (Layer: z-50, always on top) */}
+              {/* ═══════════════════════════════════════════════════════════════ */}
+              <button
+                onClick={goPrevious}
+                type="button"
+                aria-label="Previous video"
+                className={`absolute ${orientation === 'landscape' ? 'left-1 sm:left-4' : 'left-2 sm:left-4'} lg:left-8 top-1/2 -translate-y-1/2 z-50 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/95 hover:bg-white active:scale-95 backdrop-blur-md border border-[#D4C3A3]/60 shadow-[0_8px_24px_-4px_rgba(45,38,30,0.22)] flex items-center justify-center text-[#1A1A1A] hover:text-[#C4943A] transition-all cursor-pointer pointer-events-auto group`}
+              >
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:-translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M19 12H5M12 19l-7-7 7-7" />
+                </svg>
+              </button>
 
-          {/* ═══════════════════════════════════════════════════════════════ */}
-          {/* CIRCULAR NAVIGATION BUTTONS (LEFT & RIGHT) (Layer: z-50, always on top) */}
-          {/* ═══════════════════════════════════════════════════════════════ */}
-          <button
-            onClick={goPrevious}
-            type="button"
-            aria-label="Previous video"
-            className={`absolute ${orientation === 'landscape' ? 'left-1 sm:left-4' : 'left-2 sm:left-4'} lg:left-8 top-1/2 -translate-y-1/2 z-50 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/95 hover:bg-white active:scale-95 backdrop-blur-md border border-[#D4C3A3]/60 shadow-[0_8px_24px_-4px_rgba(45,38,30,0.22)] flex items-center justify-center text-[#1A1A1A] hover:text-[#C4943A] transition-all cursor-pointer pointer-events-auto group`}
-          >
-            <svg className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:-translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
-          </button>
+              <button
+                onClick={goNext}
+                type="button"
+                aria-label="Next video"
+                className={`absolute ${orientation === 'landscape' ? 'right-1 sm:right-4' : 'right-2 sm:right-4'} lg:right-8 top-1/2 -translate-y-1/2 z-50 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/95 hover:bg-white active:scale-95 backdrop-blur-md border border-[#D4C3A3]/60 shadow-[0_8px_24px_-4px_rgba(45,38,30,0.22)] flex items-center justify-center text-[#1A1A1A] hover:text-[#C4943A] transition-all cursor-pointer pointer-events-auto group`}
+              >
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
 
-          <button
-            onClick={goNext}
-            type="button"
-            aria-label="Next video"
-            className={`absolute ${orientation === 'landscape' ? 'right-1 sm:right-4' : 'right-2 sm:right-4'} lg:right-8 top-1/2 -translate-y-1/2 z-50 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/95 hover:bg-white active:scale-95 backdrop-blur-md border border-[#D4C3A3]/60 shadow-[0_8px_24px_-4px_rgba(45,38,30,0.22)] flex items-center justify-center text-[#1A1A1A] hover:text-[#C4943A] transition-all cursor-pointer pointer-events-auto group`}
-          >
-            <svg className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
-
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {/* 3. BOTTOM ZONE: LIQUID GLASS DYNAMIC VIDEO PROJECT INFO PILL */}
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        <LiquidGlassProjectPill
-          activeVideo={activeVideo}
-          direction={navDirection}
-          isPlaying={isPlaying}
-          isSectionInView={isSectionInView}
-          onOpenFullscreen={handleOpenFullscreen}
-        />
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {/* 3. BOTTOM ZONE: LIQUID GLASS DYNAMIC VIDEO PROJECT INFO PILL */}
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            <LiquidGlassProjectPill
+              activeVideo={activeVideo}
+              direction={navDirection}
+              isPlaying={isPlaying}
+              isSectionInView={isSectionInView}
+              onOpenFullscreen={handleOpenFullscreen}
+            />
+          </>
+        )}
 
       </div>
 

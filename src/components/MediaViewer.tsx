@@ -49,6 +49,7 @@ export interface MediaViewerItem {
   aspectRatio?: number;
   orientation?: 'portrait' | 'landscape';
   isArchive?: boolean;
+  startFullscreen?: boolean;
 }
 
 interface MediaViewerProps {
@@ -1056,12 +1057,17 @@ const MediaViewer: React.FC<MediaViewerProps> = ({
   const [cachedItem, setCachedItem] = useState<MediaViewerItem | null>(item);
   const [isClosing, setIsClosing] = useState(false);
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  // Lock mobile/desktop viewer choice when opening so device orientation lock / rotation never unmounts an active fullscreen viewer
+  const [lockedIsMobile, setLockedIsMobile] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth < 768 : false
+  );
 
   // Synchronously adjust state during render when isOpen or item props change
   if (isOpen && !prevIsOpen) {
     setPrevIsOpen(true);
     setIsClosing(false);
     setCachedItem(item);
+    setLockedIsMobile(windowWidth < 768);
   } else if (!isOpen && prevIsOpen) {
     setPrevIsOpen(false);
     setIsClosing(true);
@@ -1103,7 +1109,7 @@ const MediaViewer: React.FC<MediaViewerProps> = ({
   // Unmount completely if there is no active item or when both open and closing states are done
   if (!activeItem || (!isOpen && !isClosing)) return null;
 
-  const isMobile = windowWidth < 768;
+  const isMobile = isOpen || isClosing ? lockedIsMobile : windowWidth < 768;
 
   let content: React.ReactNode = null;
 
@@ -1117,9 +1123,19 @@ const MediaViewer: React.FC<MediaViewerProps> = ({
 
   if (isThumbnail) {
     content = isMobile ? (
-      <MobileThumbnailViewer isOpen={isOpen} onClose={onClose} item={activeItem} />
+      <MobileThumbnailViewer
+        isOpen={isOpen}
+        onClose={onClose}
+        item={activeItem}
+        onExitComplete={handleExitComplete}
+      />
     ) : (
-      <ThumbnailViewer isOpen={isOpen} onClose={onClose} item={activeItem} />
+      <ThumbnailViewer
+        isOpen={isOpen}
+        onClose={onClose}
+        item={activeItem}
+        onExitComplete={handleExitComplete}
+      />
     );
   } else {
     // 2. Detect Story Artwork (Strict 9:16 Portrait)

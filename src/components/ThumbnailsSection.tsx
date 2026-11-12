@@ -306,7 +306,7 @@ const ThumbnailsSection: React.FC = () => {
   const totalThumbnails = youtubeThumbnails.length;
 
   const [selectedThumbnail, setSelectedThumbnail] =
-    useState<YoutubeThumbnail | null>(null);
+    useState<{ item: YoutubeThumbnail; startFullscreen?: boolean } | null>(null);
   const [activeDot, setActiveDot] = useState(0);
   const [screenWidth, setScreenWidth] = useState(1440);
 
@@ -409,7 +409,7 @@ const ThumbnailsSection: React.FC = () => {
   const handleCardClick = useCallback(
     (_cardIndex: number, item: YoutubeThumbnail) => {
       if (hasDraggedRef.current) return;
-      setSelectedThumbnail(item);
+      setSelectedThumbnail({ item, startFullscreen: false });
     },
     []
   );
@@ -463,6 +463,9 @@ const ThumbnailsSection: React.FC = () => {
 
     if (!isDraggingRef.current) return;
     isDraggingRef.current = false;
+    setTimeout(() => {
+      hasDraggedRef.current = false;
+    }, 50);
     const currentP = progress.get();
     const nearest = Math.round(currentP);
     animate(progress, nearest, {
@@ -474,6 +477,7 @@ const ThumbnailsSection: React.FC = () => {
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (selectedThumbnail || document.querySelector('[role="dialog"]')) return;
       const rect = sectionRef.current?.getBoundingClientRect();
       if (!rect) return;
       const inView = rect.top < window.innerHeight && rect.bottom > 0;
@@ -485,7 +489,7 @@ const ThumbnailsSection: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleNext, handlePrev]);
+  }, [handleNext, handlePrev, selectedThumbnail]);
 
   const getStatIcon = (icon: string) => {
     switch (icon) {
@@ -578,7 +582,7 @@ const ThumbnailsSection: React.FC = () => {
                 totalCount={totalThumbnails}
                 screenWidth={screenWidth}
                 onCardClick={handleCardClick}
-                onOpenLightbox={setSelectedThumbnail}
+                onOpenLightbox={(thumb) => setSelectedThumbnail({ item: thumb, startFullscreen: true })}
               />
             ))}
           </div>
@@ -656,12 +660,13 @@ const ThumbnailsSection: React.FC = () => {
         item={
           selectedThumbnail
             ? {
-                id: selectedThumbnail.id,
-                title: selectedThumbnail.title,
-                thumbnail: selectedThumbnail.image,
-                category: selectedThumbnail.category || 'YouTube Thumbnail',
+                id: selectedThumbnail.item.id,
+                title: selectedThumbnail.item.title,
+                thumbnail: selectedThumbnail.item.image,
+                category: selectedThumbnail.item.category || 'YouTube Thumbnail',
                 description: `YouTube Thumbnail Artwork • 16:9 Ultra HD Resolution`,
                 type: 'thumbnail',
+                startFullscreen: selectedThumbnail.startFullscreen,
               }
             : null
         }

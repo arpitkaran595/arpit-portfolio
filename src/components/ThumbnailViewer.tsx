@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Maximize2, Minimize2 } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Maximize2, Minimize2, Loader2 } from 'lucide-react';
 import { youtubeThumbnails, allYoutubeThumbnails, YoutubeThumbnail } from '../data/portfolio';
 import { MediaViewerItem } from './MediaViewer';
 import { viewerSlideVariants } from '../utils/viewerTransitions';
@@ -9,9 +9,15 @@ interface ThumbnailViewerProps {
   isOpen: boolean;
   onClose: () => void;
   item: MediaViewerItem | null;
+  onExitComplete?: () => void;
 }
 
-export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClose, item }) => {
+export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({
+  isOpen,
+  onClose,
+  item,
+  onExitComplete,
+}) => {
   const thumbnailList = useMemo(() => {
     if (!item) return youtubeThumbnails;
     if (item.isArchive) return allYoutubeThumbnails;
@@ -30,9 +36,11 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClos
 
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [direction, setDirection] = useState(0);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(() => Boolean(item?.startFullscreen));
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const isTransitioningRef = useRef(false);
+  const hasNativeFullscreenRef = useRef(false);
 
   // Sync index whenever item changes
   useEffect(() => {
@@ -43,6 +51,9 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClos
         setDirection(0);
         isTransitioningRef.current = false;
       }
+      setIsFullscreen(Boolean(item.startFullscreen));
+    } else if (!isOpen) {
+      setIsFullscreen(false);
     }
   }, [isOpen, item, thumbnailList]);
 
@@ -63,6 +74,20 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClos
 
   // Derived active, previous, next thumbnails
   const activeThumbnail: YoutubeThumbnail = thumbnailList[currentIndex] || thumbnailList[0];
+
+  // Track active thumbnail load state (prevents blank screen during image decode)
+  useEffect(() => {
+    if (!activeThumbnail?.image) return;
+    setIsImageLoaded(false);
+    const probe = new Image();
+    probe.src = activeThumbnail.image;
+    if (probe.complete && probe.naturalWidth > 0) {
+      setIsImageLoaded(true);
+    } else {
+      probe.onload = () => setIsImageLoaded(true);
+      probe.onerror = () => setIsImageLoaded(true);
+    }
+  }, [activeThumbnail?.image]);
 
   // Navigation handlers with debounce lock
   const handlePrevious = useCallback(() => {
@@ -85,9 +110,10 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClos
     }, 340);
   }, [totalThumbnails]);
 
-  // Fullscreen toggle logic
+  // Fullscreen toggle logic (resilient even when browser Fullscreen API rejects or is unsupported)
   const enterFullscreen = useCallback(async () => {
     setIsFullscreen(true);
+    hasNativeFullscreenRef.current = false;
     try {
       const root = containerRef.current || document.documentElement;
       if (root.requestFullscreen) {
@@ -95,13 +121,18 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClos
       } else if ((root as any).webkitRequestFullscreen) {
         await (root as any).webkitRequestFullscreen();
       }
+      if (document.fullscreenElement || (document as any).webkitFullscreenElement) {
+        hasNativeFullscreenRef.current = true;
+      }
     } catch {
-      // Fullscreen API blocked or unsupported
+      // Graceful fallback: keep in-page CSS fullscreen stage active
+      hasNativeFullscreenRef.current = false;
     }
   }, []);
 
   const exitFullscreen = useCallback(async () => {
     setIsFullscreen(false);
+    hasNativeFullscreenRef.current = false;
     try {
       if (document.fullscreenElement || (document as any).webkitFullscreenElement) {
         if (document.exitFullscreen) {
@@ -122,10 +153,14 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClos
     onClose();
   }, [isFullscreen, exitFullscreen, onClose]);
 
-  // Sync with browser fullscreen state changes
+  // Sync ONLY when native browser fullscreen was genuinely entered and then exited externally (e.g. Escape)
   useEffect(() => {
     const handleFullscreenChange = () => {
-      if (!document.fullscreenElement && !(document as any).webkitFullscreenElement) {
+      const activeFsEl = document.fullscreenElement || (document as any).webkitFullscreenElement;
+      if (activeFsEl) {
+        hasNativeFullscreenRef.current = true;
+      } else if (hasNativeFullscreenRef.current) {
+        hasNativeFullscreenRef.current = false;
         setIsFullscreen(false);
       }
     };
@@ -210,11 +245,16 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClos
     setTouchStartX(null);
   };
 
-  if (!isOpen || !item) return null;
-
   return (
-    <AnimatePresence>
-      <div ref={containerRef} className="fixed inset-0 z-[100] overflow-hidden">
+    <AnimatePresence onExitComplete={onExitComplete}>
+      {isOpen && item && (
+        <div
+          ref={containerRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Thumbnail Viewer"
+          className="fixed inset-0 z-[100] bg-[#060607] overflow-hidden"
+        >
         {/* 1. Backdrop (Unified Dark Gallery Backdrop with Ambient Blur) */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -352,6 +392,7 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClos
                   <img
                     src={activeThumbnail.image}
                     alt={activeThumbnail.title}
+                    onLoad={() => setIsImageLoaded(true)}
                     className="w-full h-full object-contain select-none"
                     draggable={false}
                     loading="eager"
@@ -359,6 +400,12 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClos
                   />
                 </motion.div>
               </AnimatePresence>
+
+              {!isImageLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center bg-[#0C0D0E]/75 z-20 pointer-events-none">
+                  <Loader2 className="w-7 h-7 text-[#C4943A] animate-spin" />
+                </div>
+              )}
 
               {/* Delicate Gloss Border */}
               <div
@@ -467,10 +514,94 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({ isOpen, onClos
             </button>
           </div>
         </div>
+        </div>
+
+        {/* 4. TRUE EDGE-TO-EDGE FULLSCREEN STAGE */}
+        <AnimatePresence>
+          {isFullscreen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.22 }}
+              data-testid="thumbnail-fullscreen-stage"
+              className="fixed inset-0 z-[110] bg-[#050506] flex items-center justify-center overflow-hidden select-none"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Top Controls inside Fullscreen Stage */}
+              <div className="absolute top-4 sm:top-6 inset-x-4 sm:inset-x-8 z-30 flex items-center justify-between pointer-events-none">
+                <div className="px-3 py-1.5 rounded-full bg-black/65 backdrop-blur-md border border-white/15 text-xs font-sora font-semibold text-white/90 pointer-events-auto">
+                  <span className="text-[#C4943A]">
+                    {String(currentIndex + 1).padStart(2, '0')}
+                  </span>{' '}
+                  / {String(totalThumbnails).padStart(2, '0')} · {activeThumbnail.title}
+                </div>
+
+                <div className="flex items-center gap-2 pointer-events-auto">
+                  <button
+                    onClick={exitFullscreen}
+                    type="button"
+                    aria-label="Exit fullscreen"
+                    data-testid="thumbnail-exit-fs-btn"
+                    className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 border border-white/20 backdrop-blur-md text-white text-xs font-sora font-medium tracking-wider uppercase cursor-pointer"
+                  >
+                    <span>EXIT</span>
+                    <Minimize2 className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={handleClose}
+                    type="button"
+                    aria-label="Close thumbnail viewer"
+                    data-testid="thumbnail-fs-close-btn"
+                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 border border-white/20 backdrop-blur-md text-white text-xs font-sora font-medium tracking-wider uppercase cursor-pointer"
+                  >
+                    <span>CLOSE</span>
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Flanking Prev / Next */}
+              <button
+                onClick={handlePrevious}
+                type="button"
+                aria-label="Previous thumbnail"
+                className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/65 hover:bg-black/90 active:scale-90 border border-white/20 text-white flex items-center justify-center cursor-pointer"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+
+              <button
+                onClick={handleNext}
+                type="button"
+                aria-label="Next thumbnail"
+                className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/65 hover:bg-black/90 active:scale-90 border border-white/20 text-white flex items-center justify-center cursor-pointer"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+
+              {/* Loading Indicator */}
+              {!isImageLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+                  <Loader2 className="w-8 h-8 text-[#C4943A] animate-spin" />
+                </div>
+              )}
+
+              {/* Fullscreen 16:9 Artwork (Original Aspect Ratio Preserved) */}
+              <img
+                src={activeThumbnail.image}
+                alt={activeThumbnail.title}
+                onLoad={() => setIsImageLoaded(true)}
+                className="w-full h-full object-contain p-3 sm:p-8 select-none"
+                draggable={false}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </div>
-  </AnimatePresence>
-);
+      )}
+    </AnimatePresence>
+  );
 };
 
 export default ThumbnailViewer;

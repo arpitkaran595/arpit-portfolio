@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Maximize2, Minimize2 } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Maximize2, Minimize2, Loader2 } from 'lucide-react';
 import { youtubeThumbnails, allYoutubeThumbnails, YoutubeThumbnail } from '../data/portfolio';
 import { viewerSlideVariants } from '../utils/viewerTransitions';
 
@@ -13,12 +13,14 @@ export interface MobileThumbnailViewerItem {
   aspectRatio?: number;
   type?: string;
   isArchive?: boolean;
+  startFullscreen?: boolean;
 }
 
 export interface MobileThumbnailViewerProps {
   isOpen: boolean;
   onClose: () => void;
   item: MobileThumbnailViewerItem | null;
+  onExitComplete?: () => void;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -126,6 +128,7 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
   isOpen,
   onClose,
   item,
+  onExitComplete,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -168,7 +171,9 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [direction, setDirection] = useState(0);
   const isTransitioningRef = useRef(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(() => Boolean(item?.startFullscreen));
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const hasNativeFullscreenRef = useRef(false);
 
   // Sync index on open
   useEffect(() => {
@@ -176,9 +181,11 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
       setCurrentIndex(initialIndex);
       setDirection(0);
       isTransitioningRef.current = false;
+      setIsFullscreen(Boolean(item?.startFullscreen));
+    } else {
       setIsFullscreen(false);
     }
-  }, [isOpen, initialIndex]);
+  }, [isOpen, initialIndex, item?.startFullscreen]);
 
   // Preload adjacent images so next/prev transitions have zero decode latency
   useEffect(() => {
@@ -198,6 +205,19 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
   // Derived active thumbnail and theme
   const activeThumbnail = playlist[currentIndex] || playlist[0];
   const activeTheme = useMemo(() => getThumbnailTheme(activeThumbnail), [activeThumbnail]);
+
+  useEffect(() => {
+    if (!activeThumbnail?.image) return;
+    setIsImageLoaded(false);
+    const probe = new Image();
+    probe.src = activeThumbnail.image;
+    if (probe.complete && probe.naturalWidth > 0) {
+      setIsImageLoaded(true);
+    } else {
+      probe.onload = () => setIsImageLoaded(true);
+      probe.onerror = () => setIsImageLoaded(true);
+    }
+  }, [activeThumbnail?.image]);
 
   // Navigation handlers with debounce lock
   const handleNext = useCallback(() => {
@@ -220,9 +240,10 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
     }, 340);
   }, [totalThumbnails]);
 
-  // Fullscreen toggle logic
+  // Fullscreen toggle logic (resilient on mobile Safari/WebView/Android when native Fullscreen API is blocked)
   const enterFullscreen = useCallback(async () => {
     setIsFullscreen(true);
+    hasNativeFullscreenRef.current = false;
     try {
       const root = containerRef.current || document.documentElement;
       if (root.requestFullscreen) {
@@ -230,21 +251,27 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
       } else if ((root as any).webkitRequestFullscreen) {
         await (root as any).webkitRequestFullscreen();
       }
-    } catch {
-      // Fullscreen API blocked or unsupported
-    }
-
-    try {
-      if (screen.orientation && (screen.orientation as any).lock) {
-        await (screen.orientation as any).lock('landscape');
+      if (document.fullscreenElement || (document as any).webkitFullscreenElement) {
+        hasNativeFullscreenRef.current = true;
       }
     } catch {
-      // Orientation lock not supported or denied
+      hasNativeFullscreenRef.current = false;
+    }
+
+    if (hasNativeFullscreenRef.current) {
+      try {
+        if (screen.orientation && (screen.orientation as any).lock) {
+          await (screen.orientation as any).lock('landscape');
+        }
+      } catch {
+        // Orientation lock not supported or denied
+      }
     }
   }, []);
 
   const exitFullscreen = useCallback(async () => {
     setIsFullscreen(false);
+    hasNativeFullscreenRef.current = false;
     try {
       if (document.fullscreenElement || (document as any).webkitFullscreenElement) {
         if (document.exitFullscreen) {
@@ -266,10 +293,14 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
     }
   }, []);
 
-  // Listen to browser fullscreen change events
+  // Listen ONLY for genuine external exits after native fullscreen was entered
   useEffect(() => {
     const handleFullscreenChange = () => {
-      if (!document.fullscreenElement && !(document as any).webkitFullscreenElement) {
+      const activeFsEl = document.fullscreenElement || (document as any).webkitFullscreenElement;
+      if (activeFsEl) {
+        hasNativeFullscreenRef.current = true;
+      } else if (hasNativeFullscreenRef.current) {
+        hasNativeFullscreenRef.current = false;
         setIsFullscreen(false);
       }
     };
@@ -397,16 +428,15 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
     };
   };
 
-  if (!isOpen || !item) return null;
-
   const titleText = activeThumbnail.title || 'YouTube Thumbnail';
   const descriptionText = getThumbnailDescription(activeThumbnail);
   const tags = getThumbnailTags(activeThumbnail);
 
   return (
-    <AnimatePresence>
-      <div
-        ref={containerRef}
+    <AnimatePresence onExitComplete={onExitComplete}>
+      {isOpen && item && (
+        <div
+          ref={containerRef}
         id="mobile-thumbnail-viewer-modal"
         role="dialog"
         aria-label="Mobile Thumbnail Viewer"
@@ -686,21 +716,30 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
                 <ChevronRight className="w-6 h-6" />
               </button>
 
+              {/* Loading Indicator (Prevents Black Blank Screen) */}
+              {!isImageLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center z-40 pointer-events-none">
+                  <Loader2 className="w-8 h-8 text-[#C4943A] animate-spin" />
+                </div>
+              )}
+
               {/* Fullscreen Artwork with Contain (Never Cropped or Stretched) */}
               <motion.img
                 key={activeThumbnail.image}
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.98 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.2 }}
                 src={activeThumbnail.image}
                 alt={activeThumbnail.title}
+                onLoad={() => setIsImageLoaded(true)}
                 className="w-full h-full object-contain select-none pointer-events-none p-2"
               />
             </motion.div>
           )}
         </AnimatePresence>
       </div>
+      )}
     </AnimatePresence>
   );
 };
