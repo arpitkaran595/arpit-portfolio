@@ -17,10 +17,17 @@ interface StoryViewerProps {
   isOpen: boolean;
   onClose: () => void;
   item: StoryViewerItem | null;
+  onActiveStoryChange?: (story: StoryPoster) => void;
   onExitComplete?: () => void;
 }
 
-const StoryViewer: React.FC<StoryViewerProps> = ({ isOpen, onClose, item, onExitComplete }) => {
+const StoryViewer: React.FC<StoryViewerProps> = ({
+  isOpen,
+  onClose,
+  item,
+  onActiveStoryChange,
+  onExitComplete,
+}) => {
   const storyList = useMemo(() => {
     if (!item) return storyPosters;
     if (item.isArchive) return allStoryPosters;
@@ -71,6 +78,12 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ isOpen, onClose, item, onExit
 
   // Derived current, previous, and next stories
   const activeStory: StoryPoster = storyList[currentIndex] || storyList[0];
+
+  useEffect(() => {
+    if (isOpen && activeStory && onActiveStoryChange) {
+      onActiveStoryChange(activeStory);
+    }
+  }, [isOpen, activeStory, onActiveStoryChange]);
   const prevIndex = (currentIndex - 1 + totalStories) % totalStories;
   const nextIndex = (currentIndex + 1) % totalStories;
   const prevStory = storyList[prevIndex];

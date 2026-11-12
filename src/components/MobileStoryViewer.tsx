@@ -17,6 +17,7 @@ export interface MobileStoryViewerProps {
   isOpen: boolean;
   onClose: () => void;
   item: StoryViewerItem | null;
+  onActiveStoryChange?: (story: StoryPoster) => void;
   onExitComplete?: () => void;
 }
 
@@ -109,6 +110,7 @@ export const MobileStoryViewer: React.FC<MobileStoryViewerProps> = ({
   isOpen,
   onClose,
   item,
+  onActiveStoryChange,
   onExitComplete,
 }) => {
   // Construct playlist fallback
@@ -164,6 +166,12 @@ export const MobileStoryViewer: React.FC<MobileStoryViewerProps> = ({
 
   // Derived current, previous, next stories
   const activeStory = playlist[currentIndex] || playlist[0];
+
+  useEffect(() => {
+    if (isOpen && activeStory && onActiveStoryChange) {
+      onActiveStoryChange(activeStory);
+    }
+  }, [isOpen, activeStory, onActiveStoryChange]);
   const prevIndex = (currentIndex - 1 + totalStories) % totalStories;
   const nextIndex = (currentIndex + 1) % totalStories;
   const prevStory = playlist[prevIndex];

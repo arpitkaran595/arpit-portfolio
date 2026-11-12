@@ -336,6 +336,9 @@ const CreativesSection: React.FC = () => {
 
     if (!isDragging1Ref.current) return;
     isDragging1Ref.current = false;
+    setTimeout(() => {
+      hasDragged1Ref.current = false;
+    }, 50);
 
     const deltaX = e.clientX - dragStartX1Ref.current;
     const totalDuration = performance.now() - dragStartTime1Ref.current;
@@ -410,6 +413,9 @@ const CreativesSection: React.FC = () => {
 
     if (!isDragging2Ref.current) return;
     isDragging2Ref.current = false;
+    setTimeout(() => {
+      hasDragged2Ref.current = false;
+    }, 50);
 
     const deltaX = e.clientX - dragStartX2Ref.current;
     const totalDuration = performance.now() - dragStartTime2Ref.current;
@@ -444,10 +450,37 @@ const CreativesSection: React.FC = () => {
     inertia2Ref.current = 0;
   }, []);
 
+  // Global pointerup/pointercancel safety net
+  useEffect(() => {
+    const handleWindowPointerUp = () => {
+      isPointerDown1Ref.current = false;
+      isPointerDown2Ref.current = false;
+      if (isDragging1Ref.current) {
+        isDragging1Ref.current = false;
+        setTimeout(() => {
+          hasDragged1Ref.current = false;
+        }, 50);
+      }
+      if (isDragging2Ref.current) {
+        isDragging2Ref.current = false;
+        setTimeout(() => {
+          hasDragged2Ref.current = false;
+        }, 50);
+      }
+    };
+    window.addEventListener('pointerup', handleWindowPointerUp);
+    window.addEventListener('pointercancel', handleWindowPointerUp);
+    return () => {
+      window.removeEventListener('pointerup', handleWindowPointerUp);
+      window.removeEventListener('pointercancel', handleWindowPointerUp);
+    };
+  }, []);
+
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!sectionRef.current) return;
+      if (selectedPost || !sectionRef.current) return;
+      if (document.querySelector('[role="dialog"]')) return;
       const rect = sectionRef.current.getBoundingClientRect();
       const inView =
         rect.top < window.innerHeight * 0.75 && rect.bottom > window.innerHeight * 0.25;
@@ -463,7 +496,7 @@ const CreativesSection: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleNext, handlePrev]);
+  }, [handleNext, handlePrev, selectedPost]);
 
   // Card click handler (reliably triggers on simple click)
   const handleCardClick1 = (post: CreativePost) => {
@@ -569,11 +602,11 @@ const CreativesSection: React.FC = () => {
                 onPointerMove={handlePointerMoveRow1}
                 onPointerUp={handlePointerUpRow1}
                 onPointerCancel={handlePointerUpRow1}
-                onMouseEnter={() => {
-                  isHovered1Ref.current = true;
+                onPointerEnter={(e) => {
+                  if (e.pointerType === 'mouse') isHovered1Ref.current = true;
                 }}
-                onMouseLeave={() => {
-                  isHovered1Ref.current = false;
+                onPointerLeave={(e) => {
+                  if (e.pointerType === 'mouse') isHovered1Ref.current = false;
                 }}
                 className="relative w-full h-[155px] sm:h-[180px] md:h-[195px] lg:h-[208px] xl:h-[224px] overflow-visible cursor-grab active:cursor-grabbing touch-pan-y"
               >
@@ -605,6 +638,13 @@ const CreativesSection: React.FC = () => {
                       <CreativeCard key={`r1-s2-${post.id}`} post={post} onCardClick={handleCardClick1} />
                     ))}
                   </div>
+
+                  {/* Set 3 (Buffer clone for wide monitors) */}
+                  <div className="flex items-center gap-3.5 sm:gap-4 lg:gap-4 xl:gap-5 h-full shrink-0">
+                    {row1Posts.map((post) => (
+                      <CreativeCard key={`r1-s3-${post.id}`} post={post} onCardClick={handleCardClick1} />
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -614,11 +654,11 @@ const CreativesSection: React.FC = () => {
                 onPointerMove={handlePointerMoveRow2}
                 onPointerUp={handlePointerUpRow2}
                 onPointerCancel={handlePointerUpRow2}
-                onMouseEnter={() => {
-                  isHovered2Ref.current = true;
+                onPointerEnter={(e) => {
+                  if (e.pointerType === 'mouse') isHovered2Ref.current = true;
                 }}
-                onMouseLeave={() => {
-                  isHovered2Ref.current = false;
+                onPointerLeave={(e) => {
+                  if (e.pointerType === 'mouse') isHovered2Ref.current = false;
                 }}
                 className="relative w-full h-[155px] sm:h-[180px] md:h-[195px] lg:h-[208px] xl:h-[224px] overflow-visible cursor-grab active:cursor-grabbing touch-pan-y"
               >
@@ -648,6 +688,13 @@ const CreativesSection: React.FC = () => {
                   <div className="flex items-center gap-3.5 sm:gap-4 lg:gap-4 xl:gap-5 h-full shrink-0">
                     {row2Posts.map((post) => (
                       <CreativeCard key={`r2-s2-${post.id}`} post={post} onCardClick={handleCardClick2} />
+                    ))}
+                  </div>
+
+                  {/* Set 3 (Buffer clone for wide monitors) */}
+                  <div className="flex items-center gap-3.5 sm:gap-4 lg:gap-4 xl:gap-5 h-full shrink-0">
+                    {row2Posts.map((post) => (
+                      <CreativeCard key={`r2-s3-${post.id}`} post={post} onCardClick={handleCardClick2} />
                     ))}
                   </div>
                 </div>

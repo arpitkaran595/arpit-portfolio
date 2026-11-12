@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion, useInView, useMotionValue, useTransform, animate, MotionValue, AnimatePresence } from 'framer-motion';
@@ -23,9 +23,9 @@ function getWrappedOffset(index: number, p: number, N = 32): number {
   return ((index - p + N / 2) % N + N) % N - N / 2;
 }
 
-// ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+// ─────────────────────────────────────────────────────────────────────────────
 // CINEMATIC CURVED 3D ORBIT TRANSFORM CALCULATOR
-// ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+// ─────────────────────────────────────────────────────────────────────────────
 function getCurvedOrbitTransform(u: number, isPortrait: boolean, isMobile: boolean, isTablet: boolean, windowWidth?: number) {
   const winW = windowWidth ?? (typeof window !== 'undefined' ? window.innerWidth : 1200);
   const stepX = isPortrait
@@ -61,7 +61,7 @@ function getCurvedOrbitTransform(u: number, isPortrait: boolean, isMobile: boole
       scale = Math.max(0.5, 0.72 - (absU - 2) * 0.14);
     }
   } else {
-    // Landscape Mode: 3 visible cards (Center = 1.0, Side u = ┬▒1 => ~0.82)
+    // Landscape Mode: 3 visible cards (Center = 1.0, Side u = ±1 => ~0.82)
     if (absU <= 1) {
       scale = 1 - absU * 0.18;
     } else {
@@ -99,8 +99,8 @@ function getCurvedOrbitTransform(u: number, isPortrait: boolean, isMobile: boole
       opacity = 1 - absU * 0.28;
     } else if (absU <= 2) {
       opacity = 0.72 - (absU - 1) * 0.30;
-    } else if (absU <= 2.8) {
-      opacity = Math.max(0, 0.42 - (absU - 2) * (0.42 / 0.8));
+    } else if (absU <= 2.42) {
+      opacity = Math.max(0, 0.42 - (absU - 2) * (0.42 / 0.42));
     } else {
       opacity = 0;
     }
@@ -119,7 +119,7 @@ function getCurvedOrbitTransform(u: number, isPortrait: boolean, isMobile: boole
     }
   }
 
-  // 8. Z-Index: 35 (Center) -> 25 (┬▒1) -> 15 (┬▒2) -> 5 (┬▒3)
+  // 8. Z-Index: 35 (Center) -> 25 (±1) -> 15 (±2) -> 5 (±3)
   const zIndex = Math.round(35 - absU * 10);
 
   return {
@@ -134,9 +134,9 @@ function getCurvedOrbitTransform(u: number, isPortrait: boolean, isMobile: boole
   };
 }
 
-// ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+// ─────────────────────────────────────────────────────────────────────────────
 // SOFTWARE BADGE COMPONENT (Software Logo / Icon ONLY, 18-22px)
-// ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+// ─────────────────────────────────────────────────────────────────────────────
 const SoftwareBadge: React.FC<{ icon: string }> = ({ icon }) => {
   switch (icon) {
     case 'after-effects':
@@ -213,9 +213,9 @@ const SoftwareBadge: React.FC<{ icon: string }> = ({ icon }) => {
   }
 };
 
-// ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+// ─────────────────────────────────────────────────────────────────────────────
 // PERMANENT ORBITAL VIDEO CARD COMPONENT
-// ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+// ─────────────────────────────────────────────────────────────────────────────
 interface PermanentOrbitCardProps {
   index: number;
   video: FeaturedVideo;
@@ -337,11 +337,7 @@ const PermanentOrbitCard: React.FC<PermanentOrbitCardProps> = ({
       }`}
       onClick={(e) => {
         e.stopPropagation();
-        if (!isCenter) {
-          onCardClick(index);
-        } else {
-          onOpenFullscreen(video);
-        }
+        onCardClick(index);
       }}
     >
       {/*
@@ -386,7 +382,7 @@ const PermanentOrbitCard: React.FC<PermanentOrbitCardProps> = ({
               alt={video.title}
               loading="lazy"
               decoding="async"
-              className={`absolute inset-0 w-full h-full pointer-events-none select-none z-10 transition-opacity duration-300 ${
+              className={`absolute inset-0 m-auto w-full h-full pointer-events-none select-none z-10 transition-opacity duration-300 ${
                 orientation === 'portrait' ? 'object-cover' : 'object-contain max-w-[90%] max-h-[96%]'
               } ${isCenter && isPlaying && shouldLoadVideo ? 'opacity-0' : 'opacity-100'}`}
             />
@@ -456,9 +452,9 @@ const PermanentOrbitCard: React.FC<PermanentOrbitCardProps> = ({
   );
 };
 
-// ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+// ─────────────────────────────────────────────────────────────────────────────
 // LIQUID GLASS DYNAMIC VIDEO PROJECT INFO PILL
-// ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+// ─────────────────────────────────────────────────────────────────────────────
 interface LiquidGlassProjectPillProps {
   activeVideo: FeaturedVideo;
   direction: number;
@@ -567,14 +563,14 @@ const LiquidGlassProjectPill: React.FC<LiquidGlassProjectPillProps> = ({
             delay: isSectionInView ? 0.30 : 0,
             ease: 'easeOut',
           }}
-          className={`relative z-10 w-full px-4 sm:px-8 py-2 flex items-center justify-between gap-3 sm:gap-6 whitespace-nowrap overflow-hidden ${
+          className={`relative z-10 w-full px-3 sm:px-8 py-2 flex items-center justify-between gap-2 sm:gap-6 whitespace-nowrap overflow-hidden ${
             isSectionInView ? 'visible' : 'invisible'
           }`}
         >
           {/* ZONE 1: Play Icon + Video Title (Flexible width, primary info) */}
           <div
             onClick={() => onOpenFullscreen?.(activeVideo)}
-            className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-1 overflow-hidden cursor-pointer hover:opacity-85 transition-opacity"
+            className="flex items-center gap-2 sm:gap-3.5 min-w-[95px] flex-1 overflow-hidden cursor-pointer hover:opacity-85 transition-opacity"
           >
             <div className="relative w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-full bg-[#FAF0E4]/90 border border-[#E5C89C]/50 flex items-center justify-center text-[#C4943A] flex-shrink-0 shadow-inner">
               <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 translate-x-0.5" viewBox="0 0 24 24" fill="currentColor">
@@ -597,7 +593,7 @@ const LiquidGlassProjectPill: React.FC<LiquidGlassProjectPillProps> = ({
                   initial="initial"
                   animate="animate"
                   exit="exit"
-                  className="absolute inset-x-0 font-playfair font-bold text-[14px] sm:text-[16px] text-[#1A1A1A] tracking-[-0.01em] truncate select-none leading-normal"
+                  className="absolute inset-x-0 font-playfair font-bold text-[13px] sm:text-[16px] text-[#1A1A1A] tracking-[-0.01em] truncate select-none leading-normal"
                 >
                   {activeVideo.title}
                 </motion.span>
@@ -608,7 +604,7 @@ const LiquidGlassProjectPill: React.FC<LiquidGlassProjectPillProps> = ({
           <div className="w-[1px] h-5 bg-[#D4C3A3]/40 flex-shrink-0" />
 
           {/* ZONE 2: Software Logo Only (Fixed 38px width, perfectly centered) */}
-          <div className="w-9 sm:w-11 h-6 flex items-center justify-center flex-shrink-0">
+          <div className="w-8 sm:w-11 h-6 flex items-center justify-center flex-shrink-0">
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div
                 key={activeVideo.id}
@@ -626,7 +622,7 @@ const LiquidGlassProjectPill: React.FC<LiquidGlassProjectPillProps> = ({
           <div className="w-[1px] h-5 bg-[#D4C3A3]/40 flex-shrink-0" />
 
           {/* ZONE 3: Category Tag Capsule (Flex-shrink-0, ALWAYS visible) */}
-          <div className="flex-shrink-0 h-6 flex items-center justify-end">
+          <div className="flex-shrink-0 h-6 flex items-center justify-end max-w-[125px] sm:max-w-none">
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div
                 key={activeVideo.id}
@@ -635,9 +631,9 @@ const LiquidGlassProjectPill: React.FC<LiquidGlassProjectPillProps> = ({
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className="flex items-center"
+                className="flex items-center max-w-full"
               >
-                <span className="font-sora text-[10px] sm:text-[11px] font-semibold text-[#9C7026] tracking-[0.08em] uppercase bg-[#FAF0E4]/90 border border-[#E5C89C]/70 px-3 sm:px-3.5 py-0.5 sm:py-1 rounded-full shadow-xs select-none">
+                <span className="font-sora text-[9px] sm:text-[11px] font-semibold text-[#9C7026] tracking-[0.06em] sm:tracking-[0.08em] uppercase bg-[#FAF0E4]/90 border border-[#E5C89C]/70 px-2.5 sm:px-3.5 py-0.5 sm:py-1 rounded-full shadow-xs select-none truncate">
                   {activeVideo.projectInfo?.category || activeVideo.category}
                 </span>
               </motion.div>
@@ -649,9 +645,9 @@ const LiquidGlassProjectPill: React.FC<LiquidGlassProjectPillProps> = ({
   );
 };
 
-// ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+// ─────────────────────────────────────────────────────────────────────────────
 // MAIN VIDEO SECTION COMPONENT
-// ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+// ─────────────────────────────────────────────────────────────────────────────
 const VideoSection: React.FC = () => {
   const { openArchive } = useArchive();
   const [orientation, setOrientation] = useState<'portrait' | 'landscape'>('portrait');
@@ -668,8 +664,10 @@ const VideoSection: React.FC = () => {
   // Continuous floating position value (e.g. 0, 1, 2, 3... -1, -2...). Never resets.
   const position = useMotionValue(0);
 
-  // Prevent spamming double transitions during active animation
+  // Prevent spamming double transitions during active animation while supporting smooth retargeting
   const isAnimatingRef = useRef(false);
+  const animControlRef = useRef<ReturnType<typeof animate> | null>(null);
+  const targetPositionRef = useRef(0);
   const hasDraggedRef = useRef(false);
 
   const handleOpenFullscreen = useCallback((video: FeaturedVideo) => {
@@ -737,11 +735,13 @@ const VideoSection: React.FC = () => {
     return () => unsubscribe();
   }, [position, totalVideos]);
 
-  // Manage video playback based on activeIndex and section visibility
+  // Manage video playback based on activeIndex, modal state, and section visibility
   useEffect(() => {
-    if (!isSectionInView) {
+    if (!isSectionInView || selectedVideo) {
       videoRefs.current.forEach((videoEl) => videoEl?.pause());
-      setIsPlaying(false);
+      if (!isSectionInView) {
+        setIsPlaying(false);
+      }
       return;
     }
 
@@ -761,7 +761,7 @@ const VideoSection: React.FC = () => {
         videoEl.pause();
       }
     });
-  }, [activeIndex, orientation, isMuted, isSectionInView]);
+  }, [activeIndex, orientation, isMuted, isSectionInView, selectedVideo]);
 
   // Handle Play/Pause toggle
   const handleTogglePlay = (e?: React.MouseEvent) => {
@@ -788,38 +788,37 @@ const VideoSection: React.FC = () => {
     setIsMuted(newMuted);
   };
 
-  // ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  // ─────────────────────────────────────────────────────────────────────────
   // 1. SEAMLESS CONTINUOUS 3D NAVIGATION ENGINE (520ms, cubic-bezier(0.22,1,0.36,1))
-  // ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
-  const goNext = useCallback(() => {
-    if (isAnimatingRef.current) return;
-    isAnimatingRef.current = true;
-    setNavDirection(1);
+  // ─────────────────────────────────────────────────────────────────────────
+  const animateToPosition = useCallback(
+    (target: number, dir?: number) => {
+      animControlRef.current?.stop();
+      if (dir !== undefined) setNavDirection(dir);
+      isAnimatingRef.current = true;
+      targetPositionRef.current = target;
 
-    const target = Math.round(position.get()) + 1;
-    animate(position, target, {
-      duration: 0.52,
-      ease: [0.22, 1, 0.36, 1],
-      onComplete: () => {
-        isAnimatingRef.current = false;
-      },
-    });
-  }, [position]);
+      animControlRef.current = animate(position, target, {
+        duration: 0.52,
+        ease: [0.22, 1, 0.36, 1],
+        onComplete: () => {
+          isAnimatingRef.current = false;
+          animControlRef.current = null;
+        },
+      });
+    },
+    [position]
+  );
+
+  const goNext = useCallback(() => {
+    const base = isAnimatingRef.current ? targetPositionRef.current : position.get();
+    animateToPosition(Math.round(base) + 1, 1);
+  }, [position, animateToPosition]);
 
   const goPrevious = useCallback(() => {
-    if (isAnimatingRef.current) return;
-    isAnimatingRef.current = true;
-    setNavDirection(-1);
-
-    const target = Math.round(position.get()) - 1;
-    animate(position, target, {
-      duration: 0.52,
-      ease: [0.22, 1, 0.36, 1],
-      onComplete: () => {
-        isAnimatingRef.current = false;
-      },
-    });
-  }, [position]);
+    const base = isAnimatingRef.current ? targetPositionRef.current : position.get();
+    animateToPosition(Math.round(base) - 1, -1);
+  }, [position, animateToPosition]);
 
   const handleCardClick = useCallback(
     (targetIndex: number, video?: FeaturedVideo) => {
@@ -829,29 +828,27 @@ const VideoSection: React.FC = () => {
 
       if (Math.abs(offset) > 0.3) {
         // Side video card clicked: smoothly rotate to front/center!
-        isAnimatingRef.current = true;
-        setNavDirection(offset > 0 ? 1 : -1);
-
-        const target = current + offset;
-        animate(position, target, {
-          duration: 0.52,
-          ease: [0.22, 1, 0.36, 1],
-          onComplete: () => {
-            isAnimatingRef.current = false;
-          },
-        });
+        animateToPosition(current + offset, offset > 0 ? 1 : -1);
       } else {
         // Active center card clicked: open full-screen MediaViewer!
         const v = video || featuredVideos[targetIndex];
         if (v) handleOpenFullscreen(v);
       }
     },
-    [position, totalVideos, handleOpenFullscreen]
+    [position, totalVideos, handleOpenFullscreen, animateToPosition]
   );
 
-  // Keyboard navigation support
+  // Keyboard navigation support (scoped to viewport visibility & when modal/archive closed)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (selectedVideo || !sectionRef.current) return;
+      if (document.querySelector('[role="dialog"]')) return;
+
+      const rect = sectionRef.current.getBoundingClientRect();
+      const inView =
+        rect.top < window.innerHeight * 0.75 && rect.bottom > window.innerHeight * 0.25;
+      if (!inView) return;
+
       if (e.key === 'ArrowLeft') {
         goPrevious();
       } else if (e.key === 'ArrowRight') {
@@ -861,11 +858,11 @@ const VideoSection: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [goNext, goPrevious]);
+  }, [goNext, goPrevious, selectedVideo]);
 
-  // ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  // ─────────────────────────────────────────────────────────────────────────
   // 2. ORBITAL POINTER DRAG & SWIPE GESTURE
-  // ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  // ─────────────────────────────────────────────────────────────────────────
   const pointerState = useRef({
     isDown: false,
     startX: 0,
@@ -874,17 +871,31 @@ const VideoSection: React.FC = () => {
     pointerId: -1,
   });
 
+  const resetDragState = useCallback(() => {
+    pointerState.current.isDown = false;
+    pointerState.current.pointerId = -1;
+    setIsDragging(false);
+    setTimeout(() => {
+      hasDraggedRef.current = false;
+    }, 50);
+  }, []);
+
   const handlePointerDown = (e: React.PointerEvent) => {
-    if (e.button !== 0 || isAnimatingRef.current) return;
+    if (e.button !== 0 && e.pointerType === 'mouse') return;
     const target = e.target as HTMLElement;
     if (target.closest('button') || target.closest('[data-timeline]')) return;
 
+    animControlRef.current?.stop();
+    isAnimatingRef.current = false;
     hasDraggedRef.current = false;
+
+    const currentP = position.get();
+    targetPositionRef.current = currentP;
     pointerState.current = {
       isDown: true,
       startX: e.clientX,
       startTime: Date.now(),
-      startPosition: position.get(),
+      startPosition: currentP,
       pointerId: e.pointerId,
     };
     setIsDragging(false);
@@ -895,25 +906,45 @@ const VideoSection: React.FC = () => {
     if (!pointerState.current.isDown || pointerState.current.pointerId !== e.pointerId) return;
     const deltaX = e.clientX - pointerState.current.startX;
     if (Math.abs(deltaX) > 6) {
+      if (!hasDraggedRef.current && e.currentTarget.setPointerCapture) {
+        try {
+          e.currentTarget.setPointerCapture(e.pointerId);
+        } catch {
+          // Safe fallback
+        }
+      }
       hasDraggedRef.current = true;
       if (!isDragging) setIsDragging(true);
-      position.set(pointerState.current.startPosition - deltaX / stepX);
+      const nextP = pointerState.current.startPosition - deltaX / stepX;
+      targetPositionRef.current = nextP;
+      position.set(nextP);
     }
   };
 
   const handlePointerUp = (e: React.PointerEvent) => {
     if (!pointerState.current.isDown || pointerState.current.pointerId !== e.pointerId) return;
-    pointerState.current.isDown = false;
+
+    if (e.currentTarget.releasePointerCapture) {
+      try {
+        if (e.currentTarget.hasPointerCapture?.(e.pointerId)) {
+          e.currentTarget.releasePointerCapture(e.pointerId);
+        }
+      } catch {
+        // Safe fallback
+      }
+    }
+
     const deltaX = e.clientX - pointerState.current.startX;
     const duration = Math.max(1, Date.now() - pointerState.current.startTime);
     const velocityX = (deltaX / duration) * 1000; // px/sec
     const currentP = position.get();
+    const wasDrag = hasDraggedRef.current || Math.abs(deltaX) > 6;
 
-    setIsDragging(false);
+    resetDragState();
 
     // If it was a simple tap / click without dragging, do NOT snap or trigger animation
     // Allow onClick / handleCardClick to fire smoothly!
-    if (!hasDraggedRef.current && Math.abs(deltaX) <= 6) {
+    if (!wasDrag) {
       return;
     }
 
@@ -921,25 +952,39 @@ const VideoSection: React.FC = () => {
     const isFastSwipe = Math.abs(velocityX) > 280 && Math.abs(deltaX) > 15;
 
     let target: number;
+    let dir: number | undefined;
     if (deltaX < -threshold || (isFastSwipe && velocityX < 0)) {
       target = Math.floor(currentP) + 1;
-      setNavDirection(1);
+      dir = 1;
     } else if (deltaX > threshold || (isFastSwipe && velocityX > 0)) {
       target = Math.ceil(currentP) - 1;
-      setNavDirection(-1);
+      dir = -1;
     } else {
       target = Math.round(currentP);
     }
 
-    isAnimatingRef.current = true;
-    animate(position, target, {
-      duration: 0.52,
-      ease: [0.22, 1, 0.36, 1],
-      onComplete: () => {
-        isAnimatingRef.current = false;
-      },
-    });
+    animateToPosition(target, dir);
   };
+
+  // Global pointerup/pointercancel safety net in case pointer escapes container without capture
+  useEffect(() => {
+    const handleWindowPointerUp = () => {
+      if (!pointerState.current.isDown) return;
+      const currentP = position.get();
+      const wasDrag = hasDraggedRef.current;
+      resetDragState();
+      if (wasDrag) {
+        animateToPosition(Math.round(currentP));
+      }
+    };
+
+    window.addEventListener('pointerup', handleWindowPointerUp);
+    window.addEventListener('pointercancel', handleWindowPointerUp);
+    return () => {
+      window.removeEventListener('pointerup', handleWindowPointerUp);
+      window.removeEventListener('pointercancel', handleWindowPointerUp);
+    };
+  }, [position, resetDragState, animateToPosition]);
 
   const activeVideo = featuredVideos[activeIndex] || featuredVideos[0];
 
@@ -947,7 +992,7 @@ const VideoSection: React.FC = () => {
     <section
       id="work"
       ref={sectionRef}
-      className="relative w-full h-[100svh] min-h-[760px] max-h-[1080px] pt-12 sm:pt-14 lg:pt-14 pb-8 sm:pb-9 lg:pb-9 overflow-hidden bg-[#FAF3E8] z-[10] select-none flex flex-col justify-between"
+      className="relative w-full h-[100svh] min-h-[760px] max-h-[1080px] pt-20 sm:pt-24 lg:pt-20 pb-8 sm:pb-9 lg:pb-9 overflow-hidden bg-[#FAF3E8] z-[10] select-none flex flex-col justify-between"
     >
       {/* Background Subtle Warm Gradient */}
       <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-[#FAF3E8] via-[#FAF0E4]/30 to-[#FAF3E8]" />
@@ -955,9 +1000,9 @@ const VideoSection: React.FC = () => {
       {/* Main Composition Container */}
       <div className="max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-12 relative z-10 flex flex-col justify-between h-full flex-grow">
 
-        {/* ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ */}
+        {/* ═══════════════════════════════════════════════════════════════ */}
         {/* 1. TOP ZONE: Editorial Heading (Left) + Mode Toggle (Right) */}
-        {/* ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ */}
+        {/* ═══════════════════════════════════════════════════════════════ */}
         <div className="w-full flex items-start justify-between video-header-elem">
           {/* Left Column Editorial Header */}
           <div className="max-w-[360px] sm:max-w-[390px] lg:max-w-[420px] z-30">
@@ -1019,9 +1064,9 @@ const VideoSection: React.FC = () => {
           </div>
         </div>
 
-        {/* ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ */}
+        {/* ═══════════════════════════════════════════════════════════════ */}
         {/* 2. MIDDLE ZONE: 3D CURVED ORBITAL FILM STRIP (.carousel-viewport) */}
-        {/* ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ */}
+        {/* ═══════════════════════════════════════════════════════════════ */}
         <div
           className={`carousel-viewport relative w-full flex items-center justify-center transition-[height] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] my-auto ${
             orientation === 'landscape' ? 'overflow-hidden' : ''
@@ -1066,10 +1111,10 @@ const VideoSection: React.FC = () => {
             ))}
           </div>
 
-          {/* ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ */}
+          {/* ═══════════════════════════════════════════════════════════════ */}
           {/* SOFT SIDE FADE MASKS (Layer: z-40, above cards, below buttons) */}
           {/* Active in landscape mode so side cards dissolve softly near buttons */}
-          {/* ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ */}
+          {/* ═══════════════════════════════════════════════════════════════ */}
           <div
             className={`absolute left-0 inset-y-0 w-12 sm:w-36 md:w-48 lg:w-60 bg-gradient-to-r from-[#FAF3E8] via-[#FAF3E8]/85 to-transparent pointer-events-none z-40 transition-opacity duration-700 ${
               orientation === 'landscape' ? 'opacity-100' : 'opacity-0'
@@ -1081,9 +1126,9 @@ const VideoSection: React.FC = () => {
             }`}
           />
 
-          {/* ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ */}
+          {/* ═══════════════════════════════════════════════════════════════ */}
           {/* CIRCULAR NAVIGATION BUTTONS (LEFT & RIGHT) (Layer: z-50, always on top) */}
-          {/* ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ */}
+          {/* ═══════════════════════════════════════════════════════════════ */}
           <button
             onClick={goPrevious}
             type="button"
@@ -1107,9 +1152,9 @@ const VideoSection: React.FC = () => {
           </button>
         </div>
 
-        {/* ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ */}
+        {/* ═══════════════════════════════════════════════════════════════ */}
         {/* 3. BOTTOM ZONE: LIQUID GLASS DYNAMIC VIDEO PROJECT INFO PILL */}
-        {/* ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ */}
+        {/* ═══════════════════════════════════════════════════════════════ */}
         <LiquidGlassProjectPill
           activeVideo={activeVideo}
           direction={navDirection}
@@ -1120,9 +1165,9 @@ const VideoSection: React.FC = () => {
 
       </div>
 
-      {/* ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */}
+      {/* ───────────────────────────────────────────────────────────────────── */}
       {/* 4. FULL-SCREEN VIDEO VIEWER MODAL */}
-      {/* ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */}
+      {/* ───────────────────────────────────────────────────────────────────── */}
       <MediaViewer
         isOpen={!!selectedVideo}
         onClose={() => setSelectedVideo(null)}
@@ -1132,7 +1177,7 @@ const VideoSection: React.FC = () => {
                 id: selectedVideo.id,
                 title: selectedVideo.title,
                 subtitle: selectedVideo.projectInfo?.category || selectedVideo.category,
-                description: selectedVideo.description || `${selectedVideo.title} ΓÇö Produced & Edited by Arpit AK`,
+                description: selectedVideo.description || `${selectedVideo.title} — Produced & Edited by Arpit AK`,
                 thumbnail: selectedVideo.poster || selectedVideo.videoUrl.replace(/\.mp4$/, '.webp'),
                 videoUrl: selectedVideo.videoUrl,
                 duration: selectedVideo.duration,
@@ -1149,6 +1194,7 @@ const VideoSection: React.FC = () => {
             const curr = position.get();
             const diff = getWrappedOffset(idx, curr, totalVideos);
             if (Math.abs(diff) > 0.1) {
+              targetPositionRef.current = curr + diff;
               position.set(curr + diff);
             }
           }

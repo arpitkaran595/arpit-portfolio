@@ -27,6 +27,7 @@ import {
   FeaturedVideo,
   storyPosters,
   allStoryPosters,
+  StoryPoster,
   creativePosts,
   allCreativePosts,
   youtubeThumbnails,
@@ -56,6 +57,7 @@ interface MediaViewerProps {
   item: MediaViewerItem | null;
   layoutId?: string;
   onActiveVideoChange?: (video: FeaturedVideo) => void;
+  onActiveStoryChange?: (story: StoryPoster) => void;
   onExitComplete?: () => void;
 }
 
@@ -1040,6 +1042,7 @@ const MediaViewer: React.FC<MediaViewerProps> = ({
   item,
   layoutId,
   onActiveVideoChange,
+  onActiveStoryChange,
 }) => {
   const [windowWidth, setWindowWidth] = useState(() => (typeof window !== 'undefined' ? window.innerWidth : 1200));
 
@@ -1135,6 +1138,7 @@ const MediaViewer: React.FC<MediaViewerProps> = ({
           isOpen={isOpen}
           onClose={onClose}
           item={activeItem}
+          onActiveStoryChange={onActiveStoryChange}
           onExitComplete={handleExitComplete}
         />
       ) : (
@@ -1142,6 +1146,7 @@ const MediaViewer: React.FC<MediaViewerProps> = ({
           isOpen={isOpen}
           onClose={onClose}
           item={activeItem}
+          onActiveStoryChange={onActiveStoryChange}
           onExitComplete={handleExitComplete}
         />
       );

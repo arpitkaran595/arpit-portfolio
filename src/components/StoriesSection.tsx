@@ -123,8 +123,8 @@ function calculateFanTransform(
       opacity = 1 - absU * 0.22; // 1.0 -> 0.78
     } else if (absU <= 2) {
       opacity = 0.78 - (absU - 1) * 0.26; // 0.78 -> 0.52
-    } else if (absU <= 2.6) {
-      opacity = Math.max(0, 0.52 - (absU - 2) * (0.52 / 0.6));
+    } else if (absU <= 2.42) {
+      opacity = Math.max(0, 0.52 - (absU - 2) * (0.52 / 0.42));
     } else {
       opacity = 0;
     }
@@ -296,6 +296,8 @@ const StoriesSection: React.FC = () => {
   // Motion value representing continuous carousel progress
   const progress = useMotionValue(0);
   const isAnimatingRef = useRef(false);
+  const animControlRef = useRef<ReturnType<typeof animate> | null>(null);
+  const targetProgressRef = useRef(0);
 
   // Responsive screen width state
   const [screenWidth, setScreenWidth] = useState(1440);
@@ -334,10 +336,11 @@ const StoriesSection: React.FC = () => {
   }, []);
 
   // ───────────────────────────────────────────────────────────────────────────
-  // NAVIGATION CONTROLS (Continuous, zero-teleport wrapping)
+  // NAVIGATION CONTROLS (Continuous, zero-teleport wrapping + rapid retargeting)
   // ───────────────────────────────────────────────────────────────────────────
   const navigateTo = useCallback(
     (newTarget: number) => {
+      animControlRef.current?.stop();
       const currentP = progress.get();
       // Calculate shortest circular path from currentP to newTarget
       const diff = newTarget - currentP;
@@ -347,12 +350,14 @@ const StoriesSection: React.FC = () => {
       const targetP = currentP + wrappedDiff;
 
       isAnimatingRef.current = true;
+      targetProgressRef.current = targetP;
 
-      animate(progress, targetP, {
+      animControlRef.current = animate(progress, targetP, {
         duration: 0.55,
         ease: [0.22, 1, 0.36, 1],
         onComplete: () => {
           isAnimatingRef.current = false;
+          animControlRef.current = null;
         },
       });
     },
@@ -360,15 +365,13 @@ const StoriesSection: React.FC = () => {
   );
 
   const handleNext = useCallback(() => {
-    const currentP = progress.get();
-    const nearest = Math.round(currentP);
-    navigateTo(nearest + 1);
+    const base = isAnimatingRef.current ? targetProgressRef.current : progress.get();
+    navigateTo(Math.round(base) + 1);
   }, [navigateTo, progress]);
 
   const handlePrev = useCallback(() => {
-    const currentP = progress.get();
-    const nearest = Math.round(currentP);
-    navigateTo(nearest - 1);
+    const base = isAnimatingRef.current ? targetProgressRef.current : progress.get();
+    navigateTo(Math.round(base) - 1);
   }, [navigateTo, progress]);
 
   const isPointerDownRef = useRef(false);
@@ -380,13 +383,20 @@ const StoriesSection: React.FC = () => {
 
   const handleCardClick = useCallback(
     (cardIndex: number) => {
-      // If user performed a drag gesture, do not trigger opening
+      // If user performed a drag gesture, do not trigger click action
       if (hasDraggedRef.current) return;
-      // Any visible story poster clicked: open full-screen story viewer directly
-      const normalizedIndex = ((((cardIndex % totalStories) + totalStories) % totalStories));
-      setSelectedStory(storyPosters[normalizedIndex] || storyPosters[0]);
+      const currentP = progress.get();
+      const offset = getWrappedOffset(cardIndex, currentP, totalStories);
+      if (Math.abs(offset) > 0.3) {
+        // Side story poster clicked: smoothly rotate it to front/center
+        navigateTo(currentP + offset);
+      } else {
+        // Active center story poster clicked: open full-screen story viewer
+        const normalizedIndex = ((cardIndex % totalStories) + totalStories) % totalStories;
+        setSelectedStory(storyPosters[normalizedIndex] || storyPosters[0]);
+      }
     },
-    [totalStories]
+    [navigateTo, progress, totalStories]
   );
 
   // ───────────────────────────────────────────────────────────────────────────
@@ -397,12 +407,15 @@ const StoriesSection: React.FC = () => {
     if ((e.target as HTMLElement).closest('button')) return;
     if (e.button !== 0 && e.pointerType === 'mouse') return;
 
+    animControlRef.current?.stop();
+    isAnimatingRef.current = false;
     isPointerDownRef.current = true;
     hasDraggedRef.current = false;
     isDraggingRef.current = false;
     dragStartXRef.current = e.clientX;
     dragStartTimeRef.current = performance.now();
     dragStartProgressRef.current = progress.get();
+    targetProgressRef.current = dragStartProgressRef.current;
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
@@ -432,16 +445,19 @@ const StoriesSection: React.FC = () => {
     // Drag sensitivity: responsive according to screen width
     const sensitivity = screenWidth < 640 ? 170 : screenWidth < 1024 ? 220 : 280;
     const newProgress = dragStartProgressRef.current - deltaX / sensitivity;
-
+    targetProgressRef.current = newProgress;
     progress.set(newProgress);
   };
 
   const handlePointerUp = (e: React.PointerEvent) => {
+    if (!isPointerDownRef.current) return;
     isPointerDownRef.current = false;
 
     if (e.currentTarget.releasePointerCapture) {
       try {
-        e.currentTarget.releasePointerCapture(e.pointerId);
+        if (e.currentTarget.hasPointerCapture?.(e.pointerId)) {
+          e.currentTarget.releasePointerCapture(e.pointerId);
+        }
       } catch {
         // Ignore
       }
@@ -452,6 +468,9 @@ const StoriesSection: React.FC = () => {
       return;
     }
     isDraggingRef.current = false;
+    setTimeout(() => {
+      hasDraggedRef.current = false;
+    }, 50);
 
     const deltaX = e.clientX - dragStartXRef.current;
     const duration = performance.now() - dragStartTimeRef.current;
@@ -474,10 +493,32 @@ const StoriesSection: React.FC = () => {
     navigateTo(target);
   };
 
+  // Global pointerup/pointercancel safety net
+  useEffect(() => {
+    const handleWindowPointerUp = () => {
+      if (!isPointerDownRef.current) return;
+      isPointerDownRef.current = false;
+      if (isDraggingRef.current) {
+        isDraggingRef.current = false;
+        setTimeout(() => {
+          hasDraggedRef.current = false;
+        }, 50);
+        navigateTo(Math.round(progress.get()));
+      }
+    };
+    window.addEventListener('pointerup', handleWindowPointerUp);
+    window.addEventListener('pointercancel', handleWindowPointerUp);
+    return () => {
+      window.removeEventListener('pointerup', handleWindowPointerUp);
+      window.removeEventListener('pointercancel', handleWindowPointerUp);
+    };
+  }, [navigateTo, progress]);
+
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!sectionRef.current) return;
+      if (selectedStory || !sectionRef.current) return;
+      if (document.querySelector('[role="dialog"]')) return;
       const rect = sectionRef.current.getBoundingClientRect();
       const inView =
         rect.top < window.innerHeight * 0.75 && rect.bottom > window.innerHeight * 0.25;
@@ -493,7 +534,7 @@ const StoriesSection: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleNext, handlePrev]);
+  }, [handleNext, handlePrev, selectedStory]);
 
   return (
     <section
@@ -650,6 +691,17 @@ const StoriesSection: React.FC = () => {
               }
             : null
         }
+        onActiveStoryChange={(story) => {
+          const idx = storyPosters.findIndex((s) => s.id === story.id);
+          if (idx >= 0) {
+            const curr = progress.get();
+            const diff = getWrappedOffset(idx, curr, totalStories);
+            if (Math.abs(diff) > 0.1) {
+              targetProgressRef.current = curr + diff;
+              progress.set(curr + diff);
+            }
+          }
+        }}
       />
     </section>
   );

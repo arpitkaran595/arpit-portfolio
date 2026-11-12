@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, ExternalLink, Link2, Monitor, Play, Sparkles, ArrowRight } from 'lucide-react';
 import { digitalProjects, digitalCategories, DigitalCategory, DigitalProject } from '../data/portfolio';
+import { getOptimizedImageUrl } from '../utils/imageOptimization';
 import LiveWebsiteModal from './LiveWebsiteModal';
 import MobileDigitalProjectViewer from './MobileDigitalProjectViewer';
 
@@ -386,12 +387,15 @@ function MacbookScreen({ project, transitionPhase, onOpenLive }: MacbookScreenPr
 // MAIN DIGITAL WORK SECTION COMPONENT
 // ─────────────────────────────────────────────────────────────────────────────
 export default function DigitalWorkSection() {
+  const sectionRef = useRef<HTMLElement>(null);
   const [selectedCategory, setSelectedCategory] = useState<DigitalCategory>('ALL');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [navDirection, setNavDirection] = useState<1 | -1>(1);
   const [screenTransitionPhase, setScreenTransitionPhase] = useState<
     'idle' | 'fade-out' | 'black-hold' | 'fade-in'
   >('idle');
+  const transitionTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const targetIndexRef = useRef(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileViewerOpen, setIsMobileViewerOpen] = useState(false);
@@ -420,8 +424,20 @@ export default function DigitalWorkSection() {
 
   // Keep index within bounds if filtered projects change
   useEffect(() => {
+    transitionTimersRef.current.forEach(clearTimeout);
+    transitionTimersRef.current = [];
+    setScreenTransitionPhase('idle');
+    targetIndexRef.current = 0;
     setCurrentIndex(0);
   }, [selectedCategory]);
+
+  // Clean up transition timers on unmount
+  useEffect(() => {
+    return () => {
+      transitionTimersRef.current.forEach(clearTimeout);
+      transitionTimersRef.current = [];
+    };
+  }, []);
 
   const totalProjects = filteredProjects.length;
   const currentProject = filteredProjects[currentIndex] || digitalProjects[0];
@@ -433,42 +449,69 @@ export default function DigitalWorkSection() {
   const prevProject = filteredProjects[prevIndex];
   const nextProject = filteredProjects[nextIndex];
 
-  // Screen-only transition orchestrator (Stationary MacBook, cross-fades content only)
+  // Screen-only transition orchestrator (Stationary MacBook, cross-fades content only, supports rapid clicks)
   const navigateToProject = useCallback(
     (targetIndex: number, direction: 1 | -1 = 1) => {
-      if (screenTransitionPhase !== 'idle' || targetIndex === currentIndex) return;
+      if (totalProjects <= 1) return;
+      const normalizedTarget = ((targetIndex % totalProjects) + totalProjects) % totalProjects;
+      if (screenTransitionPhase === 'idle' && normalizedTarget === currentIndex) return;
 
+      transitionTimersRef.current.forEach(clearTimeout);
+      transitionTimersRef.current = [];
+
+      targetIndexRef.current = normalizedTarget;
       setNavDirection(direction);
+
+      if (screenTransitionPhase !== 'idle') {
+        // Rapid navigation: immediately switch behind black screen and fade in cleanly
+        setCurrentIndex(normalizedTarget);
+        setScreenTransitionPhase('black-hold');
+
+        const t2 = setTimeout(() => {
+          setScreenTransitionPhase('fade-in');
+          const t3 = setTimeout(() => {
+            setScreenTransitionPhase('idle');
+          }, 290);
+          transitionTimersRef.current.push(t3);
+        }, 80);
+        transitionTimersRef.current.push(t2);
+        return;
+      }
 
       // 1. Fade screen out to black (180ms)
       setScreenTransitionPhase('fade-out');
 
-      setTimeout(() => {
+      const t1 = setTimeout(() => {
         // 2. Black hold: switch project index behind dark screen (100ms)
-        setCurrentIndex(targetIndex);
+        setCurrentIndex(normalizedTarget);
         setScreenTransitionPhase('black-hold');
 
-        setTimeout(() => {
+        const t2 = setTimeout(() => {
           // 3. Fade in new project (280ms)
           setScreenTransitionPhase('fade-in');
 
-          setTimeout(() => {
+          const t3 = setTimeout(() => {
             // 4. Return to idle
             setScreenTransitionPhase('idle');
           }, 290);
+          transitionTimersRef.current.push(t3);
         }, 100);
+        transitionTimersRef.current.push(t2);
       }, 180);
+      transitionTimersRef.current.push(t1);
     },
-    [currentIndex, screenTransitionPhase]
+    [currentIndex, screenTransitionPhase, totalProjects]
   );
 
   const handlePrev = useCallback(() => {
-    navigateToProject(prevIndex, -1);
-  }, [navigateToProject, prevIndex]);
+    const base = screenTransitionPhase !== 'idle' ? targetIndexRef.current : currentIndex;
+    navigateToProject((base - 1 + totalProjects) % totalProjects, -1);
+  }, [navigateToProject, currentIndex, totalProjects, screenTransitionPhase]);
 
   const handleNext = useCallback(() => {
-    navigateToProject(nextIndex, 1);
-  }, [navigateToProject, nextIndex]);
+    const base = screenTransitionPhase !== 'idle' ? targetIndexRef.current : currentIndex;
+    navigateToProject((base + 1) % totalProjects, 1);
+  }, [navigateToProject, currentIndex, totalProjects, screenTransitionPhase]);
 
   // Universal action handler:
   // On mobile (< 768px): Launches the mobile-only cinematic case-study viewer.
@@ -491,10 +534,17 @@ export default function DigitalWorkSection() {
     }
   }, [currentProject, isMobile, currentIndex]);
 
-  // Keyboard navigation support (ArrowLeft / ArrowRight)
+  // Keyboard navigation support (ArrowLeft / ArrowRight, scoped to viewport visibility)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (isModalOpen || isMobileViewerOpen) return;
+      if (isModalOpen || isMobileViewerOpen || !sectionRef.current) return;
+      if (document.querySelector('[role="dialog"]')) return;
+
+      const rect = sectionRef.current.getBoundingClientRect();
+      const inView =
+        rect.top < window.innerHeight * 0.75 && rect.bottom > window.innerHeight * 0.25;
+      if (!inView) return;
+
       if (e.key === 'ArrowLeft') {
         handlePrev();
       } else if (e.key === 'ArrowRight') {
@@ -506,13 +556,14 @@ export default function DigitalWorkSection() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handlePrev, handleNext, isModalOpen, isMobileViewerOpen]);
 
-  // Dynamic Formatted counter (e.g. 01 / 04)
+  // Dynamic Formatted counter (e.g. 01 / 05)
   const formattedCurrent = String(currentIndex + 1).padStart(2, '0');
   const formattedTotal = String(totalProjects).padStart(2, '0');
 
   return (
     <section
       id="digital-work"
+      ref={sectionRef}
       className="relative w-full overflow-hidden bg-[#FBF7F0] text-charcoal-900 pt-24 sm:pt-28 lg:pt-32 pb-20 sm:pb-24 lg:pb-28 scroll-mt-24 select-none"
       style={{
         backgroundImage: `radial-gradient(ellipse 80% 50% at 50% -10%, rgba(246, 215, 178, 0.28) 0%, rgba(251, 247, 240, 0.98) 65%)`,
@@ -646,9 +697,9 @@ export default function DigitalWorkSection() {
                       }}
                     >
                       <img
-                        src={prevProject.previewImage}
+                        src={getOptimizedImageUrl(prevProject.previewImage, 600)}
                         alt={prevProject.title}
-                        loading="lazy"
+                        loading="eager"
                         decoding="async"
                         className="w-full h-full object-cover object-top filter brightness-[0.98] group-hover:brightness-100 transition-all duration-300 select-none"
                         draggable={false}
@@ -752,9 +803,9 @@ export default function DigitalWorkSection() {
                       }}
                     >
                       <img
-                        src={nextProject.previewImage}
+                        src={getOptimizedImageUrl(nextProject.previewImage, 600)}
                         alt={nextProject.title}
-                        loading="lazy"
+                        loading="eager"
                         decoding="async"
                         className="w-full h-full object-cover object-top filter brightness-[0.98] group-hover:brightness-100 transition-all duration-300 select-none"
                         draggable={false}
@@ -820,7 +871,7 @@ export default function DigitalWorkSection() {
                 >
                   <div className="w-8 h-5 sm:w-10 sm:h-6 rounded overflow-hidden flex-shrink-0 bg-[#1E1B18] border border-black/10">
                     <img
-                      src={p.previewImage}
+                      src={getOptimizedImageUrl(p.previewImage, 300)}
                       alt=""
                       loading="lazy"
                       decoding="async"
@@ -1091,7 +1142,7 @@ export default function DigitalWorkSection() {
           <div className="flex items-center gap-2.5">
             <span className="w-2 h-2 rounded-full bg-[#B8860B] animate-pulse" />
             <span className="text-[11px] sm:text-[11.5px] font-sora font-semibold tracking-[0.16em] text-[#9A7209] uppercase">
-              DOCUMENTARY ARCHIVE • 4 DEDICATED CASE STUDIES
+              DOCUMENTARY ARCHIVE • {digitalProjects.length} DEDICATED CASE STUDIES
             </span>
           </div>
           <Link
