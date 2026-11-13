@@ -444,6 +444,7 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
               }}
               type="button"
               aria-label="Close Thumbnail Viewer"
+              data-testid="mobile-thumbnail-close-btn"
               className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/15 border border-white/15 flex items-center justify-center text-white/85 hover:text-white active:scale-90 transition-all shadow-lg cursor-pointer pointer-events-auto"
             >
               <X className="w-4 h-4" />
@@ -653,6 +654,17 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
                 <ChevronRight className="w-6 h-6" />
               </button>
 
+              {/* Ambient Glow Backdrop Layer (Prevents harsh black void) */}
+              <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+                <img
+                  src={activeThumbnail.image || (activeThumbnail as any).thumbnail || item.thumbnail}
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute inset-0 w-full h-full object-cover scale-150 filter blur-[80px] opacity-25 pointer-events-none"
+                />
+                <div className="absolute inset-0 bg-black/60" />
+              </div>
+
               {/* Loading Indicator (Prevents Black Blank Screen) */}
               {!isImageLoaded && (
                 <div className="absolute inset-0 flex items-center justify-center z-40 pointer-events-none">
@@ -663,14 +675,14 @@ export const MobileThumbnailViewer: React.FC<MobileThumbnailViewerProps> = ({
               {/* Fullscreen Artwork with Contain (Never Cropped or Stretched) */}
               <motion.img
                 key={activeThumbnail.image}
-                initial={{ opacity: 0, scale: 0.98 }}
+                initial={false}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.98 }}
                 transition={{ duration: 0.2 }}
-                src={activeThumbnail.image}
+                src={activeThumbnail.image || (activeThumbnail as any).thumbnail || item.thumbnail}
                 alt={activeThumbnail.title}
                 onLoad={() => setIsImageLoaded(true)}
-                className="w-full h-full object-contain select-none pointer-events-none p-2"
+                className="w-full h-full object-contain select-none pointer-events-none p-2 relative z-10"
               />
             </motion.div>
           )}

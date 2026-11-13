@@ -639,8 +639,8 @@ const StoriesSection: React.FC = () => {
               ))}
             </div>
 
-            {/* Navigation Buttons: Previous & Next */}
-            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-between pointer-events-none px-0 sm:px-1 lg:-mx-2 z-50">
+            {/* Navigation Buttons: Previous & Next (Layered at z-[120] to ensure buttons never occlude behind cards) */}
+            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-between pointer-events-none px-0 sm:px-1 lg:-mx-2 z-[120]">
               {/* Previous Button */}
               <button
                 type="button"

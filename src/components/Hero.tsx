@@ -524,8 +524,10 @@ export default function Hero({ isLoaded, navRef }: HeroProps) {
       // ─────────────────────────────────────────────
       // MOUSE-BASED MICRO 3D DEPTH SYSTEM (Subtle, Eased & Inertial)
       // Controls the dedicated MOUSE DEPTH WRAPPERS without interfering with ScrollTrigger
+      // Guarded by pointer: fine so mobile touch devices avoid 20+ idle animation setters
       // ─────────────────────────────────────────────
-      if (!prefersReduced) {
+      const hasFinePointer = typeof window !== 'undefined' && window.matchMedia('(pointer: fine)').matches;
+      if (!prefersReduced && hasFinePointer) {
         const skyX = skyDepthRef.current ? gsap.quickTo(skyDepthRef.current, 'x', { duration: 1.4, ease: 'power2.out' }) : null;
         const skyY = skyDepthRef.current ? gsap.quickTo(skyDepthRef.current, 'y', { duration: 1.4, ease: 'power2.out' }) : null;
 

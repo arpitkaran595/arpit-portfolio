@@ -588,8 +588,8 @@ const ThumbnailsSection: React.FC = () => {
             ))}
           </div>
 
-          {/* Previous & Next Navigation Buttons */}
-          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-between pointer-events-none px-1 sm:px-2 md:px-4 lg:px-6 z-50">
+          {/* Previous & Next Navigation Buttons (Layered at z-[120] to ensure buttons never occlude behind cards) */}
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-between pointer-events-none px-1 sm:px-2 md:px-4 lg:px-6 z-[120]">
             <button
               type="button"
               onClick={handlePrev}

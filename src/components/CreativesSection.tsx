@@ -701,8 +701,8 @@ const CreativesSection: React.FC = () => {
               </div>
             </div>
 
-            {/* Navigation Buttons: Layered ABOVE edge masks (z-50) */}
-            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-between pointer-events-none px-0 sm:px-1 lg:-mx-1 z-50">
+            {/* Navigation Buttons: Layered ABOVE edge masks (z-[60]) */}
+            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-between pointer-events-none px-0 sm:px-1 lg:-mx-1 z-[60]">
               {/* Previous Button */}
               <button
                 type="button"

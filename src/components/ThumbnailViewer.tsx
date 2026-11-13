@@ -21,7 +21,9 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({
   const thumbnailList = useMemo(() => {
     if (!item) return youtubeThumbnails;
     if (item.isArchive) return allYoutubeThumbnails;
-    const exists = youtubeThumbnails.some((t) => t.id === item.id);
+    const exists = youtubeThumbnails.some(
+      (t) => t.id === item.id || t.image === (item as any).thumbnail || t.title === item.title
+    );
     return exists ? youtubeThumbnails : allYoutubeThumbnails;
   }, [item]);
 
@@ -30,7 +32,9 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({
   // Find index of current thumbnail from dataset
   const initialIndex = useMemo(() => {
     if (!item) return 0;
-    const found = thumbnailList.findIndex((t) => t.id === item.id);
+    const found = thumbnailList.findIndex(
+      (t) => t.id === item.id || t.image === (item as any).thumbnail || t.title === item.title
+    );
     return found !== -1 ? found : 0;
   }, [item, thumbnailList]);
 
@@ -113,20 +117,24 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({
   // Fullscreen toggle logic (in-app full-screen stage with optional native enhancement)
   const enterFullscreen = useCallback(async () => {
     setIsFullscreen(true);
+    hasNativeFullscreenRef.current = false;
     try {
       const root = containerRef.current || document.documentElement;
       if (root.requestFullscreen) {
         await root.requestFullscreen();
+        hasNativeFullscreenRef.current = true;
       } else if ((root as any).webkitRequestFullscreen) {
         await (root as any).webkitRequestFullscreen();
+        hasNativeFullscreenRef.current = true;
       }
     } catch {
-      // Safe fallback: in-page CSS fullscreen overlay provides 100% full screen
+      hasNativeFullscreenRef.current = false;
     }
   }, []);
 
   const exitFullscreen = useCallback(async () => {
     setIsFullscreen(false);
+    hasNativeFullscreenRef.current = false;
     try {
       if (document.fullscreenElement || (document as any).webkitFullscreenElement) {
         if (document.exitFullscreen) {
@@ -140,8 +148,27 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({
     }
   }, []);
 
+  // Sync state if native browser fullscreen is exited via browser UI or hardware Escape
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      const activeFs = document.fullscreenElement || (document as any).webkitFullscreenElement;
+      if (activeFs) {
+        hasNativeFullscreenRef.current = true;
+      } else if (hasNativeFullscreenRef.current) {
+        hasNativeFullscreenRef.current = false;
+        setIsFullscreen(false);
+      }
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+    };
+  }, []);
+
   const handleClose = useCallback(() => {
-    if (isFullscreen) {
+    if (isFullscreen || hasNativeFullscreenRef.current) {
       exitFullscreen();
     }
     onClose();
@@ -555,6 +582,24 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({
                 <ChevronRight className="w-5 h-5" />
               </button>
 
+              {/* Ambient Blurred Background Layer (Derived from active thumbnail) */}
+              <div className="absolute inset-0 pointer-events-none overflow-hidden select-none z-0">
+                <div
+                  className="absolute inset-0 w-full h-full bg-cover bg-center scale-115 filter blur-3xl opacity-25"
+                  style={{
+                    backgroundImage: `url(${activeThumbnail.image || (activeThumbnail as any).thumbnail || item.thumbnail})`,
+                  }}
+                />
+                <div className="absolute inset-0 bg-black/60" />
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      'radial-gradient(ellipse at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.78) 65%, rgba(0,0,0,0.96) 100%)',
+                  }}
+                />
+              </div>
+
               {/* Loading Indicator */}
               {!isImageLoaded && (
                 <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
@@ -564,10 +609,12 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({
 
               {/* Fullscreen 16:9 Artwork (Original Aspect Ratio Preserved) */}
               <img
-                src={activeThumbnail.image}
+                src={activeThumbnail.image || (activeThumbnail as any).thumbnail || item.thumbnail}
                 alt={activeThumbnail.title}
+                loading="eager"
+                decoding="sync"
                 onLoad={() => setIsImageLoaded(true)}
-                className="w-full h-full object-contain p-3 sm:p-8 select-none"
+                className="w-full h-full object-contain p-3 sm:p-8 select-none relative z-10"
                 draggable={false}
               />
             </motion.div>

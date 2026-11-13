@@ -439,8 +439,10 @@ export default function About() {
       // ─────────────────────────────────────────────
       // 4. MOUSE-BASED MICRO 3D DEPTH INTERACTION
       // Note: Software panel & Social links have ZERO mouse movement (remain static)
+      // Guarded by pointer: fine so mobile touch devices avoid 18+ idle animation setters
       // ─────────────────────────────────────────────
-      if (!prefersReduced) {
+      const hasFinePointer = typeof window !== 'undefined' && window.matchMedia('(pointer: fine)').matches;
+      if (!prefersReduced && hasFinePointer) {
         const bgX = bgDepthRef.current ? gsap.quickTo(bgDepthRef.current, 'x', { duration: 1.4, ease: 'power2.out' }) : null;
         const bgY = bgDepthRef.current ? gsap.quickTo(bgDepthRef.current, 'y', { duration: 1.4, ease: 'power2.out' }) : null;
 

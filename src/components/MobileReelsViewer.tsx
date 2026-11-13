@@ -230,6 +230,7 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
   const [aspectRatioMap, setAspectRatioMap] = useState<Record<string, 'portrait' | 'landscape'>>({});
   const [doubleTapHeart, setDoubleTapHeart] = useState<{ id: string } | null>(null);
   const [videoReadyMap, setVideoReadyMap] = useState<Record<string, boolean>>({});
+  const [activePlayingId, setActivePlayingId] = useState<string | null>(null);
 
   // User audio preference: null = unselected (attempt unmuted), false = explicitly unmuted, true = explicitly muted
   const userAudioPrefRef = useRef<boolean | null>(null);
@@ -288,6 +289,7 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
     setProgress(0);
     setScrubProgress(0);
     setIsScrubbing(false);
+    setActivePlayingId(null);
   }, [currentIndex]);
 
   // Lock body scroll & Lenis for the full lifetime of the viewer modal (including exit transitions)
@@ -352,6 +354,13 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
     containerRef.current.scrollTo({ top: targetTop, behavior });
   }, [totalVideos]);
 
+  const handleViewerClose = useCallback(() => {
+    if (onActiveVideoChange && playlist[currentIndex]) {
+      onActiveVideoChange(playlist[currentIndex]);
+    }
+    onClose();
+  }, [currentIndex, onActiveVideoChange, onClose, playlist]);
+
   // Keyboard navigation support
   useEffect(() => {
     if (!isOpen) return;
@@ -373,13 +382,13 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
         if (currentIndex > 0) scrollToIndex(currentIndex - 1);
       } else if (e.key === 'Escape') {
         e.preventDefault();
-        onClose();
+        handleViewerClose();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, currentIndex, totalVideos, fullscreenVideo, scrollToIndex, onClose]);
+  }, [isOpen, currentIndex, totalVideos, fullscreenVideo, scrollToIndex, handleViewerClose]);
 
   // Handle intersection / scroll snapping
   const handleScroll = useCallback(() => {
@@ -813,7 +822,7 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
 
         {/* Right: Circular Translucent Close Button (Always visible & accessible) */}
         <button
-          onClick={onClose}
+          onClick={handleViewerClose}
           type="button"
           aria-label="Close reels viewer"
           data-testid="mobile-reels-close-btn"
@@ -904,8 +913,8 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
                               aria-hidden="true"
                               loading="eager"
                               decoding="async"
-                              className={`absolute inset-0 w-full h-full object-cover select-none pointer-events-none transition-opacity duration-300 z-0 ${
-                                isCurrent && isPlaying && videoReadyMap[video.id] ? 'opacity-0' : 'opacity-100'
+                              className={`absolute inset-0 w-full h-full object-cover select-none pointer-events-none transition-opacity duration-300 z-20 ${
+                                isCurrent && isPlaying && activePlayingId === video.id ? 'opacity-0' : 'opacity-100'
                               }`}
                             />
                           )}
@@ -919,7 +928,10 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
                             preload={isCurrent ? 'auto' : 'metadata'}
                             onTimeUpdate={isCurrent ? handleTimeUpdate : undefined}
                             onLoadedMetadata={(e) => handleVideoMetadata(video.id, e.currentTarget)}
-                            onPlaying={() => setVideoReadyMap((prev) => ({ ...prev, [video.id]: true }))}
+                            onPlaying={() => {
+                              setActivePlayingId(video.id);
+                              setVideoReadyMap((prev) => ({ ...prev, [video.id]: true }));
+                            }}
                             className="w-full h-full object-contain relative z-10"
                           />
                         </div>
@@ -944,8 +956,8 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
                           aria-hidden="true"
                           loading="eager"
                           decoding="async"
-                          className={`absolute inset-0 w-full h-full object-cover select-none pointer-events-none transition-opacity duration-300 z-0 ${
-                            isCurrent && isPlaying && videoReadyMap[video.id] ? 'opacity-0' : 'opacity-100'
+                          className={`absolute inset-0 w-full h-full object-contain select-none pointer-events-none transition-opacity duration-300 z-20 ${
+                            isCurrent && isPlaying && activePlayingId === video.id ? 'opacity-0' : 'opacity-100'
                           }`}
                         />
                       )}
@@ -959,7 +971,10 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
                         preload={isCurrent ? 'auto' : 'metadata'}
                         onTimeUpdate={isCurrent ? handleTimeUpdate : undefined}
                         onLoadedMetadata={(e) => handleVideoMetadata(video.id, e.currentTarget)}
-                        onPlaying={() => setVideoReadyMap((prev) => ({ ...prev, [video.id]: true }))}
+                        onPlaying={() => {
+                          setActivePlayingId(video.id);
+                          setVideoReadyMap((prev) => ({ ...prev, [video.id]: true }));
+                        }}
                         className="w-full h-full object-contain select-none relative z-10"
                       />
                     </div>

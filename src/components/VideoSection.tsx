@@ -255,6 +255,7 @@ const PermanentOrbitCard: React.FC<PermanentOrbitCardProps> = ({
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [isVideoReady, setIsVideoReady] = useState(false);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const currentWidth = windowWidth ?? (typeof window !== 'undefined' ? window.innerWidth : 1200);
@@ -264,16 +265,24 @@ const PermanentOrbitCard: React.FC<PermanentOrbitCardProps> = ({
 
   const isCenter = activeIndex === index;
 
-  // Clear hide timer when active card changes
+  // Clear hide timer & reset video ready state when active card changes
   useEffect(() => {
     if (!isCenter) {
       setIsHovered(false);
+      setIsVideoReady(false);
       if (hideTimerRef.current) {
         clearTimeout(hideTimerRef.current);
         hideTimerRef.current = null;
       }
     }
   }, [isCenter]);
+
+  // Reset ready state if section moves out of view or modal opens
+  useEffect(() => {
+    if (!isSectionInView || isModalOpen) {
+      setIsVideoReady(false);
+    }
+  }, [isSectionInView, isModalOpen]);
 
   // Robust Hover Handlers with 1-Second Hide Delay
   const handleMouseEnter = () => {
@@ -382,8 +391,8 @@ const PermanentOrbitCard: React.FC<PermanentOrbitCardProps> = ({
               alt={video.title}
               loading="lazy"
               decoding="async"
-              className={`absolute inset-0 m-auto w-full h-full object-cover pointer-events-none select-none z-10 transition-opacity duration-300 ${
-                isCenter && isPlaying && shouldLoadVideo ? 'opacity-0' : 'opacity-100'
+              className={`absolute inset-0 m-auto w-full h-full object-cover pointer-events-none select-none z-20 transition-opacity duration-300 ${
+                isCenter && isPlaying && shouldLoadVideo && isVideoReady ? 'opacity-0' : 'opacity-100'
               }`}
             />
           )}
@@ -398,6 +407,12 @@ const PermanentOrbitCard: React.FC<PermanentOrbitCardProps> = ({
               loop
               muted={isMuted}
               preload="auto"
+              onPlaying={() => setIsVideoReady(true)}
+              onLoadedData={() => {
+                if (videoRefs.current[index] && videoRefs.current[index]!.currentTime > 0) {
+                  setIsVideoReady(true);
+                }
+              }}
               className="relative z-10 w-full h-full object-cover transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
             />
           ) : (
@@ -417,13 +432,13 @@ const PermanentOrbitCard: React.FC<PermanentOrbitCardProps> = ({
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/30 z-20 pointer-events-none transition-opacity duration-300" />
           )}
 
-          {/* HOVER-BASED ACTIVE VIDEO CONTROLS (Both Portrait & Landscape, 1s Hide Delay) */}
+          {/* ACTIVE VIDEO CONTROLS (Hover on desktop, visible on touch/mobile or paused) */}
           {isCenter && (
             <div
               style={{
-                opacity: isHovered ? 1 : 0,
-                transform: isHovered ? 'translateY(0) scale(1)' : 'translateY(6px) scale(0.96)',
-                pointerEvents: isHovered ? 'auto' : 'none',
+                opacity: isHovered || isMobile || !isPlaying ? 1 : 0,
+                transform: isHovered || isMobile || !isPlaying ? 'translateY(0) scale(1)' : 'translateY(6px) scale(0.96)',
+                pointerEvents: isHovered || isMobile || !isPlaying ? 'auto' : 'none',
                 transition: isHovered
                   ? 'opacity 200ms cubic-bezier(0.22, 1, 0.36, 1), transform 200ms cubic-bezier(0.22, 1, 0.36, 1)'
                   : 'opacity 280ms cubic-bezier(0.22, 1, 0.36, 1), transform 280ms cubic-bezier(0.22, 1, 0.36, 1)',
@@ -724,9 +739,10 @@ const VideoSection: React.FC = () => {
     return () => ctx.revert();
   }, []);
 
-  // Update activeIndex continuously whenever position changes
+  // Update activeIndex continuously whenever position changes (deferred during drag/flight to eliminate lag)
   useEffect(() => {
     const unsubscribe = position.on('change', (latest) => {
+      if (pointerState.current.isDown || isAnimatingRef.current) return;
       const nearest = mod(Math.round(latest), totalVideos);
       setActiveIndex(nearest);
     });
@@ -802,10 +818,12 @@ const VideoSection: React.FC = () => {
         onComplete: () => {
           isAnimatingRef.current = false;
           animControlRef.current = null;
+          const nearest = mod(Math.round(target), totalVideos);
+          setActiveIndex(nearest);
         },
       });
     },
-    [position]
+    [position, totalVideos]
   );
 
   const goNext = useCallback(() => {
@@ -1001,7 +1019,7 @@ const VideoSection: React.FC = () => {
         {/* ═══════════════════════════════════════════════════════════════ */}
         {/* 1. TOP ZONE: Editorial Heading (Left) + Mode Toggle (Right) */}
         {/* ═══════════════════════════════════════════════════════════════ */}
-        <div className="w-full flex items-start justify-between video-header-elem">
+        <div className="w-full flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-6 video-header-elem">
           {/* Left Column Editorial Header */}
           <div className="max-w-[360px] sm:max-w-[390px] lg:max-w-[420px] z-30">
             <div className="inline-flex items-center gap-2 mb-1 sm:mb-1.5">
@@ -1030,7 +1048,7 @@ const VideoSection: React.FC = () => {
           </div>
 
           {/* Right Area: Mode Toggle Pill */}
-          <div className="flex justify-end z-30 pt-0.5">
+          <div className="flex justify-start sm:justify-end z-30 pt-0.5">
             <div className="relative flex items-center p-1 bg-white/60 backdrop-blur-md rounded-full border border-[#D4C3A3]/50 shadow-sm">
               <button
                 onClick={() => setOrientation('landscape')}
@@ -1169,6 +1187,13 @@ const VideoSection: React.FC = () => {
       <MediaViewer
         isOpen={!!selectedVideo}
         onClose={() => setSelectedVideo(null)}
+        onActiveVideoChange={(vid) => {
+          const idx = featuredVideos.findIndex((v) => v.id === vid.id);
+          if (idx !== -1) {
+            setActiveIndex(idx);
+            position.set(idx);
+          }
+        }}
         item={
           selectedVideo
             ? {

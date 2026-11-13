@@ -893,6 +893,7 @@ const VideoViewer: React.FC<MediaViewerProps> = ({
                     onClick={onClose}
                     type="button"
                     aria-label="Close viewer"
+                    data-testid="desktop-media-viewer-close-btn"
                     className="group inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full hover:bg-black/5 active:scale-95 transition-all cursor-pointer text-[#1A1A1A]"
                   >
                     <span className="text-[10.5px] font-sora font-semibold tracking-[0.18em] uppercase text-charcoal-500 group-hover:text-charcoal-900 transition-colors">

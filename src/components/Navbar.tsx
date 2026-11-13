@@ -167,11 +167,11 @@ export default function Navbar({ isLoaded, navRef }: NavbarProps) {
             </button>
           </div>
 
-          {/* Mobile Hamburger */}
+          {/* Mobile Hamburger (44px Accessible Touch Target) */}
           <button 
             type="button"
             aria-label="Open navigation menu"
-            className="md:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1.5 z-[60]"
+            className="md:hidden flex flex-col justify-center items-center w-11 h-11 space-y-1.5 z-[60] -mr-2 cursor-pointer"
             onClick={() => setIsMobileMenuOpen(true)}
           >
             <span className="block w-6 h-0.5 bg-charcoal-800"></span>
@@ -187,7 +187,7 @@ export default function Navbar({ isLoaded, navRef }: NavbarProps) {
           <button 
             type="button"
             aria-label="Close navigation menu"
-            className="absolute top-6 right-6 text-charcoal-800 p-2"
+            className="absolute top-5 right-5 text-charcoal-800 p-2.5 w-11 h-11 flex items-center justify-center cursor-pointer"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
