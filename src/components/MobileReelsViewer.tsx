@@ -10,6 +10,7 @@ import {
   Maximize2,
   Minimize2,
   ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 import {
   featuredVideos,
@@ -19,6 +20,71 @@ import {
   SoftwareIconType,
 } from '../data/portfolio';
 import { MediaViewerItem } from './MediaViewer';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// AMBIENT VIDEO CANVAS (Synchronized Real-Time Blurred Glow with Single Decoder)
+// ─────────────────────────────────────────────────────────────────────────────
+const AmbientVideoCanvas: React.FC<{
+  videoEl: HTMLVideoElement | null;
+  poster?: string;
+  isPlaying: boolean;
+}> = ({ videoEl, poster, isPlaying }) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    let animId: number;
+    let isActive = true;
+
+    const render = () => {
+      const canvas = canvasRef.current;
+      if (videoEl && canvas && videoEl.readyState >= 2 && !videoEl.paused && !videoEl.ended) {
+        const ctx = canvas.getContext('2d', { alpha: false });
+        if (ctx) {
+          try {
+            ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+          } catch {
+            // CORS fallback: blurred poster base underneath handles visual background
+          }
+        }
+      }
+      if (isActive && isPlaying) {
+        animId = requestAnimationFrame(render);
+      }
+    };
+
+    if (isPlaying) {
+      animId = requestAnimationFrame(render);
+    }
+
+    return () => {
+      isActive = false;
+      cancelAnimationFrame(animId);
+    };
+  }, [videoEl, isPlaying]);
+
+  return (
+    <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none select-none">
+      {/* Blurred poster base */}
+      {poster && (
+        <img
+          src={poster}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover filter blur-3xl scale-140 opacity-55 brightness-75 select-none"
+        />
+      )}
+      {/* Real-time live frame canvas */}
+      <canvas
+        ref={canvasRef}
+        width={160}
+        height={90}
+        className="absolute inset-0 w-full h-full object-cover filter blur-3xl scale-140 opacity-60 brightness-75"
+      />
+      {/* Subtle dark gradient overlay for text readability and cinematic ambiance */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/25 to-black/75" />
+    </div>
+  );
+};
 
 interface MobileReelsViewerProps {
   isOpen: boolean;
@@ -185,6 +251,21 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
   const lastTapTimeRef = useRef(0);
   const wasPlayingBeforeScrubRef = useRef(false);
 
+  // Touch and pointer gesture tracking for vertical swipe
+  const touchStateRef = useRef({
+    startY: 0,
+    startX: 0,
+    startTime: 0,
+    isSwiping: false,
+  });
+
+  const pointerDragRef = useRef({
+    isDown: false,
+    startY: 0,
+    startX: 0,
+    startTime: 0,
+  });
+
   // Sync index when initialIndex changes on open
   useEffect(() => {
     if (isOpen) {
@@ -335,6 +416,73 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
     setTimeout(() => {
       isWheelingRef.current = false;
     }, 420);
+  };
+
+  // Touch Swipe Gesture Handlers (Swipe UP -> Next, Swipe DOWN -> Prev)
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length !== 1) return;
+    const touch = e.touches[0];
+    touchStateRef.current = {
+      startY: touch.clientY,
+      startX: touch.clientX,
+      startTime: Date.now(),
+      isSwiping: true,
+    };
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStateRef.current.isSwiping) return;
+    touchStateRef.current.isSwiping = false;
+
+    if (e.changedTouches.length === 0) return;
+    const touch = e.changedTouches[0];
+    const deltaY = touch.clientY - touchStateRef.current.startY;
+    const deltaX = touch.clientX - touchStateRef.current.startX;
+
+    if (Math.abs(deltaY) > 35 && Math.abs(deltaY) > Math.abs(deltaX) * 1.1) {
+      if (showSwipeHint) setShowSwipeHint(false);
+      if (deltaY < 0) {
+        // Swiped UP -> Next video
+        if (currentIndex < totalVideos - 1) {
+          scrollToIndex(currentIndex + 1);
+        }
+      } else {
+        // Swiped DOWN -> Previous video
+        if (currentIndex > 0) {
+          scrollToIndex(currentIndex - 1);
+        }
+      }
+    }
+  };
+
+  // Pointer Drag Gestures for Testing / Desktop emulation
+  const handleContainerPointerDown = (e: React.PointerEvent) => {
+    if (e.button !== 0 && e.pointerType === 'mouse') return;
+    const target = e.target as HTMLElement;
+    if (target.closest('button') || target.closest('[data-reel-control="true"]')) return;
+
+    pointerDragRef.current = {
+      isDown: true,
+      startY: e.clientY,
+      startX: e.clientX,
+      startTime: Date.now(),
+    };
+  };
+
+  const handleContainerPointerUp = (e: React.PointerEvent) => {
+    if (!pointerDragRef.current.isDown) return;
+    pointerDragRef.current.isDown = false;
+
+    const deltaY = e.clientY - pointerDragRef.current.startY;
+    const deltaX = e.clientX - pointerDragRef.current.startX;
+    if (Math.abs(deltaY) > 35 && Math.abs(deltaY) > Math.abs(deltaX) * 1.1) {
+      if (showSwipeHint) setShowSwipeHint(false);
+      if (deltaY < 0) {
+        if (currentIndex < totalVideos - 1) scrollToIndex(currentIndex + 1);
+      } else {
+        if (currentIndex > 0) scrollToIndex(currentIndex - 1);
+      }
+    }
   };
 
   // Autoplay current active video & pause others
@@ -611,8 +759,8 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
           </span>
         </div>
 
-        {/* Center: Animated Project Counter (e.g. 07 / 32) */}
-        <div className="pointer-events-auto">
+        {/* Center: Animated Project Counter + Up/Down Navigation Chevrons */}
+        <div className="flex items-center gap-1.5 pointer-events-auto">
           <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/50 backdrop-blur-md border border-white/15 shadow-sm text-xs font-sora text-[#FAF3E8]">
             <AnimatePresence mode="wait">
               <motion.span
@@ -629,6 +777,38 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
             <span className="text-white/35 font-light">/</span>
             <span className="text-white/70 font-medium">{String(totalVideos).padStart(2, '0')}</span>
           </div>
+
+          {/* Quick Reel Up/Down Controls */}
+          <div className="flex items-center bg-black/50 backdrop-blur-md border border-white/15 rounded-full p-0.5 shadow-sm">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (currentIndex > 0) scrollToIndex(currentIndex - 1);
+              }}
+              disabled={currentIndex === 0}
+              type="button"
+              aria-label="Previous reel"
+              data-testid="reels-up-btn"
+              data-reel-control="true"
+              className="p-1 text-white/80 hover:text-white disabled:opacity-25 active:scale-85 transition-all cursor-pointer"
+            >
+              <ChevronUp className="w-3.5 h-3.5" strokeWidth={2.4} />
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (currentIndex < totalVideos - 1) scrollToIndex(currentIndex + 1);
+              }}
+              disabled={currentIndex >= totalVideos - 1}
+              type="button"
+              aria-label="Next reel"
+              data-testid="reels-down-btn"
+              data-reel-control="true"
+              className="p-1 text-white/80 hover:text-white disabled:opacity-25 active:scale-85 transition-all cursor-pointer"
+            >
+              <ChevronDown className="w-3.5 h-3.5" strokeWidth={2.4} />
+            </button>
+          </div>
         </div>
 
         {/* Right: Circular Translucent Close Button (Always visible & accessible) */}
@@ -636,6 +816,8 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
           onClick={onClose}
           type="button"
           aria-label="Close reels viewer"
+          data-testid="mobile-reels-close-btn"
+          data-reel-control="true"
           className="pointer-events-auto w-9.5 h-9.5 rounded-full bg-black/55 hover:bg-black/75 active:scale-90 backdrop-blur-md border border-white/20 flex items-center justify-center text-white/90 hover:text-white transition-all shadow-md cursor-pointer"
         >
           <X className="w-5 h-5" strokeWidth={2.2} />
@@ -650,6 +832,10 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
         ref={containerRef}
         onScroll={handleScroll}
         onWheel={handleWheel}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onPointerDown={handleContainerPointerDown}
+        onPointerUp={handleContainerPointerUp}
         className="w-full h-full overflow-y-scroll overflow-x-hidden no-scrollbar touch-pan-y"
         style={{
           scrollSnapType: 'y mandatory',
@@ -666,8 +852,6 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
           const isLandscape = Boolean(
             video.aspectRatio === 'landscape' ||
             aspectRatioMap[video.id] === 'landscape' ||
-            item?.orientation === 'landscape' ||
-            (item?.aspectRatio ? item.aspectRatio > 1.2 : false) ||
             (video.videoUrl && video.videoUrl.toLowerCase().includes('landscape'))
           );
 
@@ -703,23 +887,15 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
                   {/* ───────────────────────────────────────────────────────────── */}
                   {isLandscape ? (
                     <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
-                      {/* Ambient Blurred Backdrop Layer (Poster Image — single decoder architecture) */}
-                      <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
-                        {video.poster ? (
-                          <img
-                            src={video.poster}
-                            alt=""
-                            aria-hidden="true"
-                            className="w-full h-full object-cover filter blur-3xl scale-135 opacity-45 brightness-75 select-none"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-black/60" />
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/25 to-black/75" />
-                      </div>
+                      {/* Ambient Live Video Glow Canvas Layer (Single Decoder Architecture) */}
+                      <AmbientVideoCanvas
+                        videoEl={videoRefs.current[idx]}
+                        poster={video.poster}
+                        isPlaying={isCurrent && isPlaying}
+                      />
 
                       {/* Foreground Centered 16:9 Video Card */}
-                      <div className="relative z-10 w-full px-3 flex flex-col items-center justify-center">
+                      <div className="relative z-10 w-full px-3 sm:px-4 flex flex-col items-center justify-center">
                         <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.85),0_0_0_1px_rgba(255,255,255,0.15)] group bg-black">
                           {video.poster && (
                             <img
@@ -751,9 +927,16 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
                     </div>
                   ) : (
                     /* ───────────────────────────────────────────────────────────── */
-                    /* B. PORTRAIT HANDLING: 100% FULL-BLEED NATIVE REEL (NO CORNERS)*/
+                    /* B. PORTRAIT HANDLING: PRESERVE ASPECT RATIO + AMBIENT GLOW     */
                     /* ───────────────────────────────────────────────────────────── */
                     <div className="relative w-full h-full flex items-center justify-center overflow-hidden bg-black">
+                      {/* Ambient Live Video Glow Canvas behind portrait video so tall phones have no hard black bars */}
+                      <AmbientVideoCanvas
+                        videoEl={videoRefs.current[idx]}
+                        poster={video.poster}
+                        isPlaying={isCurrent && isPlaying}
+                      />
+
                       {video.poster && (
                         <img
                           src={video.poster}
@@ -777,7 +960,7 @@ export const MobileReelsViewer: React.FC<MobileReelsViewerProps> = ({
                         onTimeUpdate={isCurrent ? handleTimeUpdate : undefined}
                         onLoadedMetadata={(e) => handleVideoMetadata(video.id, e.currentTarget)}
                         onPlaying={() => setVideoReadyMap((prev) => ({ ...prev, [video.id]: true }))}
-                        className="w-full h-full object-cover select-none relative z-10"
+                        className="w-full h-full object-contain select-none relative z-10"
                       />
                     </div>
                   )}

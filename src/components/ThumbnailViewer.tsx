@@ -110,10 +110,9 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({
     }, 340);
   }, [totalThumbnails]);
 
-  // Fullscreen toggle logic (resilient even when browser Fullscreen API rejects or is unsupported)
+  // Fullscreen toggle logic (in-app full-screen stage with optional native enhancement)
   const enterFullscreen = useCallback(async () => {
     setIsFullscreen(true);
-    hasNativeFullscreenRef.current = false;
     try {
       const root = containerRef.current || document.documentElement;
       if (root.requestFullscreen) {
@@ -121,18 +120,13 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({
       } else if ((root as any).webkitRequestFullscreen) {
         await (root as any).webkitRequestFullscreen();
       }
-      if (document.fullscreenElement || (document as any).webkitFullscreenElement) {
-        hasNativeFullscreenRef.current = true;
-      }
     } catch {
-      // Graceful fallback: keep in-page CSS fullscreen stage active
-      hasNativeFullscreenRef.current = false;
+      // Safe fallback: in-page CSS fullscreen overlay provides 100% full screen
     }
   }, []);
 
   const exitFullscreen = useCallback(async () => {
     setIsFullscreen(false);
-    hasNativeFullscreenRef.current = false;
     try {
       if (document.fullscreenElement || (document as any).webkitFullscreenElement) {
         if (document.exitFullscreen) {
@@ -152,25 +146,6 @@ export const ThumbnailViewer: React.FC<ThumbnailViewerProps> = ({
     }
     onClose();
   }, [isFullscreen, exitFullscreen, onClose]);
-
-  // Sync ONLY when native browser fullscreen was genuinely entered and then exited externally (e.g. Escape)
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      const activeFsEl = document.fullscreenElement || (document as any).webkitFullscreenElement;
-      if (activeFsEl) {
-        hasNativeFullscreenRef.current = true;
-      } else if (hasNativeFullscreenRef.current) {
-        hasNativeFullscreenRef.current = false;
-        setIsFullscreen(false);
-      }
-    };
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-    return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
-    };
-  }, []);
 
   // Keyboard navigation & scroll lock & wheel navigation
   useEffect(() => {

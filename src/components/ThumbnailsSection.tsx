@@ -267,11 +267,12 @@ const ThumbnailCard: React.FC<ThumbnailCardProps> = ({
           </span>
         </div>
 
-        {/* Lightbox Trigger Top-Right */}
-        <div className="absolute top-2.5 sm:top-3.5 right-2.5 sm:right-3.5 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        {/* Lightbox Trigger Top-Right (Always accessible on touch/mobile, hover on desktop) */}
+        <div className="absolute top-2.5 sm:top-3.5 right-2.5 sm:right-3.5 z-10 opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">
           <button
             type="button"
             aria-label={`Open ${item.title} in viewer`}
+            data-testid="thumbnail-card-fs-btn"
             onClick={(e) => {
               e.stopPropagation();
               onOpenLightbox(item);
